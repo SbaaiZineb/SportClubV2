@@ -89,7 +89,11 @@
                     <label class="form-label">Temps de fin</label>
                     <input class="form-control" type="datetime-local" th:field="*{end_time}"/>
 
-
+                    <label class="form-label">Entraineur</label>
+                    <select name="coach" id="coach" class="form-control mb-4" th:field="*{coach.name}">
+                      <option th:each="coach :${coaches}" th:value="${coach.id}"
+                              th:text="${coach.name}"></option>
+                    </select>
 
                     <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                   </form>

@@ -1,7 +1,9 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
+import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Seance;
+import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.SeanceService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.TimeZone;
 
 @Controller
@@ -22,7 +25,7 @@ public class SeanceController {
 
     @Autowired
     SeanceService service;
-
+CoachService coachService;
 
 
     @GetMapping("/seanceList")
@@ -43,6 +46,9 @@ public class SeanceController {
     }
     @GetMapping("/addSeance")
     public String getAddSeance(Model model) {
+        List<Coach> coaches=coachService.getAllCoachs();
+        model.addAttribute("coaches",coaches);
+        model.addAttribute("coach",new Coach());
         Seance seance = new Seance();
         model.addAttribute("seance", seance);
         return "seanceList";

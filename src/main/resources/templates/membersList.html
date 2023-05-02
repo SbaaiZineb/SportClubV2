@@ -91,6 +91,8 @@
           <div class="card-body">
             <form  th:action="@{/addMember}"
                    th:object="${MemberForm}" method="POST">
+<!--              <label class="form-label">Image:</label>-->
+<!--              <input type="file" name="pic" accept="image/*"><br>-->
               <label class="form-label">Nom:</label>
               <input class="form-control" type="text"th:field="*{name}" />
               <label class="form-label">Prenom:</label>

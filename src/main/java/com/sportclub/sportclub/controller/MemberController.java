@@ -5,6 +5,8 @@ import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,10 +29,7 @@ public class MemberController {
 
     @Autowired
     MemberService memberService;
-    @GetMapping("/side")
-public String getSide(){
-    return "sideBar";
-}
+
     @GetMapping("/membersList")
     public String getMembers(Model model ,@RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -52,7 +56,9 @@ public String getSide(){
 
    /* @RequestMapping(value = {"/addMember"}, method = RequestMethod.POST)
     public String savePersonne(Model model,
-                               @ModelAttribute("MemberForm") Member MemberForm) {
+                               @ModelAttribute("MemberForm") Member MemberForm ,@RequestParam("pic") MultipartFile file
+                               )throws IOException {
+            String pic = new String(file.getBytes(), StandardCharsets.UTF_8);
         String name = MemberForm.getName();
         String lname = MemberForm.getLname();
         String email = MemberForm.getEmail();
@@ -65,12 +71,19 @@ public String getSide(){
         List<Role> role=MemberForm.getRoles();
         Abonnement abonnement = MemberForm.getAbonnement();
         if (name != null && name.length() > 0 && lname != null && lname.length() > 0) {
-            Member newMember = new Member(name, lname,adress,cin,   dob,  tele,role,email, password, gender);
+            Member newMember = new Member(pic ,name, lname,adress,cin,   dob,  tele,email, password, gender);
             memberService.addMember(newMember);
             return "redirect:/membersList";
         }
         model.addAttribute("errorMessage", "Il faut saisir toutes les information");
         return "membersList";
+    }
+    @Configuration
+    public class AppConfig {
+        @Bean
+        public MultipartResolver multipartResolver() {
+            return new StandardServletMultipartResolver();
+        }
     }*/
     @PostMapping("/addMember")
     public String addMember(@Validated Member member, BindingResult bindingResult){
