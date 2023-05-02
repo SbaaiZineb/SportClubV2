@@ -1,0 +1,27 @@
+
+.sidebar-nav .nav-group {
+    position: relative;
+    transition: background .15s ease-in-out;
+}
+.sidebar-nav .nav-group-toggle::after {
+    display: block;
+    flex: 0 12px;
+    height: 12px;
+    content: "";
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform .15s;
+}
+.sidebar-nav .sidebar-link:hover {
+
+    text-decoration: none;
+    background: #afabab;
+}
+*, ::before, ::after {
+    box-sizing: border-box;
+}
+
+.nav-group {
+    position: relative;
+    transition: background .15s ease-in-out;
+}
