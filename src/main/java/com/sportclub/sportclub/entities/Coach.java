@@ -25,7 +25,7 @@ public class Coach extends User {
         this.sport_type = sport_type;
     }
 
-    @OneToOne(mappedBy = "coach",fetch = FetchType.LAZY)
+    @OneToOne
     private Seance classe;
 
 }

@@ -127,6 +127,11 @@
               Male
             </label>
           </div>
+                <label class="form-label">Abonnement</label>
+                <select name="coach" id="coach" class="form-control mb-4" th:field="*{coach.name}">
+                    <option th:each="coach :${coaches}" th:value="${coach.id}"
+                            th:text="${coach.name}"></option>
+                </select>
               <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
             </form>
 

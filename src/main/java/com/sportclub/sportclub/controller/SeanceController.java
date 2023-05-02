@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -25,59 +26,63 @@ public class SeanceController {
 
     @Autowired
     SeanceService service;
-CoachService coachService;
+    @Autowired
+    CoachService coachService;
 
 
     @GetMapping("/seanceList")
-    public String getSeances(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
-                         @RequestParam(name = "size",defaultValue = "5") int size,
-                         @RequestParam(name = "keyword",defaultValue = "") String kw
+    public String getSeances(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
+                             @RequestParam(name = "size", defaultValue = "5") int size,
+                             @RequestParam(name = "keyword", defaultValue = "") String kw
     ) {
+        List<Coach> coaches = coachService.getAllCoachs();
+        model.addAttribute("coaches", coaches);
+        model.addAttribute("coach", new Coach());
 
-        Page<Seance> pageS = service.findBySeanceName(kw, PageRequest.of(page,size));
-        model.addAttribute("listSeance",pageS.getContent());
-        model.addAttribute("pages",new int[pageS.getTotalPages()]);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("keyword",kw);
+        Page<Seance> pageS = service.findBySeanceName(kw, PageRequest.of(page, size));
+        model.addAttribute("listSeance", pageS.getContent());
+        model.addAttribute("pages", new int[pageS.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
         Seance seance = new Seance();
         model.addAttribute("seance", seance);
         return "seanceList";
 
     }
+
     @GetMapping("/addSeance")
     public String getAddSeance(Model model) {
-        List<Coach> coaches=coachService.getAllCoachs();
-        model.addAttribute("coaches",coaches);
-        model.addAttribute("coach",new Coach());
+
         Seance seance = new Seance();
         model.addAttribute("seance", seance);
         return "seanceList";
     }
+
     @PostMapping("/addSeance")
-    public String addSeance(@Validated Seance seance, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "seanceList";
+    public String addSeance(@Validated Seance seance, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "seanceList";
         service.addSeance(seance);
         return "redirect:/seanceList";
     }
 
 
-
     @GetMapping("/deleteSeance")
-    public String deleteSeance(@RequestParam(name = "id") Long id,String keyword, int page){
+    public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
         service.deletSeance(id);
-        return "redirect:/seanceList?page="+page+"&keyword="+keyword;
+        return "redirect:/seanceList?page=" + page + "&keyword=" + keyword;
     }
+
     @GetMapping("/editSeance")
 
-    public String editSeance(@RequestParam(name = "id") Long id, Model model){
-        Seance seance=service.getSeanceById(id);
-        model.addAttribute("seance",seance);
+    public String editSeance(@RequestParam(name = "id") Long id, Model model) {
+        Seance seance = service.getSeanceById(id);
+        model.addAttribute("seance", seance);
         return "updateSeanceForm";
     }
 
     @PostMapping("/editSeance")
-    public String editseance(@Validated Seance seance, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "updateSeanceForm";
+    public String editseance(@Validated Seance seance, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "updateSeanceForm";
         service.updateSeance(seance);
         return "redirect:/seanceList";
     }

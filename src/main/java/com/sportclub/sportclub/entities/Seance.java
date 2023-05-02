@@ -22,6 +22,6 @@ public class Seance {
 
     @ManyToMany
     private List<Member> members;
-    @OneToOne
+    @OneToOne(mappedBy = "classe",fetch = FetchType.EAGER)
     private Coach coach;
 }

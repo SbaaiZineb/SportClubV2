@@ -11,7 +11,7 @@ import java.util.List;
 public interface SeanceService {
     void addSeance(Seance seance);
 
-
+    public List<Seance> getAllSeance();
     void deletSeance(Long id);
     Page<Seance> findBySeanceName(String mc, Pageable pageable);
     Seance getSeanceById(Long id);

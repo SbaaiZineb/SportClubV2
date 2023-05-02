@@ -46,7 +46,7 @@
             <td th:utext="${m.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
             <td th:utext="${m.getEnd_time()}"></td>
 
-            <td>test</td>
+            <td></td>
 
             <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
                    th:href="@{/deleteSeance(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
@@ -90,11 +90,11 @@
                     <input class="form-control" type="datetime-local" th:field="*{end_time}"/>
 
                     <label class="form-label">Entraineur</label>
-                    <select name="coach" id="coach" class="form-control mb-4" th:field="*{coach.name}">
-                      <option th:each="coach :${coaches}" th:value="${coach.id}"
+
+                    <select name="coach" id="coach" class="form-control mb-4">
+                      <option th:each="coach : ${coaches}" th:value="${coach.id}"
                               th:text="${coach.name}"></option>
                     </select>
-
                     <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                   </form>
 
