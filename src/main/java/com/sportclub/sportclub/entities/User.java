@@ -20,6 +20,14 @@ public abstract class User extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                '}';
+    }
+
     @ManyToMany
     private List<Role> roles;
     private String email;

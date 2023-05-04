@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
+import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.AbonnementService;
@@ -38,7 +39,11 @@ public class MemberController {
                              @RequestParam(name = "size", defaultValue = "5") int size,
                              @RequestParam(name = "keyword", defaultValue = "") String kw
     ) {
-//        model.addAttribute("members", memberService.getAllMembers());
+
+        List<Abonnement> abos = abonnementService.getAllAbos();
+        model.addAttribute("abos", abos);
+        model.addAttribute("abonnement", new Abonnement());
+
         Page<Member> pageMember = memberService.findByMemberName(kw, PageRequest.of(page, size));
         model.addAttribute("listMember", pageMember.getContent());
         model.addAttribute("pages", new int[pageMember.getTotalPages()]);

@@ -40,17 +40,17 @@
 
             <th colspan="2">Action</th>
           </tr>
-          <tr th:each="m:${listSeance}">
-            <td th:utext="${m.getId()}"></td>
-            <td th:utext="${m.getClassName()}"></td>
-            <td th:utext="${m.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
-            <td th:utext="${m.getEnd_time()}"></td>
+          <tr th:each="s:${listSeance}">
+            <td th:utext="${s.getId()}"></td>
+            <td th:utext="${s.getClassName()}"></td>
+            <td th:utext="${s.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+            <td th:utext="${s.getEnd_time()}"></td>
 
-            <td></td>
+            <td th:utext="${s.coach}" ></td>
 
             <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
-                   th:href="@{/deleteSeance(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
-            <td><a th:href="@{/editSeance(id=${m.id})} " class="btn btn-info">
+                   th:href="@{/deleteSeance(id=${s.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
+            <td><a th:href="@{/editSeance(id=${s.id})} " class="btn btn-info">
               <i class="bi bi-pencil"></i></a></td>
             </td>
 

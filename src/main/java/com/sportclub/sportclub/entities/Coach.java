@@ -1,9 +1,6 @@
 package com.sportclub.sportclub.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +22,11 @@ public class Coach extends User {
         this.sport_type = sport_type;
     }
 
-    @OneToOne
-    private Seance classe;
+    @OneToMany(mappedBy = "coach",cascade = { CascadeType.ALL}, fetch = FetchType.LAZY )
+    private List<Seance> seances;
 
+    @Override
+    public String toString() {
+        return getName()+" "+getLname();
+    }
 }

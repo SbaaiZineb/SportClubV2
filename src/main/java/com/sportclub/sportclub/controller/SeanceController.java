@@ -81,7 +81,7 @@ public class SeanceController {
     }
 
     @PostMapping("/editSeance")
-    public String editseance(@Validated Seance seance, BindingResult bindingResult) {
+    public String editSeance(@Validated Seance seance, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateSeanceForm";
         service.updateSeance(seance);
         return "redirect:/seanceList";

@@ -38,5 +38,6 @@ public class Member extends User {
     @ManyToMany
     private List<Seance> seanceList;
     @ManyToOne
+    @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
 }
