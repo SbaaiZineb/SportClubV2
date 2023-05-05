@@ -5,6 +5,7 @@ import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.CoachService;
+import com.sportclub.sportclub.tools.FileStorageService;
 import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
 public class CoachController {
     @Autowired
     CoachService coachService;
+    @Autowired
+    FileStorageService fileStorageService;
 
     @GetMapping("/coachList")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
@@ -59,9 +63,12 @@ public class CoachController {
     }
 
     @PostMapping("/addCoach")
-    public String addCoach(@Validated Coach c, BindingResult bindingResult){
+    public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "coachList";
-        coachService.updateCoach(c);
+        c.setPic(file.getOriginalFilename());
+        coachService.addCoach(c);
+        fileStorageService.save(file);
+
         return "redirect:/coachList";
     }
     /*@RequestMapping(value = {"/addCoach"}, method = RequestMethod.POST)

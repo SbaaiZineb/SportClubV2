@@ -1,3 +1,4 @@
+/*
 
 .sidebar-nav .nav-group {
     position: relative;
@@ -24,4 +25,9 @@
 .nav-group {
     position: relative;
     transition: background .15s ease-in-out;
+}*/
+.table td img, .table th img {
+    width: 38px;
+    height: 38px;
+    border-radius: 100%;
 }

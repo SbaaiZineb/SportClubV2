@@ -20,10 +20,10 @@ SeanceService seanceService;
 
     @Override
     public void run(String... args) throws Exception {
-        for (Seance seance:seanceService.getAllSeance()
+        /*for (Seance seance:seanceService.getAllSeance()
              ) {
             System.out.println("id "+seance.getId()+"\nname " +seance.getClassName()+ "\ncoach "+seance.getCoach());
             
-        }
+        }*/
     }
 }

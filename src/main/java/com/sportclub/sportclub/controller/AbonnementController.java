@@ -32,7 +32,7 @@ public class AbonnementController {
         return "abList";
 
     }
-    /* @RequestMapping(path = {"/seanceList","/search"})
+    /* @RequestMapping(path = {"/abonnementList","/search"})
     public String search( Model model, String keyword) {
 
         if(keyword!=null) {

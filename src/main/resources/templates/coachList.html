@@ -7,6 +7,7 @@
   <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
 
   <link th:href="@{css/app.css}" rel="stylesheet">
+  <link th:href="@{css/style.css}" rel="stylesheet">
   <link rel="stylesheet" type="text/css" th:href="@{/js/bootstrap.js}"/>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
@@ -28,13 +29,22 @@
     <div th:insert="~{sideBar :: navBar}"></div>
     <main class="content">
       <div class="container-fluid p-0">
-        <form th:action="@{/search}" method="get" class="float-start mb-3">
-          <input type="text" class="rounded-1" name="keyword" th:value="${keyword}"  placeholder="Chercher" size="35" >
-          <button type="submit" class="btn btn-info" ><i class="bi bi-search"></i></button></form>
+        <div class="search-field d-none d-md-block">
+          <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group">
+              <div class="input-group-prepend bg-transparent">
+                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+              </div>
+              <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                     th:value="${keyword}" placeholder="Chercher">
+            </div>
+          </form>
+        </div>
     <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
     <table class="table table-striped ">
       <tr>
         <th>Id</th>
+        <th>Image</th>
         <th>Nom</th>
         <th>Prénom</th>
         <th>email</th>
@@ -49,6 +59,7 @@
       </tr>
       <tr th:each="m:${listCoach}">
         <td th:utext="${m.getId()}"></td>
+        <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
         <td th:utext="${m.getName()}"></td>
         <td th:utext="${m.getLname()}"></td>
         <td th:utext="${m.getEmail()}"></td>
@@ -92,7 +103,7 @@
         <div class="card align-content-center">
           <div class="card-body">
             <form  th:action="@{/addCoach}"
-                   th:object="${CoachForm}" method="POST">
+                   th:object="${CoachForm}" method="POST" enctype="multipart/form-data">
               <label class="form-label">Nom:</label>
               <input class="form-control" type="text"th:field="*{name}" />
               <label class="form-label">Prenom:</label>
@@ -114,6 +125,11 @@
               <input class="form-control" type="password"/>
               <label class="form-label" >type de sport:</label>
               <input class="form-control" type="text" th:field="*{sport_type}"/>
+              <div class="mb-3 mt-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control  "
+                       id="image" accept="image/png, image/jpeg" name="file"/>
+              </div>
               <!--<label class="form-label">Gender:</label>
 
               <div class="form-check">
