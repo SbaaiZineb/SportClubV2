@@ -38,6 +38,19 @@ public class CoachController {
         return "coachList";
 
     }
+
+    /* @RequestMapping(path = {"/coachList","/search"})
+    public String search( Model model, String keyword) {
+
+        if(keyword!=null) {
+            List<Coach> list = service.getSeanceBynName(keyword);
+            model.addAttribute("listSeance", list);
+        }else {
+            List<Coach> list = service.getAllSeance();
+            model.addAttribute("listSeance", list);}
+        return "seanceList";
+    }*/
+
     @GetMapping("/addCoach")
     public String getAddCoachPage(Model model) {
         Coach coachForm = new Coach();

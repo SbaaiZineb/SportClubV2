@@ -2,6 +2,7 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Coach;
+import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Seance;
 import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.SeanceService;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -50,6 +52,17 @@ public class SeanceController {
 
     }
 
+   /* @RequestMapping(path = {"/seanceList","/search"})
+    public String search( Model model, String keyword) {
+
+        if(keyword!=null) {
+            List<Seance> list = service.getSeanceBynName(keyword);
+            model.addAttribute("listSeance", list);
+        }else {
+            List<Seance> list = service.getAllSeance();
+            model.addAttribute("listSeance", list);}
+        return "seanceList";
+    }*/
     @GetMapping("/addSeance")
     public String getAddSeance(Model model) {
 

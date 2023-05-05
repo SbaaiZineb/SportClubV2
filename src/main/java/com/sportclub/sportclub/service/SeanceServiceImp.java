@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.service;
 
 import com.sportclub.sportclub.entities.Coach;
+import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Seance;
 import com.sportclub.sportclub.repository.SeanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class SeanceServiceImp implements SeanceService {
     @Override
     public void addSeance(Seance seance) {
         seanceRepo.save(seance);
+    }
+
+    @Override
+    public List<Seance> getSeanceBynName(String name) {
+        return seanceRepo.findByClassName(name);
     }
 
 

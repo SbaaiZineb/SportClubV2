@@ -6,11 +6,15 @@ import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
+import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +37,8 @@ public class MemberController {
     MemberService memberService;
     @Autowired
     AbonnementService abonnementService;
+    @Autowired
+    FileStorageService storageService;
 
     @GetMapping("/membersList")
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
@@ -53,6 +59,20 @@ public class MemberController {
         model.addAttribute("MemberForm", MemberForm);
         return "membersList";
 
+    }
+
+    @RequestMapping(path = {"/membersList","/search"})
+    public String search( Model model, String keyword) {
+
+        Member MemberForm = new Member();
+        model.addAttribute("MemberForm", MemberForm);
+        if(keyword!=null) {
+            List<Member> list = memberService.getMemberBynName(keyword);
+            model.addAttribute("listMember", list);
+        }else {
+            List<Member> list = memberService.getAllMembers();
+            model.addAttribute("listMember", list);}
+        return "membersList";
     }
 
     @GetMapping("/addMember")
@@ -95,12 +115,20 @@ public class MemberController {
          }
      }*/
     @PostMapping("/addMember")
-    public String addMember(@Validated Member member, BindingResult bindingResult) {
+    public String addMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "membersList";
-        memberService.updateMember(member);
+        member.setPic(file.getOriginalFilename());
+        memberService.addMember(member);
+        storageService.save(file);
         return "redirect:/membersList";
     }
+    @GetMapping("/images/{filename:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        Resource file = storageService.load(filename);
 
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
     @GetMapping("/deleteMember")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page) {
         memberService.deletMember(id);

@@ -18,22 +18,17 @@ public class MemberServiceImp implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    AbonnementRepo abRepository;
+
 
     @Override
     public void addMember(Member member) {
         memberRepository.save(member);
     }
 
-    @Override
-    public void addAb(Abonnement abonnement) {
-        abRepository.save(abonnement);
-    }
 
     @Override
     public List<Member> getMemberBynName(String name) {
-        return null;
+        return memberRepository.findByName(name);
     }
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {

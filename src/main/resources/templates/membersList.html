@@ -34,11 +34,15 @@
         <div th:insert="~{sideBar :: navBar}"></div>
         <main class="content">
             <div class="container-fluid p-0">
+                <form th:action="@{/search}" method="get" class="float-start mb-3">
+                    <input type="text" class="rounded-1" name="keyword" th:value="${keyword}"  placeholder="Chercher" size="35" >
+                    <button type="submit" class="btn btn-info" ><i class="bi bi-search"></i></button></form>
                 <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal"
                         data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
                 <table class="table table-striped ">
                     <tr>
                         <th>Id</th>
+                        <th>Image</th>
                         <th>Nom</th>
                         <th>Prénom</th>
                         <th>email</th>
@@ -53,6 +57,7 @@
                     </tr>
                     <tr th:each="m:${listMember}">
                         <td th:utext="${m.getId()}"></td>
+                        <td><img th:if="${m.pic}" th:src="@{'images/'+${m.pic}}"></td>
                         <td th:utext="${m.getName()}"></td>
                         <td th:utext="${m.getLname()}"></td>
                         <td th:utext="${m.getEmail()}"></td>
@@ -98,7 +103,7 @@
                             <div class="card align-content-center">
                                 <div class="card-body">
                                     <form th:action="@{/addMember}"
-                                          th:object="${MemberForm}" method="POST">
+                                          th:object="${MemberForm}" method="POST" enctype="multipart/form-data">
                                         <!--              <label class="form-label">Image:</label>-->
                                         <!--              <input type="file" name="pic" accept="image/*"><br>-->
                                         <label class="form-label">Nom:</label>
@@ -121,10 +126,15 @@
                                         <label class="form-label">Confirm password:</label>
                                         <input class="form-control" type="password"/>
                                         <label class="form-label">Abonnement</label>
-                                        <select name="abonnement" id="abonnement" class="form-control mb-4">
+                                        <select name="abonnement" id="abonnement" class="form-control mb-3">
                                             <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
                                                     th:text="${abonnement.nameAb}"></option>
                                         </select>
+
+                                        <div class="mb-3 mt-3">
+                                            <label class="form-label">Image</label>
+                                            <input class="form-control" type="file" id="image"  accept="image/png, image/jpeg" name="file"/>
+                                        </div>
                                         <label class="form-label">Gender:</label>
 
                                         <div class="form-check">

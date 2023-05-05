@@ -32,6 +32,17 @@ public class AbonnementController {
         return "abList";
 
     }
+    /* @RequestMapping(path = {"/seanceList","/search"})
+    public String search( Model model, String keyword) {
+
+        if(keyword!=null) {
+            List<Seance> list = service.getSeanceBynName(keyword);
+            model.addAttribute("listSeance", list);
+        }else {
+            List<Seance> list = service.getAllSeance();
+            model.addAttribute("listSeance", list);}
+        return "seanceList";
+    }*/
     @GetMapping("/addAbonnement")
     public String getAddAbonnement(Model model) {
         Abonnement abonnement = new Abonnement();

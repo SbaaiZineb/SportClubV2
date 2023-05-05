@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface MemberService {
      void addMember(Member member);
-    void addAb(Abonnement abonnement);
+
      List<Member> getMemberBynName(String name);
     void deletMember(Long id);
     Page<Member> findByMemberName(String mc, Pageable pageable);
