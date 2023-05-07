@@ -1,15 +1,11 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,12 +18,7 @@ import org.springframework.validation.annotation.Validated;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -60,7 +51,10 @@ public class MemberController {
         return "membersList";
 
     }
-
+@GetMapping("/side")
+public String getSide(){
+        return "partials/sideBar";
+}
     @RequestMapping(path = {"/membersList","/search"})
     public String search( Model model, String keyword) {
 

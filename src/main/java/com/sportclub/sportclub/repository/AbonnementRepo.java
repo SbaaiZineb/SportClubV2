@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AbonnementRepo extends JpaRepository<Abonnement,Long> {
     Page<Abonnement> findByNameAbContains(String ac, Pageable pageable);
+
+    Abonnement findByNameAb(String membershipType);
 }
