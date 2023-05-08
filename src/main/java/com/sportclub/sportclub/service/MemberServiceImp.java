@@ -27,8 +27,8 @@ AbonnementRepo abonnementRepo;
     }
 
     @Override
-    public List<Member> getMemberByMembership(String abonnement) {
-        Abonnement membership = abonnementRepo.findByNameAb(abonnement);
+    public List<Member> getMemberByMembership(Long abId) {
+        Abonnement membership = abonnementRepo.findById(abId).get();
         return memberRepository.findByAbonnement(membership);
     }
 

@@ -26,7 +26,7 @@
     position: relative;
     transition: background .15s ease-in-out;
 }*/
-.sidebar-nav[aria-current="page"]{
+.sidebar-nav[aria-current]{
     background: linear-gradient(90deg,rgba(59,125,221,.1),rgba(59,125,221,.088) 50%,transparent);
     border-left-color: #3b7ddd;
     color: #e9ecef;
@@ -35,5 +35,25 @@
     width: 38px;
     height: 38px;
     border-radius: 100%;
+}
+.table td,  .table th {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+.text-gray{
+    color: gray;
+}
+.table{
+    color: #414d60;
+}
+
+.table  th {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .80rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-top: 0;
+    color: #3f4a5b;
 }
 

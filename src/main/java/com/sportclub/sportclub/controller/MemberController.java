@@ -2,8 +2,10 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.Paiement;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
+import com.sportclub.sportclub.service.PaymentService;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -19,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -31,6 +34,8 @@ public class MemberController {
     @Autowired
     FileStorageService storageService;
 
+    @Autowired
+    PaymentService paymentService;
     @GetMapping("/membersList")
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int size,
@@ -51,9 +56,9 @@ public class MemberController {
         return "membersList";
 
     }
-@GetMapping("/side")
+@GetMapping("/login")
 public String getSide(){
-        return "partials/sideBar";
+        return "login";
 }
     @RequestMapping(path = {"/membersList","/search"})
     public String search( Model model, String keyword) {
@@ -111,8 +116,15 @@ public String getSide(){
     @PostMapping("/addMember")
     public String addMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "membersList";
+        LocalDate localDate = LocalDate.now();
+        member.setCreatedAt(localDate);
         member.setPic(file.getOriginalFilename());
         memberService.addMember(member);
+        Paiement paiement=new Paiement();
+        paiement.setStart_date(localDate);
+        paiement.setAbonnement(member.getAbonnement());
+        paiement.setMember(member);
+        paymentService.addPayement(paiement);
         storageService.save(file);
         return "redirect:/membersList";
     }

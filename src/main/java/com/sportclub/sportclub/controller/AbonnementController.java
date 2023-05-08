@@ -3,6 +3,7 @@ package com.sportclub.sportclub.controller;
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.service.AbonnementService;
+import com.sportclub.sportclub.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,10 +13,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class AbonnementController {
     @Autowired
     AbonnementService abonnementService;
+    @Autowired
+    MemberService memberService;
     @GetMapping("/abonnementList")
     public String getAbs(Model model ,@RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -27,6 +32,8 @@ public class AbonnementController {
         model.addAttribute("pages",new int[pageAb.getTotalPages()]);
         model.addAttribute("currentPage",page);
         model.addAttribute("keyword",kw);
+
+
         Abonnement abonnement = new Abonnement();
         model.addAttribute("abonnement", abonnement);
         return "abList";
@@ -43,6 +50,12 @@ public class AbonnementController {
             model.addAttribute("listSeance", list);}
         return "seanceList";
     }*/
+    @GetMapping("/getMembers")
+    public String getMembersByMembership(@RequestParam(name = "id") Long id,Model model){
+        List<Member> members=memberService.getMemberByMembership(id);
+        model.addAttribute("members",members);
+        return "abList";
+    }
     @GetMapping("/addAbonnement")
     public String getAddAbonnement(Model model) {
         Abonnement abonnement = new Abonnement();

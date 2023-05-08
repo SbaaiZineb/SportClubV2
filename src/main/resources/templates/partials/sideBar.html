@@ -86,7 +86,7 @@
 
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="ui-buttons.html">
-                        <i class="bi bi-people" data-feather="square"></i> <span class="align-middle">Groupes</span>
+                        <i data-feather="users"></i> <span class="align-middle">Groupes</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -292,20 +292,21 @@
                 </div>
             </div>
         </div> <script>
-     /*   document.querySelectorAll('.sidebar-link').forEach(link => {
+        document.querySelectorAll('.sidebar-link').forEach(link => {
 
             console.log(link.href)
 
             if(link.href === window.location.href){
                 link.setAttribute('aria-current','page')
             }
-        })*/
-        $(document).ready(function (){
+        })
+       /* $(document).ready(function (){
             $('li').on('click',function (){
                 $(this).siblings().removeClass('active');
                 $(this).addClass('active');
             })
-        })
+        })*/
+
     </script>
     </footer>
 
