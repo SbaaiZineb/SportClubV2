@@ -19,6 +19,7 @@
 @import "~bootstrap/scss/reboot";
 @import "~bootstrap/scss/type";
 @import "~bootstrap/scss/images";
+@import "~bootstrap/scss/modal";
 @import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
 @import "~bootstrap/scss/tables";
@@ -28,7 +29,7 @@
 @import "~bootstrap/scss/dropdown";
 @import "~bootstrap/scss/button-group";
 @import "~bootstrap/scss/nav";
-@import "~bootstrap/scss/navbar";
+
 @import "~bootstrap/scss/card";
 @import "~bootstrap/scss/badge";
 @import "~bootstrap/scss/list-group";
@@ -43,6 +44,7 @@
 @import "3-components/avatar";
 @import "3-components/buttons";
 @import "3-components/card";
+@import "3-components/modal";
 @import "3-components/chart";
 @import "3-components/content";
 @import "3-components/dropdown";
@@ -51,7 +53,7 @@
 @import "3-components/hamburger";
 @import "3-components/list-group";
 @import "3-components/main";
-@import "3-components/navbar";
+
 @import "3-components/reboot";
 @import "3-components/sidebar";
 @import "3-components/sizing";
@@ -64,9 +66,9 @@
 @import "4-utilities/cursors";
 
 // 3rd party plugins
-@import "~jsvectormap/dist/css/jsvectormap";
+
 @import "~simplebar/dist/simplebar";
-@import "~flatpickr/dist/flatpickr";
+
 
 // 3rd party plugin styles
 @import "5-vendor/flatpickr";

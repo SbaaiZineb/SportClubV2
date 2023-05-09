@@ -22,13 +22,13 @@
           </form>
         </div>
         <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-plus-circle"></i></button>
-        <table class="table able-centered table-hover table-responsive ">
+        <table class="table table-centered table-hover table-responsive ">
           <tr>
             <th>ID</th>
             <th>Type d'abonnement</th>
             <th>Prix</th>
             <th>Period</th>
-
+<th>Nombre des seances par Semaine</th>
             <th >Action</th>
           </tr>
           <tr th:each="ab:${listAb}">
@@ -36,13 +36,14 @@
             <td th:utext="${ab.getNameAb()}"></td>
             <td th:utext="${ab.getPrice()}"></td>
             <td th:utext="${ab.getPeriod()}"></td>
+            <td th:utext="${ab.getNbrSeance()}"></td>
 
             <td><a onclick="return confirm('Vous avez sure')" class="btn btn-danger"
                    th:href="@{/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a>
             <a th:href="@{/editAbonnement(id=${ab.id})} " class="btn btn-info "><i class="bi bi-pencil"></i></a>
-            <a th:href="@{/getMembers(id=${ab.id})} " data-toggle="modal" data-target="#listMembersModal" th:attr="data-target='#listMembersModal'+${ab.id}" class="btn btn-outline-info"><i class="bi bi-eye"></i></a>
-
-            <div class="modal fade" th:id="listMembersModal+${ab.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <a th:href="@{/getMembers(id=${ab.id})} " data-toggle="modal" data-target="#listMembersModal" class="btn btn-outline-info"><i class="bi bi-eye"></i></a>
+<!--              th:attr="data-target='#listMembersModal'+${ab.id}"-->
+              <div class="modal fade" th:id="listMembersModal+${ab.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true" >
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -89,7 +90,7 @@
           <li th:each="page,status:${pages}">
             <a
                     th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                    th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                    th:href="@{/abonnementList(page=${status.index}, keyword=${keyword})}"
                     th:text="${status.index}">
             </a>
           </li>
@@ -114,8 +115,10 @@
                     <input class="form-control" type="text"th:field="*{nameAb}" />
                     <label class="form-label">prix:</label>
                     <input class="form-control" type="text" th:field="*{price}"/>
-                    <label class="form-label">peroid:</label>
-                    <input class="form-control" type="text" th:field="*{period}"/>
+                    <label class="form-label">period:</label>
+                    <input class="form-control" type="text" id="period" name="period" th:field="*{period}"/>
+                    <label class="form-label">Nomber des seances pour semaine:</label>
+                    <input class="form-control" type="text" th:field="*{nbrSeance}"/>
 
 
 

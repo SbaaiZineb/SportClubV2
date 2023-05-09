@@ -33,7 +33,7 @@ public class Member extends User {
 
     @Override
     public String toString() {
-        return getName()+""+getLname();
+        return getName()+" "+getLname();
     }
 
     public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, List<Role> roles, String email, String password, String gender) {

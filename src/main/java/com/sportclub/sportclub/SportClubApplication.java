@@ -11,12 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+/*
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+*/
 
 @SpringBootApplication
 public class SportClubApplication  implements CommandLineRunner {
 CoachService coachService;
-@Autowired
-SeanceService seanceService;
+//@Autowired
+//SeanceService seanceService;
 @Autowired
     AbonnementService abonnementService;
     @Autowired
@@ -37,4 +42,8 @@ SeanceService seanceService;
             System.out.println("id "+member.getId()+"\nname "+member.getName());
         }
     }
+//    @Bean
+//    PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 }

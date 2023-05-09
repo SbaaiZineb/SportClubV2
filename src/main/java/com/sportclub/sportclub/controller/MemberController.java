@@ -56,10 +56,11 @@ public class MemberController {
         return "membersList";
 
     }
-@GetMapping("/login")
+@GetMapping("/log")
 public String getSide(){
         return "login";
 }
+
     @RequestMapping(path = {"/membersList","/search"})
     public String search( Model model, String keyword) {
 
@@ -135,6 +136,7 @@ public String getSide(){
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
+
     @GetMapping("/deleteMember")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page) {
         memberService.deletMember(id);

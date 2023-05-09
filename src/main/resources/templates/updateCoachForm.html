@@ -16,7 +16,7 @@
 <div class="card align-content-center">
   <div class="card-body">
     <form  th:action="@{/editCoach}"
-           method="POST">
+           method="POST" enctype="multipart/form-data">
       <div class="mb-3 mt-3">
         <label for="id" class="form-label">ID:</label>
         <label th:text="${coach.id}"></label>
@@ -42,6 +42,11 @@
 
       <label class="form-label">Password:</label>
       <input class="form-control" type="password" th:field="*{coach.password}"/>
+      <div class="mb-3 mt-3">
+        <label class="form-label">Image</label>
+        <input type="file" class="form-control "
+               id="image" accept="image/png, image/jpeg" name="file"/>
+      </div>
 
 
       <button class="btn btn-primary mt-2" type="submit">Sauvgarder</button>

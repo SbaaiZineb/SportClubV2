@@ -56,4 +56,35 @@
     border-top: 0;
     color: #3f4a5b;
 }
+.btn-login{
+    padding: .5rem 1rem;
+    font-size: 1.25rem;
+    border-radius: .3rem;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
 
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: #fff;
+    background:  #3b7ddd;
+    border-color: #3b7ddd;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #326abc;
+    --bs-btn-hover-border-color: #2f64b1;
+    --bs-btn-focus-shadow-rgb: 88,145,226;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #2f64b1;
+    --bs-btn-active-border-color: #2c5ea6;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #3b7ddd;
+    --bs-btn-disabled-border-color: #3b7ddd;
+}

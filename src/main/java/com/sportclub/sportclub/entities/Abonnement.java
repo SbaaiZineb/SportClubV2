@@ -18,11 +18,13 @@ public class Abonnement {
     private Long id;
     private String nameAb;
     private double price;
+    private int nbrSeance;
 
-    public Abonnement(String nameAb, double price, String period) {
+    public Abonnement(String nameAb, double price, String period,int nbrSeance) {
         this.nameAb = nameAb;
         this.price = price;
         this.period = period;
+        this.nbrSeance=nbrSeance;
     }
 
     private String period;

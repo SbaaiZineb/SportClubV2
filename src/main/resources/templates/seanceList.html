@@ -24,7 +24,7 @@
           </form>
         </div>
         <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-plus-circle"></i></button>
-        <table class="table table-striped ">
+        <table class="table table table-centered table-hover table-responsive ">
           <tr>
             <th>Id</th>
             <th>Seance</th>
@@ -37,7 +37,7 @@
           <tr th:each="s:${listSeance}">
             <td th:utext="${s.getId()}"></td>
             <td th:utext="${s.getClassName()}"></td>
-            <td th:utext="${s.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+            <td th:utext="${s.getStart_time()}" th:text="${#dates.format(standardDate, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:utext="${s.getEnd_time()}"></td>
 
             <td th:utext="${s.coach}" ></td>
@@ -46,7 +46,6 @@
                    th:href="@{/deleteSeance(id=${s.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
             <td><a th:href="@{/editSeance(id=${s.id})} " class="btn btn-info">
               <i class="bi bi-pencil"></i></a></td>
-            </td>
 
 
           </tr>
@@ -55,7 +54,7 @@
           <li th:each="page,status:${pages}">
             <a
                     th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                    th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                    th:href="@{/seanceList(page=${status.index}, keyword=${keyword})}"
                     th:text="${status.index}">
             </a>
           </li>

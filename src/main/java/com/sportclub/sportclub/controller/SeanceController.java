@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -40,7 +42,7 @@ public class SeanceController {
         List<Coach> coaches = coachService.getAllCoachs();
         model.addAttribute("coaches", coaches);
         model.addAttribute("coach", new Coach());
-
+        model.addAttribute("standardDate", new Date());
         Page<Seance> pageS = service.findBySeanceName(kw, PageRequest.of(page, size));
         model.addAttribute("listSeance", pageS.getContent());
         model.addAttribute("pages", new int[pageS.getTotalPages()]);

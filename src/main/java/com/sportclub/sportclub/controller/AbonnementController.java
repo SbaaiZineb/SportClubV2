@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.beans.PropertyEditorSupport;
+import java.time.Period;
 import java.util.List;
 
 @Controller
@@ -21,7 +24,22 @@ public class AbonnementController {
     AbonnementService abonnementService;
     @Autowired
     MemberService memberService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Period.class, new PeriodEditor());
+    }
+
+    private static class PeriodEditor extends PropertyEditorSupport {
+        @Override
+        public void setAsText(String text) throws IllegalArgumentException {
+            setValue(Period.parse(text));
+        }
+    }
+
+
     @GetMapping("/abonnementList")
+
     public String getAbs(Model model ,@RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
                              @RequestParam(name = "keyword",defaultValue = "") String kw
@@ -54,7 +72,7 @@ public class AbonnementController {
     public String getMembersByMembership(@RequestParam(name = "id") Long id,Model model){
         List<Member> members=memberService.getMemberByMembership(id);
         model.addAttribute("members",members);
-        return "abList";
+        return "listMembers";
     }
     @GetMapping("/addAbonnement")
     public String getAddAbonnement(Model model) {

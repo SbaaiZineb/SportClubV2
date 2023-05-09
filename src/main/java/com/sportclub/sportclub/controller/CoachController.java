@@ -107,9 +107,12 @@ public class CoachController {
     }
 
     @PostMapping("/editCoach")
-    public String editCoach(@Validated Coach c, BindingResult bindingResult){
+    public String editCoach(@Validated Coach c, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "updateCoachForm";
+        c.setPic(file.getOriginalFilename());
         coachService.updateCoach(c);
+        fileStorageService.save(file);
+
         return "redirect:/coachList";
     }
 

@@ -21,13 +21,11 @@
           </form>
         </div>
     <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
-    <table class="table table-striped ">
+    <table class="table table-centered table-hover table-responsive">
       <tr>
         <th>Id</th>
-        <th>Image</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>email</th>
+        <th>Entaineur</th>
+
         <th>adress</th>
         <th>cin</th>
         <th>dob</th>
@@ -39,10 +37,15 @@
       </tr>
       <tr th:each="m:${listCoach}">
         <td th:utext="${m.getId()}"></td>
-        <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-        <td th:utext="${m.getName()}"></td>
-        <td th:utext="${m.getLname()}"></td>
-        <td th:utext="${m.getEmail()}"></td>
+        <td>
+          <div class="d-flex align-items-center">
+            <img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}">
+            <div class="d-block px-2">
+              <span class="fw-bold" th:utext="${m.getName()}+' '+${m.getLname()}" ></span>
+              <div class="small text-gray" th:utext="${m.getEmail()}"></div>
+            </div>
+          </div>
+        </td>
         <td th:utext="${m.getAdress()}"></td>
         <td th:utext="${m.getCin()}"></td>
         <td th:utext="${m.getDob()}"></td>
@@ -63,7 +66,7 @@
       <li th:each="page,status:${pages}">
         <a
                 th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                th:href="@{/coachList(page=${status.index}, keyword=${keyword})}"
                 th:text="${status.index}">
         </a>
       </li>
@@ -106,7 +109,7 @@
               <input class="form-control" type="text" th:field="*{sport_type}"/>
               <div class="mb-3 mt-3">
                 <label class="form-label">Image</label>
-                <input type="file" class="form-control  "
+                <input type="file" class="form-control"
                        id="image" accept="image/png, image/jpeg" name="file"/>
               </div>
               <!--<label class="form-label">Gender:</label>

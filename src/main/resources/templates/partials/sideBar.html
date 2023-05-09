@@ -9,12 +9,17 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link th:href="@{css/style.css}" rel="stylesheet">
-    <link th:href="@{css/app.css}" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 
+
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" type="text/css" rel="stylesheet">
+
     <script type="module" th:src="@{/js/app.js}"></script>
+
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 </head>
@@ -71,7 +76,7 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="pages-sign-up.html">
+                    <a class="sidebar-link" th:href="@{/paymentList}">
                         <i class="bi bi-credit-card-2-back"></i><span class="align-middle">Paiement</span>
                     </a>
                 </li>
@@ -99,7 +104,7 @@
         </div>
     </nav>
 
-    <div class="main" th:fragment="navBar">
+    <div  th:fragment="navBar">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
 
             <a class="sidebar-toggle js-sidebar-toggle">
@@ -240,22 +245,20 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                            <i class="align-middle" data-feather="settings"></i>
-                        </a>
-
                         <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img src="img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Admin" /> <span class="text-dark">Admin</span>
+                            <img th:src="@{uploads/nnn.jpeg}" class="avatar img-fluid rounded me-1"   /> <span class="text-dark"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="../updateABForm.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Log out</a>
-                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form th:action="@{/logout}" type="submit" method="post">
+                                    <button class="dropdown-item" th:href="@{/logout}">Log out</button>
+                             </form>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
