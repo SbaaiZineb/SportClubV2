@@ -41,6 +41,6 @@ public class AbonnementServiceImp implements AbonnementService {
 
     @Override
     public List<Abonnement> getAllAbos() {
-        return null;
+        return abonnementRepo.findAll();
     }
 }

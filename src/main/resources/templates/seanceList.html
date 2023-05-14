@@ -1,34 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar:: header}">
+
   <title>Seance List</title>
 
-  <link rel="preconnect" th:href="@{https://fonts.gstatic.com}">
-  <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-  <link th:href="@{css/app.css}" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" th:href="@{/js/bootstrap.js}"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
 
 
 
 </head>
 <body>
-<div class="wrapper">
-  <div th:insert="~{sideBar :: sideBar}">  </div>
-  <div class="main">
-    <div th:insert="~{sideBar :: navBar}"></div>
-    <main class="content">
-      <div class="container-fluid p-0">
+<div layout:fragment="content">
+        <div class="search-field d-none d-md-block">
+          <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group">
+              <div class="input-group-prepend bg-transparent">
+                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+              </div>
+              <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                     th:value="${keyword}" placeholder="Chercher">
+            </div>
+          </form>
+        </div>
         <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-plus-circle"></i></button>
         <table class="table table-striped ">
           <tr>
@@ -40,17 +34,17 @@
 
             <th colspan="2">Action</th>
           </tr>
-          <tr th:each="m:${listSeance}">
-            <td th:utext="${m.getId()}"></td>
-            <td th:utext="${m.getClassName()}"></td>
-            <td th:utext="${m.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
-            <td th:utext="${m.getEnd_time()}"></td>
+          <tr th:each="s:${listSeance}">
+            <td th:utext="${s.getId()}"></td>
+            <td th:utext="${s.getClassName()}"></td>
+            <td th:utext="${s.getStart_time()}" th:text="${#temporals.format(standardDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+            <td th:utext="${s.getEnd_time()}"></td>
 
-            <td>test</td>
+            <td th:utext="${s.coach}" ></td>
 
             <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
-                   th:href="@{/deleteSeance(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
-            <td><a th:href="@{/editSeance(id=${m.id})} " class="btn btn-info">
+                   th:href="@{/deleteSeance(id=${s.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
+            <td><a th:href="@{/editSeance(id=${s.id})} " class="btn btn-info">
               <i class="bi bi-pencil"></i></a></td>
             </td>
 
@@ -66,15 +60,15 @@
             </a>
           </li>
         </ul>
-      </div>
+
 
       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" >
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Ajouter seance</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+              <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+
               </button>
             </div>
             <div class="modal-body">
@@ -89,8 +83,12 @@
                     <label class="form-label">Temps de fin</label>
                     <input class="form-control" type="datetime-local" th:field="*{end_time}"/>
 
+                    <label class="form-label">Entraineur</label>
 
-
+                    <select name="coach" id="coach" class="form-control mb-4">
+                      <option th:each="coach : ${coaches}" th:value="${coach.id}"
+                              th:text="${coach.name}"></option>
+                    </select>
                     <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                   </form>
 
@@ -104,8 +102,6 @@
           </div>
         </div>
       </div>
-    </main>
-    <div th:insert="~{sideBar :: footer}">  </div>
-  </div></div>
+</div>
 </body>
 </html>

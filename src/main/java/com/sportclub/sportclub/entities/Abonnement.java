@@ -29,4 +29,11 @@ public class Abonnement {
     @OneToMany(mappedBy = "abonnement",fetch = FetchType.EAGER)
     private List<Member> members;
 
+
+
+
+    @Override
+    public String toString() {
+        return nameAb;
+    }
 }
