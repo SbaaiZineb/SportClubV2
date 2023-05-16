@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Page<Member> findByNameContains(String mc, Pageable pageable);
-    List<Member> findByName(String s);
+    List<Member> findByNameContains(String s);
     List<Member> findByAbonnement(Abonnement membership);
 }

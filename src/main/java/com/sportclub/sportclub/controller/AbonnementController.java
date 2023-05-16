@@ -19,26 +19,17 @@ import java.time.Period;
 import java.util.List;
 
 @Controller
+@RequestMapping("/abonnementList")
 public class AbonnementController {
     @Autowired
     AbonnementService abonnementService;
     @Autowired
     MemberService memberService;
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Period.class, new PeriodEditor());
-    }
-
-    private static class PeriodEditor extends PropertyEditorSupport {
-        @Override
-        public void setAsText(String text) throws IllegalArgumentException {
-            setValue(Period.parse(text));
-        }
-    }
 
 
-    @GetMapping("/abonnementList")
+
+    @GetMapping("")
 
     public String getAbs(Model model ,@RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -72,7 +63,7 @@ public class AbonnementController {
     public String getMembersByMembership(@RequestParam(name = "id") Long id,Model model){
         List<Member> members=memberService.getMemberByMembership(id);
         model.addAttribute("members",members);
-        return "listMembers";
+        return "MListByAb";
     }
     @GetMapping("/addAbonnement")
     public String getAddAbonnement(Model model) {
@@ -91,6 +82,10 @@ public class AbonnementController {
 
     @GetMapping("/deleteAbonnement")
     public String deleteAB(@RequestParam(name = "id") Long id,String keyword, int page){
+        /*List<Member> members=memberService.getMemberByMembership(id);
+        for (Member member:members) {
+            member.setAbonnement(null);
+        }*/
         abonnementService.deleteAbonnement(id);
         return "redirect:/abonnementList?page="+page+"&keyword="+keyword;
     }
@@ -99,25 +94,14 @@ public class AbonnementController {
     public String editAb(@RequestParam(name = "id") Long id, Model model){
         Abonnement ab=abonnementService.getAboById(id);
         model.addAttribute("abonnement",ab);
-        return "updateABForm";
+        return "EditAbModal";
     }
 
     @PostMapping("/editAbonnement")
     public String editAb(@Validated Abonnement ab, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "updateABForm";
+        if(bindingResult.hasErrors()) return "EditAbModal";
         abonnementService.updateAbonnement(ab);
         return "redirect:/abonnementList";
     }
- /*@RequestMapping(value = {"/addAbonnement"}, method = RequestMethod.POST)
-    public String saveAbonnement(Model model,
-                                 @ModelAttribute("abonnement") Abonnement abonnement) {
-        String type_ab = abonnement.getNameAb();
-        double price = abonnement.getPrice();
-        String period = abonnement.getPeriod();
 
-        Abonnement newAb = new Abonnement(type_ab, price, period);
-        abonnementService.addAb(newAb);
-        return "redirect:/addAbonnement";
-
-    }*/
 }

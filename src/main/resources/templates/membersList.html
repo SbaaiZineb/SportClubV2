@@ -6,128 +6,149 @@
 
 </head>
 <body>
- <div layout:fragment="content">
-                <div class="search-field d-none d-md-block">
-                    <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-                        <div class="input-group">
-                            <div class="input-group-prepend bg-transparent">
-                                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-                            </div>
-                            <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                                   th:value="${keyword}" placeholder="Chercher">
-                        </div>
-                    </form>
+<div layout:fragment="content">
+    <div class="search-field d-none d-md-block">
+        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group">
+                <div class="input-group-prepend bg-transparent">
+                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
-                <button  class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal"
-                        data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
+                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                       th:value="${keyword}" placeholder="Chercher">
+            </div>
+        </form>
+    </div>
+    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary "><i data-feather="printer"></i></a>
+    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal"
+            data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
 
-                <table class="table table-centered table-hover table-responsive">
-                    <tr>
-                        <th>Id</th>
-                        <th>User</th>
-                        <th>address</th>
-                        <th>cin</th>
-                        <th>dob</th>
-                        <th>tele</th>
-                        <th>Gender</th>
-                        <th>password</th>
-                        <th>Abonnement</th>
-                        <th colspan="2">Action</th>
-                    </tr>
-                    <tr th:each="m:${listMember}">
-                        <td th:utext="${m.getId()}"></td>
-                        <td>
-                        <div class="d-flex align-items-center">
-                            <img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}">
-                            <div class="d-block px-2">
-                                <span class="fw-bold" th:utext="${m.getName()}+' '+${m.getLname()}" ></span>
-                                <div class="small text-gray" th:utext="${m.getEmail()}"></div>
-                            </div>
-                        </div>
-                        </td>
+    <table class="table table-centered table-hover table-responsive">
+        <tr>
+            <th>Id</th>
+            <th>User</th>
+            <th>address</th>
+            <th>cin</th>
+            <th>dob</th>
+            <th>tele</th>
+            <th>Gender</th>
+            <th>password</th>
+            <th>Abonnement</th>
+            <th colspan="2">Action</th>
+        </tr>
+        <tr th:each="m:${listMember}">
+            <td th:utext="${m.getId()}"></td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                    <div class="d-block px-2">
+                        <span class="fw-bold" th:utext="${m.getName()}+' '+${m.getLname()}"></span>
+                        <div class="small text-gray" th:utext="${m.getEmail()}"></div>
+                    </div>
+                </div>
+            </td>
 
-                        <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-                        <td th:utext="${m.getName()}"></td>
-                        <td th:utext="${m.getLname()}"></td>
-                        <td th:utext="${m.getEmail()}"></td>-->
-                        <td th:utext="${m.getAdress()}"></td>
-                        <td th:utext="${m.getCin()}"></td>
-                        <td th:utext="${m.getDob()}"></td>
-                        <td th:utext="${m.getTele()}"></td>
-                        <td th:utext="${m.getGender()}"></td>
-                        <td th:utext="${m.getPassword()}"></td>
-                        <td th:utext="${m.abonnement}"></td>
-                        <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
-                               th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
-                                class="bi bi-trash"></i></a></td>
-                        <td><a th:href="@{/editMember(id=${m.id})} " class="btn btn-info">
-                            <i class="bi bi-pencil"></i></a></td>
-                        </td>
+            <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+            <td th:utext="${m.getName()}"></td>
+            <td th:utext="${m.getLname()}"></td>
+            <td th:utext="${m.getEmail()}"></td>-->
 
-
-                    </tr>
-                </table>
-                <ul class="nav nav-pills">
-                    <li th:each="page,status:${pages}">
-                        <a
-                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                                th:href="@{/membersList(page=${status.index}, keyword=${keyword})}"
-                                th:text="${status.index}">
-                        </a>
-                    </li>
-                </ul>
+            <td th:utext="${m.getAdress()}"></td>
+            <td th:utext="${m.getCin()}"></td>
+            <td th:utext="${m.getDob()}"></td>
+            <td th:utext="${m.getTele()}"></td>
+            <td th:utext="${m.getGender()}"></td>
+            <td th:utext="${m.getPassword()}"></td>
+            <td th:utext="${m.abonnement}"></td>
+            <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-warning"
+                   th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
+                    class="bi bi-trash"></i></a></td>
+            <td><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn">
+                <i class="bi bi-pencil"></i></a></td>
+            </td>
 
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add member</h5>
-                            <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+        </tr>
+    </table>
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}" >
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{/membersList(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
 
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card align-content-center">
-                                <div class="card-body">
-                                    <form th:action="@{/addMember}"
-                                          th:object="${MemberForm}" method="POST" enctype="multipart/form-data">
-                                        <!--              <label class="form-label">Image:</label>-->
-                                        <!--              <input type="file" name="pic" accept="image/*"><br>-->
-                                        <label class="form-label">Nom:</label>
-                                        <input class="form-control" type="text" th:field="*{name}"/>
-                                        <label class="form-label">Prenom:</label>
-                                        <input class="form-control" type="text" th:field="*{lname}"/>
-                                        <label class="form-label">email:</label>
-                                        <input class="form-control" type="text" th:field="*{email}"/>
-                                        <label class="form-label">adress:</label>
-                                        <input class="form-control" type="text" th:field="*{adress}"/>
-                                        <label class="form-label">cin:</label>
-                                        <input class="form-control" type="text" th:field="*{cin}"/>
-                                        <label class="form-label">dob:</label>
-                                        <input class="form-control" type="date" th:field="*{dob}"/>
-                                        <label class="form-label">tele:</label>
-                                        <input class="form-control" type="number" th:field="*{tele}"/>
+<!--Add Member Modal-->
+    <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Add member</h3>
+                    <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
 
-                                        <label class="form-label">Password:</label>
-                                        <input class="form-control" type="password" th:field="*{password}"/>
-                                        <label class="form-label">Confirm password:</label>
-                                        <input class="form-control" type="password"/>
-                                        <label class="form-label">Abonnement</label>
-                                        <select name="abonnement" id="abonnement" class="form-control mb-3">
-                                            <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
-                                                    th:text="${abonnement.nameAb}"></option>
-                                        </select>
-
-                                        <div class="mb-3 mt-3">
-                                            <label class="form-label">Image</label>
-                                            <input type="file" class="form-control  "
-                                                   id="image" accept="image/png, image/jpeg" name="file"/>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card align-content-center">
+                        <div class="card-body">
+                            <form th:action="@{/addMember}"
+                                  th:object="${memberForm}" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Nom:</label>
+                                            <input class="form-control" type="text"th:field="*{name}" />
                                         </div>
-                                        <label class="form-label">Gender:</label>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Prénom:</label>
+                                            <input class="form-control" type="text" th:field="*{lname}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">email:</label>
+                                            <input class="form-control" type="text" th:field="*{email}"/>
+                                        </div></div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">tele:</label>
+                                            <input class="form-control" type="number" th:field="*{tele}"/>
 
-                                        <div class="form-check">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">cin:</label>
+                                            <input class="form-control" type="text" th:field="*{cin}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">dob:</label>
+                                            <input class="form-control" type="date" th:field="*{dob}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                        <div class="form-outline">
+                                            <label class="form-label">adress:</label>
+                                            <input class="form-control" type="text" th:field="*{adress}"/>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                                        <h6 class="form-label mb-0 me-4 mt-3">Gender:</h6>
+
+                                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
 
                                             <input class="form-check-input" type="radio" name="flexRadioDefault"
                                                    value="female" id="flexRadioDefault1" th:field="*{gender}">
@@ -135,27 +156,94 @@
                                                 Female
                                             </label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
                                             <input class="form-check-input" type="radio" name="flexRadioDefault"
                                                    value="male" id="flexRadioDefault2" th:field="*{gender}" checked>
                                             <label class="form-check-label" for="flexRadioDefault2">
                                                 Male
                                             </label>
                                         </div>
-
-                                        <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
-                                    </form>
-
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Password:</label>
+                                            <input class="form-control" type="password" th:field="*{password}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Confirm password:</label>
+                                            <input class="form-control" type="password"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <label class="form-label">Abonnement</label>
+                                <select name="abonnement" id="abonnement" class="form-control mb-3">
+                                    <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
+                                            th:text="${abonnement.nameAb}"></option>
+                                </select>
+
+                                <div class="mb-3 mt-3">
+                                    <label class="form-label">Image</label>
+                                    <input type="file" class="form-control  "
+                                           id="image" accept="image/png, image/jpeg" name="file"/>
+                                </div>
+
+
+                                <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
+                            </form>
 
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+                </div>
             </div>
- </div>
+        </div>
+    </div>
+    <!-- Edit Member Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="editModallabel">Edit Adhérent</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+
+        $('#editModal').on('show.bs.modal', function () {
+
+            $(".eBtn").click(function () {
+                var id = $(this).attr('id');
+                $.get("/editMember?id=" + id, function (data) {
+                    $('#editModal').find('.modal-body').html(data);
+                })
+            })
+        })
+    </script>
+
+
+</div>
 </body>
 </html>

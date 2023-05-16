@@ -1,12 +1,9 @@
 package com.sportclub.sportclub.controller;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Coach;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Role;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.service.CoachService;
+import com.sportclub.sportclub.service.SeanceService;
 import com.sportclub.sportclub.tools.FileStorageService;
-import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,17 +14,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
+@RequestMapping("/coachList")
 public class CoachController {
     @Autowired
     CoachService coachService;
     @Autowired
+    SeanceService seanceService;
+    @Autowired
     FileStorageService fileStorageService;
 
-    @GetMapping("/coachList")
+    @GetMapping("")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
                              @RequestParam(name = "keyword",defaultValue = "") String kw
@@ -95,6 +94,10 @@ public class CoachController {
     }*/
     @GetMapping("/deleteCoach")
     public String deleteCoach(@RequestParam(name = "id") Long id,String keyword, int page){
+        List<Seance> seances=seanceService.getSeanceByCoach(id);
+        for (Seance seance:seances) {
+            seance.setCoach(null);
+        }
         coachService.deleteCoach(id);
         return "redirect:/coachList?page="+page+"&keyword="+keyword;
     }
@@ -103,12 +106,12 @@ public class CoachController {
     public String editCoach(@RequestParam(name = "id") Long id, Model model){
         Coach coach=coachService.getCoachById(id);
         model.addAttribute("coach",coach);
-        return "updateCoachForm";
+        return "updateCoachModal";
     }
 
     @PostMapping("/editCoach")
     public String editCoach(@Validated Coach c, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "updateCoachForm";
+        if(bindingResult.hasErrors()) return "updateCoachModal";
         c.setPic(file.getOriginalFilename());
         coachService.updateCoach(c);
         fileStorageService.save(file);

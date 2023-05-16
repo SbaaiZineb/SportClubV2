@@ -28,8 +28,10 @@
           <tr>
             <th>Id</th>
             <th>Seance</th>
+            <th>Date de debut</th>
             <th>Temps de debut</th>
             <th>Temps de fin</th>
+            <th>Nombres des semains </th>
             <th>Entraineur</th>
 
             <th colspan="2">Action</th>
@@ -37,14 +39,17 @@
           <tr th:each="s:${listSeance}">
             <td th:utext="${s.getId()}"></td>
             <td th:utext="${s.getClassName()}"></td>
-            <td th:utext="${s.getStart_time()}" th:text="${#dates.format(standardDate, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:utext="${s.getEnd_time()}"></td>
+            <td class="fw-bold" th:utext="${s.getStartDate()}" ></td>
+            <td th:utext="${s.getStartTime()}"></td>
+
+            <td th:utext="${s.getEndTime()}"></td>
+            <td th:utext="${s.getNumWeeks()}"></td>
 
             <td th:utext="${s.coach}" ></td>
 
-            <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
+            <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-warning"
                    th:href="@{/deleteSeance(id=${s.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
-            <td><a th:href="@{/editSeance(id=${s.id})} " class="btn btn-info">
+            <td><a data-th-id="${s.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn">
               <i class="bi bi-pencil"></i></a></td>
 
 
@@ -53,7 +58,7 @@
         <ul class="nav nav-pills">
           <li th:each="page,status:${pages}">
             <a
-                    th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
                     th:href="@{/seanceList(page=${status.index}, keyword=${keyword})}"
                     th:text="${status.index}">
             </a>
@@ -65,7 +70,7 @@
         <div class="modal-dialog modal-dialog-centered" >
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Ajouter seance</h5>
+              <h3 class="modal-title" id="exampleModalLabel">Ajouter seance</h3>
               <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
 
               </button>
@@ -75,14 +80,30 @@
                 <div class="card-body">
                   <form  th:action="@{/addSeance}"
                          th:object="${seance}" method="POST">
-                    <label class="form-label">Seance:</label>
+                    <label class="form-label ">Seance :</label>
                     <input class="form-control" type="text"th:field="*{className}" />
-                    <label class="form-label">Temps de debut</label>
-                    <input class="form-control" type="datetime-local" th:field="*{start_time}"/>
-                    <label class="form-label">Temps de fin</label>
-                    <input class="form-control" type="datetime-local" th:field="*{end_time}"/>
+                    <label class="form-label mt-2">Date de debut :</label>
+                    <input class="form-control " type="date" th:field="*{startDate}"/>
 
-                    <label class="form-label">Entraineur</label>
+                    <div class="row mt-2">
+                      <div class="col-md-6 mb-2">
+                        <div class="form-outline">
+                          <label class="form-label mt-2">Temps de debut :</label>
+                          <input class="form-control" type="time" th:field="*{startTime}"/>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-2">
+                        <div class="form-outline">
+                          <label class="form-label mt-2">Temps de fin :</label>
+                          <input class="form-control" type="time" th:field="*{endTime}"/>
+                        </div>
+                      </div>
+                    </div>
+
+                    <label class="form-label mt-2">Nombre des semains :</label>
+                    <input class="form-control" type="number" th:field="*{numWeeks}"/>
+
+                    <label class="form-label mt-2">Entraineur :</label>
 
                     <select name="coach" id="coach" class="form-control mb-4">
                       <option th:each="coach : ${coaches}" th:value="${coach.id}"
@@ -101,6 +122,43 @@
           </div>
         </div>
       </div>
+
+  <!-- Edit Seance Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="editModallabel">Edit Seance</h3>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery library -->
+  <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+  <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+  <script>
+
+    $('#editModal').on('show.bs.modal', function () {
+
+      $(".eBtn").click(function () {
+        var id = $(this).attr('id');
+        $.get("/editSeance?id=" + id, function (data) {
+          $('#editModal').find('.modal-body').html(data);
+        })
+      })
+    })
+  </script>
+
 </div>
 </body>
 </html>

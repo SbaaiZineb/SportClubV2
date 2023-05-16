@@ -35,7 +35,7 @@ AbonnementRepo abonnementRepo;
 
     @Override
     public List<Member> getMemberBynName(String name) {
-        return memberRepository.findByName(name);
+        return memberRepository.findByNameContains(name);
     }
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {

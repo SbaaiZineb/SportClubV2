@@ -1,14 +1,17 @@
 package com.sportclub.sportclub.service;
 
+import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Seance;
+import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.repository.SeanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -16,6 +19,19 @@ import java.util.List;
 public class SeanceServiceImp implements SeanceService {
     @Autowired
     SeanceRepo seanceRepo;
+    @Autowired
+    CoachRepository coachRepository;
+    @Override
+    public List<Seance> getSeanceByCoach(Long abId) {
+        Coach coach = coachRepository.findById(abId).get();
+        return seanceRepo.findByCoach(coach);
+    }
+
+    @Override
+    public List<Seance> getSeanceByStartDate(LocalDate date) {
+
+        return seanceRepo.findByStartDate(date);
+    }
 
     @Override
     public void addSeance(Seance seance) {

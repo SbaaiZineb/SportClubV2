@@ -1,5 +1,4 @@
 package com.sportclub.sportclub.security;
-/*
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +9,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;*/
+import org.springframework.security.web.SecurityFilterChain;
 
-/*@Configuration
+@Configuration
 @EnableWebSecurity
-@EnableMethodSecurity*/
+@EnableMethodSecurity
 public class SecurityConfig {
-   /* @Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Bean
@@ -34,7 +33,7 @@ public class SecurityConfig {
 
         httpSecurity.formLogin().loginPage("/login").permitAll();
 
-        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/webjars/**","/js/**","/uploads/**","/favicon.ico").permitAll()
+        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico").permitAll()
                 .anyRequest().authenticated();
 
 
@@ -46,5 +45,4 @@ public class SecurityConfig {
         httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
         return httpSecurity.build();
     }
-*/
 }

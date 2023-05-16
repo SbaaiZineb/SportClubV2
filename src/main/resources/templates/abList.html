@@ -3,137 +3,182 @@
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar :: header}">
 
-  <title>List des Abonnement</title>
+    <title>List des Abonnement</title>
 
 
 </head>
 <body>
 
 <div layout:fragment="content">
-        <div class="search-field d-none d-md-block">
-          <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+    <div class="search-field d-none d-md-block">
+        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group">
-              <div class="input-group-prepend bg-transparent">
-                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-              </div>
-              <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                     th:value="${keyword}" placeholder="Chercher">
+                <div class="input-group-prepend bg-transparent">
+                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+                </div>
+                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                       th:value="${keyword}" placeholder="Chercher">
             </div>
-          </form>
-        </div>
-        <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-plus-circle"></i></button>
-        <table class="table table-centered table-hover table-responsive ">
-          <tr>
+        </form>
+    </div>
+    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i
+            class="bi bi-plus-circle"></i></button>
+    <table class="table table-centered table-hover table-responsive ">
+        <tr>
             <th>ID</th>
             <th>Type d'abonnement</th>
             <th>Prix</th>
             <th>Period</th>
-<th>Nombre des seances par Semaine</th>
-            <th >Action</th>
-          </tr>
-          <tr th:each="ab:${listAb}">
+            <th>Nombre des seances par Semaine</th>
+            <th>Action</th>
+        </tr>
+        <tr th:each="ab:${listAb}">
             <td th:utext="${ab.getId()}"></td>
             <td th:utext="${ab.getNameAb()}"></td>
-            <td th:utext="${ab.getPrice()}"></td>
-            <td th:utext="${ab.getPeriod()}"></td>
+            <td th:utext="${ab.getPrice()}+' DH'"></td>
+            <td th:utext="${ab.getPeriod()}+' mois'"></td>
             <td th:utext="${ab.getNbrSeance()}"></td>
 
-            <td><a onclick="return confirm('Vous avez sure')" class="btn btn-danger"
-                   th:href="@{/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a>
-            <a th:href="@{/editAbonnement(id=${ab.id})} " class="btn btn-info "><i class="bi bi-pencil"></i></a>
-            <a th:href="@{/getMembers(id=${ab.id})} " data-toggle="modal" data-target="#listMembersModal" class="btn btn-outline-info"><i class="bi bi-eye"></i></a>
-<!--              th:attr="data-target='#listMembersModal'+${ab.id}"-->
-              <div class="modal fade" th:id="listMembersModal+${ab.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true" >
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabe">members</h5>
+            <td><a onclick="return confirm('Vous avez sure')" class="btn btn-warning"
+                   th:href="@{abonnementList/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
+                    class="bi bi-trash "></i></a>
+                <button data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn"><i
+                        class="bi bi-pencil"></i></button>
+                <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal"
+                   class="btn btn-outline-info LBtn"><i class="bi bi-eye"></i></a>
+
+            </td>
+        </tr>
+    </table>
+
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}">
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{abonnementList/abonnementList(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
+
+<!-- Add Membership modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Ajouter abonnement</h3>
                     <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
 
                     </button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="card align-content-center">
-                      <div class="card-body">
-                        <table class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded">
-                          <tr>
-                            <th>Id</th>
-                            <th>Image</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-
-                          </tr>
-                          <tr th:each="m:${members}">
-                            <td th:utext="${m.getId()()}"></td>
-                            <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-                            <td th:utext="${m.getName()}"></td>
-                            <td th:utext="${m.getLname()}"></td>
-
-
-                          </tr>
-                        </table>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div></td>
-          </tr>
-        </table>
+                <div class="modal-body">
+                    <div class="card align-content-center">
+                        <div class="card-body">
+                            <form th:action="@{abonnementList/addAbonnement}"
+                                  th:object="${abonnement}" method="POST">
+                                <label class="form-label">Nom d'abonnement:</label>
+                                <input class="form-control" type="text" th:field="*{nameAb}"/>
+                                <label class="form-label mt-3">prix:</label>
+                                <input class="form-control" type="text" th:field="*{price}"/>
+                                <label class="form-label mt-3">period:</label>
+                                <select th:field="*{period}" class="form-control mb-1">
 
-        <ul class="nav nav-pills">
-          <li th:each="page,status:${pages}">
-            <a
-                    th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                    th:href="@{/abonnementList(page=${status.index}, keyword=${keyword})}"
-                    th:text="${status.index}">
-            </a>
-          </li>
-        </ul>
+                                    <option value="1">1 mois</option>
+                                    <option value="2">2 mois</option>
+                                    <option value="3">3 mois</option>
+                                    <option value="6">6 mois</option>
+                                    <option value="12">12 mois</option>
+                                </select>
+
+                                <label class="form-label mt-2">Nomber des seances pour semaine:</label>
+                                <input class="form-control" type="text" th:field="*{nbrSeance}"/>
 
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Ajouter abonnement</h5>
-              <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+                                <input class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
 
-              </button>
+                </div>
             </div>
-            <div class="modal-body">
-              <div class="card align-content-center">
-                <div class="card-body">
-                  <form  th:action="@{/addAbonnement}"
-                         th:object="${abonnement}" method="POST">
-                    <label class="form-label">type:</label>
-                    <input class="form-control" type="text"th:field="*{nameAb}" />
-                    <label class="form-label">prix:</label>
-                    <input class="form-control" type="text" th:field="*{price}"/>
-                    <label class="form-label">period:</label>
-                    <input class="form-control" type="text" id="period" name="period" th:field="*{period}"/>
-                    <label class="form-label">Nomber des seances pour semaine:</label>
-                    <input class="form-control" type="text" th:field="*{nbrSeance}"/>
-
-
-
-                    <input  class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
-                  </form></div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
+<!-- Edit Membership Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModallabel">Edit abonnement</h5>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Membership Modal -->
+    <div class="modal fade" id="MListModal" tabindex="-1" role="dialog" aria-labelledby="MListModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="MListModallabel">List des Adhérents</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+
+        $('#editModal').on('show.bs.modal', function () {
+
+            $(".eBtn").click(function () {
+                var id = $(this).attr('id');
+
+                $.get("/abonnementList/editAbonnement?id=" + id, function (data) {
+                    $('#editModal').find('.modal-body').html(data);
+                })
+            })
+        })
+        $('#MListModal').on('show.bs.modal', function () {
+
+            $(".LBtn").click(function (){
+                var id=$(this).attr('id');
+
+                $.get("/abonnementList/getMembers?id=" + id, function (data) {
+                    $('#MListModal').find('.modal-body').html(data);
+                })
+            })
+
+
+        })
+    </script>
 </div>
+
 
 </body>
 </html>

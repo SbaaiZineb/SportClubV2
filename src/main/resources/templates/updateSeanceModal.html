@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Seance</title>
+
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form th:action="@{/editSeance}"
+              method="POST">
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${seance.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${seance.id}">
+            </div>
+            <label class="form-label">Seance:</label>
+            <input class="form-control" type="text" th:field="*{seance.className}"/>
+            <span class="text-danger" th:errors="${seance.className}" th:value="${seance.className}"></span>
+            <label class="form-label mt-3">Temps de debut:</label>
+            <input class="form-control" type="date" th:field="*{seance.startDate}"/>
+            <div class="row mt-2">
+                <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label mt-2">Temps de debut :</label>
+                        <input class="form-control" type="time" th:field="*{seance.startTime}"/>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label mt-2">Temps de fin :</label>
+                        <input class="form-control" type="time" th:field="*{seance.endTime}"/>
+                    </div>
+                </div>
+            </div>
+            <label class="form-label mt-3">Nombres des semains:</label>
+            <input class="form-control" type="number" th:field="*{seance.numWeeks}"/>
+
+            <label class="form-label mt-2">Entraineur :</label>
+
+            <select name="coach" id="coach" class="form-control mb-4">
+                <option th:each="coach : ${coaches}" th:value="${coach.id}" th:field="${seance.coach}"
+                        th:text="${coach.name}"></option>
+            </select>
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarder</button>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

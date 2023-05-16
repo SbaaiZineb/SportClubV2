@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar  :: header}">
+    <meta charset="UTF-8">
+    <title>Enregistrement</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card" onclick="myFunction()" >
+                <div class="card-body">
+                    <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Session d'aujourd'hui </h3>
+
+                    <div th:each="s:${TodaySession}" >
+
+
+                        <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
+
+                            <div class="card-body " style="padding: 9px;">
+                                <div class="media d-flex">
+                                    <div class="media-body text-left ">
+
+                                        <p class="text-info  fw-bold pp" th:if="${s.getStartTime() gt currentTime}">A venir</p>
+                                        <p class="text-danger fw-bold pf" th:if="${s.getEndTime() lt currentTime}">Fini</p>
+                                        <p class="text-success fw-bold pc" th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">En cours</p>
+                                        <h4 class="fw-bold mt-1 " style="color: #3e6fb0"
+                                            th:utext="${s.getStartTime()}+'-'+${s.getEndTime()}"></h4>
+                                        <span class="fw-bold" style="color: #3a4456"
+                                              th:utext="${s.getClassName()}"></span>
+                                        <div class="small text-gray " th:utext="${s.getCoach()}"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Dernière enregistrement</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function myFunction() {
+            // Your code here
+            alert("Div clicked!");
+        }
+    </script>
+</div>
+</body>
+</html>

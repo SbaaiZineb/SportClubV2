@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head th:insert="~{partials/sideBar:: header}">
+  <meta charset="UTF-8">
+  <title>Edit Coach</title>
+
+</head>
+<body>
+<div class="card align-content-center">
+  <div class="card-body">
+    <form  th:action="@{/editCoach}"
+           method="POST" enctype="multipart/form-data">
+      <div class="mb-3 mt-3">
+        <label for="id" class="form-label">ID:</label>
+        <label th:text="${coach.id}"></label>
+        <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${coach.id}">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            <label class="form-label">Nom:</label>
+            <input class="form-control" type="text"th:field="*{coach.name}" />
+            <span class="text-danger" th:errors="${coach.name}" th:value="${coach.name}"></span>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            <label class="form-label">Prenom:</label>
+            <input class="form-control" type="text" th:field="*{coach.lname}"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+
+            <label class="form-label">email:</label>
+            <input class="form-control" type="text" th:field="*{coach.email}"/>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            <label class="form-label">tele:</label>
+            <input class="form-control" type="number" th:field="*{coach.tele}"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            <label class="form-label">cin:</label>
+            <input class="form-control" type="text" th:field="*{coach.cin}"/>
+
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            <label class="form-label">adress:</label>
+            <input class="form-control" type="text" th:field="*{coach.adress}"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+
+            <label class="form-label">Date de naissance:</label>
+            <input class="form-control" type="date" th:field="*{coach.dob}"/>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+
+            <label class="form-label">Type de sport:</label>
+            <input class="form-control" type="text" th:field="*{coach.sport_type}"/>
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+
+
+            <label class="form-label">Mot de pass:</label>
+            <input class="form-control" type="password" th:field="*{coach.password}"/>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+
+            <label class="form-label">Confirmer mot de pass:</label>
+            <input class="form-control" type="password" />
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 mt-3">
+        <label class="form-label">Image</label>
+        <input type="file" class="form-control "
+               id="image" accept="image/png, image/jpeg" name="file"/>
+      </div>
+
+
+      <button class="btn btn-primary mt-2" type="submit">Sauvgarder</button>
+    </form>
+
+  </div></div>
+</body>
+</html>

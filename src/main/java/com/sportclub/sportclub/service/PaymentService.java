@@ -10,7 +10,7 @@ import java.util.List;
 public interface PaymentService {
     void addPayement(Paiement paiement);
 
-
+Paiement findByMember(Long id);
     void deletePayment(Long id);
 
     Paiement getPaymentById(Long id);

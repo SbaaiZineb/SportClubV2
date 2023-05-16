@@ -42,8 +42,8 @@ public class Member extends User {
     }
     @Temporal(value = TemporalType.DATE)
 private LocalDate createdAt;
-    @OneToOne
-    private Paiement paiement;
+    @OneToMany(mappedBy = "member",  fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+    private List<Paiement> paiement;
     @ManyToMany
     private List<Groupe> groupes;
     @ManyToMany
@@ -51,4 +51,6 @@ private LocalDate createdAt;
     @ManyToOne
     @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
+    @OneToMany(mappedBy = "member")
+    private List<CheckIn> checkIn;
 }
