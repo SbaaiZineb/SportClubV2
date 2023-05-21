@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface PaymentRepo extends JpaRepository<Paiement,Long> {
 Paiement findByMember(Member member);
+List<Paiement> findPaiementByMember(Member member);
 }

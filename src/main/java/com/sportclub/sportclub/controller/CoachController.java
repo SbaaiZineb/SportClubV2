@@ -41,6 +41,23 @@ public class CoachController {
         return "coachList";
 
     }
+    @PostMapping("/deleteCoachs")
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+        // Perform the delete operation using the selected cell IDs
+
+        for (Long cellId : selectedCells) {
+
+
+            List<Seance> seances=seanceService.getSeanceByCoach(cellId);
+            for (Seance seance:seances) {
+                seance.setCoach(null);
+            }
+            coachService.deleteCoach(cellId);
+        }
+
+        // Redirect to a success page or return a response as needed
+        return "redirect:/membersList";
+    }
 
     /* @RequestMapping(path = {"/coachList","/search"})
     public String search( Model model, String keyword) {

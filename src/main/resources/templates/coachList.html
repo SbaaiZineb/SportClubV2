@@ -20,22 +20,32 @@
             </div>
           </form>
         </div>
+
     <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
+  <form th:action="@{/deleteCoachs}" method="post">
+    <button class=" float-start mb-3 btn btn-danger " type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash"></i></button>
+
     <table class="table table-centered table-hover table-responsive">
       <tr>
+        <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+
         <th>Id</th>
         <th>Entaineur</th>
 
-        <th>adress</th>
-        <th>cin</th>
-        <th>dob</th>
-        <th>tele</th>
+        <th>Adresse</th>
+        <th>Cin</th>
+        <th>Date de naissance</th>
+        <th>Tele</th>
         <th>type de sport</th>
-        <th>password</th>
+
 
         <th colspan="2">Action</th>
       </tr>
       <tr th:each="m:${listCoach}">
+        <td>
+          <input type="checkbox" name="selectedCells" data-target="requests-all"
+                 th:value="${m.id}" />
+        </td>
         <td th:utext="${m.getId()}"></td>
         <td>
           <div class="d-flex align-items-center">
@@ -51,7 +61,7 @@
         <td th:utext="${m.getDob()}"></td>
         <td th:utext="${m.getTele()}"></td>
         <td th:utext="${m.getSport_type()}"></td>
-        <td th:utext="${m.getPassword()}"></td>
+
 
         <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-warning"
                th:href="@{coachList/deleteCoach(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
@@ -61,7 +71,7 @@
 
 
       </tr>
-    </table>
+    </table></form>
     <ul class="nav nav-pills">
       <li th:each="page,status:${pages}">
         <a
@@ -95,7 +105,7 @@
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                  <label class="form-label">Prenom:</label>
+                  <label class="form-label">Prénom:</label>
                   <input class="form-control" type="text" th:field="*{lname}"/>
                   </div>
                 </div>
@@ -103,12 +113,12 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                 <div class="form-outline">
-                  <label class="form-label">email:</label>
+                  <label class="form-label">Email:</label>
                   <input class="form-control" type="text" th:field="*{email}"/>
                 </div></div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">adress:</label>
+                    <label class="form-label">Adresse:</label>
                     <input class="form-control" type="text" th:field="*{adress}"/>
                   </div>
                 </div>
@@ -116,13 +126,13 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">cin:</label>
+                    <label class="form-label">Cin:</label>
                     <input class="form-control" type="text" th:field="*{cin}"/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">dob:</label>
+                    <label class="form-label">Date de naissance:</label>
                     <input class="form-control" type="date" th:field="*{dob}"/>
                   </div>
                 </div>
@@ -130,13 +140,13 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">tele:</label>
+                    <label class="form-label">Tele:</label>
                     <input class="form-control" type="number" th:field="*{tele}"/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label" >type de sport:</label>
+                    <label class="form-label" >Type de sport:</label>
                     <input class="form-control" type="text" th:field="*{sport_type}"/>
                   </div>
                 </div>
@@ -144,13 +154,13 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Password:</label>
+                    <label class="form-label">Mot de pass:</label>
                     <input class="form-control" type="password" th:field="*{password}"/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Confirm password:</label>
+                    <label class="form-label">Confirm Mot de pass:</label>
                     <input class="form-control" type="password"/>
                   </div>
                 </div>

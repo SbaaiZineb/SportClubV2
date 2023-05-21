@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,5 +25,6 @@ public class CheckIn {
     @JoinColumn(name = "session_id")
     private Seance session;
 
-
+private LocalDate checkinDate;
+private LocalTime checkinTime;
 }

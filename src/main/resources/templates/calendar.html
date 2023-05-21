@@ -1,10 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<!DOCTYPE html >
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar  :: header}">
+    <meta charset="UTF-8">
+
+    <title>Calendar</title>
+
 </head>
+
+
+<style>
+    body {
+        margin: 40px 10px;
+        padding: 0;
+        font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+        font-size: 14px;
+    }
+
+    #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+</style>
 <body>
-$END$
+<div layout:fragment="content">
+    <div id='calendar' th:id="calendar"></div>
+
+    <!--
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>-->
+    <script>
+
+
+        /*$(document).ready(function() {
+            $('#calendar').fullCalendar({
+
+                events: '/getSessions',
+
+
+            });
+
+        });*/
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+
+                initialView: 'dayGridMonth',
+
+
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'dayGridWeek,dayGridMonth' // user can switch between the two
+                },
+                editable: true,
+
+                events: '/getSessions',
+
+                eventColor: '#106972',
+                eventBackgroundColor:'rgb(18, 125, 136)',
+                eventDisplay:'block',
+                displayEventEnd:true
+
+
+            });
+
+            calendar.render();
+        });
+    </script>
+</div>
+
+
 </body>
 </html>

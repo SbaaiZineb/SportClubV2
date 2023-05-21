@@ -24,11 +24,15 @@
           </form>
         </div>
         <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-plus-circle"></i></button>
+    <form th:action="@{/deleteSessions}" method="post">
+        <button class=" float-start mb-3 btn btn-danger " type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash"></i></button>
+
         <table class="table table table-centered table-hover table-responsive ">
           <tr>
+            <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
             <th>Id</th>
             <th>Seance</th>
-            <th>Date de debut</th>
+            <th>La date de debut</th>
             <th>Temps de debut</th>
             <th>Temps de fin</th>
             <th>Nombres des semains </th>
@@ -37,12 +41,17 @@
             <th colspan="2">Action</th>
           </tr>
           <tr th:each="s:${listSeance}">
+            <td>
+              <input type="checkbox" name="seanceId" data-target="requests-all"
+                     th:value="${s.id}" />
+            </td>
             <td th:utext="${s.getId()}"></td>
             <td th:utext="${s.getClassName()}"></td>
             <td class="fw-bold" th:utext="${s.getStartDate()}" ></td>
             <td th:utext="${s.getStartTime()}"></td>
 
             <td th:utext="${s.getEndTime()}"></td>
+
             <td th:utext="${s.getNumWeeks()}"></td>
 
             <td th:utext="${s.coach}" ></td>
@@ -55,6 +64,7 @@
 
           </tr>
         </table>
+    </form>
         <ul class="nav nav-pills">
           <li th:each="page,status:${pages}">
             <a
@@ -79,9 +89,9 @@
               <div class="card align-content-center">
                 <div class="card-body">
                   <form  th:action="@{/addSeance}"
-                         th:object="${seance}" method="POST">
+                         th:object="${seance}" method="POST" >
                     <label class="form-label ">Seance :</label>
-                    <input class="form-control" type="text"th:field="*{className}" />
+                    <input class="form-control" type="text" th:field="*{className}" />
                     <label class="form-label mt-2">Date de debut :</label>
                     <input class="form-control " type="date" th:field="*{startDate}"/>
 
@@ -99,7 +109,34 @@
                         </div>
                       </div>
                     </div>
+                    <div class="row">
+                    <label class="form-label mt-2">Répéter :</label>
+                </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="lundi"  value="MONDAY" th:field="*{days[0]}">
+                      <label class="form-check-label" for="lundi">Lun</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="mardi"  value="TUESDAY" th:field="*{days[1]}">
+                      <label class="form-check-label" for="mardi">Mar</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="mercredi"  value="WEDNESDAY" th:field="*{days[2]}" >
+                      <label class="form-check-label" for="mercredi">Mer</label>
+                    </div>
 
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="jeudi"  value="THURSDAY" th:field="*{days[3]}">
+                      <label class="form-check-label" for="jeudi">Jeu</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="vendredi"  value="FRIDAY" th:field="*{days[4]}">
+                      <label class="form-check-label" for="vendredi">Ven</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="samedi"  value="SATURDAY" th:field="*{days[5]}">
+                      <label class="form-check-label" for="samedi">Sam </label>
+                    </div>
                     <label class="form-label mt-2">Nombre des semains :</label>
                     <input class="form-control" type="number" th:field="*{numWeeks}"/>
 

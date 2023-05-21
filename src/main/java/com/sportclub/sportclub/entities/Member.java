@@ -51,6 +51,6 @@ private LocalDate createdAt;
     @ManyToOne
     @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
     private List<CheckIn> checkIn;
 }

@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.service;
 
 import com.sportclub.sportclub.entities.Abonnement;
+import com.sportclub.sportclub.entities.CheckIn;
 import com.sportclub.sportclub.entities.Member;
 
 import com.sportclub.sportclub.repository.AbonnementRepo;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +21,16 @@ public class MemberServiceImp implements MemberService {
     @Autowired
     MemberRepository memberRepository;
 
-@Autowired
-AbonnementRepo abonnementRepo;
+    @Autowired
+    AbonnementRepo abonnementRepo;
+
     @Override
     public void addMember(Member member) {
         memberRepository.save(member);
+    }
+
+    public long count() {
+        return memberRepository.count();
     }
 
     @Override
@@ -37,14 +44,19 @@ AbonnementRepo abonnementRepo;
     public List<Member> getMemberBynName(String name) {
         return memberRepository.findByNameContains(name);
     }
+
+
+
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {
-        return memberRepository.findByNameContains(mc,pageable);}
+        return memberRepository.findByNameContains(mc, pageable);
+    }
+
     @Override
     public void deletMember(Long id) {
         boolean exists = memberRepository.existsById(id);
-        if (!exists){
-            throw new IllegalStateException("member with id "+id+" does not exists");
+        if (!exists) {
+            throw new IllegalStateException("member with id " + id + " does not exists");
         }
         memberRepository.deleteById(id);
 

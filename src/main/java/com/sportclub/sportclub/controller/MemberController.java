@@ -137,25 +137,32 @@ public class MemberController {
 //       int period=Integer.parseInt(per);
 //        LocalDate end=paiement.getStart_date().plusMonths(period);
 //        paiement.setEnd_date(end);
-        if (per.equals("12")) {
-            LocalDate end = paiement.getStart_date().plusYears(1);
-            paiement.setEnd_date(end);
-        } else if (per.equals("3")) {
-            LocalDate end = paiement.getStart_date().plusMonths(3);
-            paiement.setEnd_date(end);
-        } else if (per.equals("1")) {
-            LocalDate end = paiement.getStart_date().plusMonths(1);
-            paiement.setEnd_date(end);
-        } else if (per.equals("6")) {
-            LocalDate end = paiement.getStart_date().plusMonths(6);
-            paiement.setEnd_date(end);
-        } else if (per.equals("2")) {
-            LocalDate end = paiement.getStart_date().plusMonths(2);
-            paiement.setEnd_date(end);
+        switch (per) {
+            case "12" -> {
+                LocalDate end = paiement.getStart_date().plusYears(1);
+                paiement.setEnd_date(end);
+            }
+            case "3" -> {
+                LocalDate end = paiement.getStart_date().plusMonths(3);
+                paiement.setEnd_date(end);
+            }
+            case "1" -> {
+                LocalDate end = paiement.getStart_date().plusMonths(1);
+                paiement.setEnd_date(end);
+            }
+            case "6" -> {
+                LocalDate end = paiement.getStart_date().plusMonths(6);
+                paiement.setEnd_date(end);
+            }
+            case "2" -> {
+                LocalDate end = paiement.getStart_date().plusMonths(2);
+                paiement.setEnd_date(end);
+            }
         }
         paiement.setMember(memberForm);
-        paymentService.addPayement(paiement);
         storageService.save(file);
+        paymentService.addPayement(paiement);
+
         return "redirect:/membersList";
     }
 
@@ -207,4 +214,18 @@ public class MemberController {
         MemberPdf exporter = new MemberPdf(listUsers);
         exporter.export(response);
     }
+    @PostMapping("/deleteCells")
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+        // Perform the delete operation using the selected cell IDs
+
+        for (Long cellId : selectedCells) {
+
+            memberService.deletMember(cellId);
+        }
+
+        // Redirect to a success page or return a response as needed
+        return "redirect:/membersList";
+    }
+
+
 }

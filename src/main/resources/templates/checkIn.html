@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar  :: header}">
     <meta charset="UTF-8">
@@ -9,22 +9,42 @@
 <div layout:fragment="content" class="container">
     <div class="row">
         <div class="col-md-6">
-            <div class="card" onclick="myFunction()" >
+            <div class="card">
                 <div class="card-body">
-                    <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Session d'aujourd'hui </h3>
-
-                    <div th:each="s:${TodaySession}" >
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Session
+                                d'aujourd'hui </h3>
+                        </div>
+                        <div class="col-md-6">
+                            <a class="mb-3 float-end" onclick="restore()">Dernière enregistrements</a>
+                        </div>
+                    </div>
+                    <div th:each="s:${TodaySession}" id="divC" class="divC" data-th-id="${s.id}"
+                         onclick="myFunction($(this).attr('id'))">
 
 
                         <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
 
                             <div class="card-body " style="padding: 9px;">
+                               <!-- <div title="nombre des adherents enregistre" class="float-end" th:utext="${count}" style=" display: flex;
+                                       align-items: center;
+                                       justify-content: center;
+                                       flex-direction: column;
+                                       background-color: #85a2f0;
+                                       width: 2rem;
+                                       height: 2rem;
+                                       border-radius: 50%;"></div>-->
                                 <div class="media d-flex">
+
                                     <div class="media-body text-left ">
 
                                         <p class="text-info  fw-bold pp" th:if="${s.getStartTime() gt currentTime}">A venir</p>
-                                        <p class="text-danger fw-bold pf" th:if="${s.getEndTime() lt currentTime}">Fini</p>
-                                        <p class="text-success fw-bold pc" th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">En cours</p>
+                                        <p class="text-danger fw-bold pf" th:if="${s.getEndTime() lt currentTime}">
+                                            Fini</p>
+                                        <p class="text-success fw-bold pc"
+                                           th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">
+                                            En cours</p>
                                         <h4 class="fw-bold mt-1 " style="color: #3e6fb0"
                                             th:utext="${s.getStartTime()}+'-'+${s.getEndTime()}"></h4>
                                         <span class="fw-bold" style="color: #3a4456"
@@ -45,18 +65,154 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Dernière enregistrement</h3>
+                    <div class="card-content" id="cardContent">
+                        <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Dernière
+                            enregistrements</h3>
+                        <table class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
+
+                            <tbody class="tbody">
+                            <tr th:each="check:${checkin}" style="background-color: white">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img th:if="${check.getMember().getPic()}" alt="user icon"
+                                             th:src="@{'images/'+${check.getMember().getPic()}}">
+                                        <div class="d-block px-2">
+                                            <span class="fw-bold"
+                                                  th:utext="${check.getMember().getName()}+' '+${check.getMember().getLname()}"></span>
+                                            <div class="small text-gray"
+                                                 th:utext="${check.getSession().getClassName()}"></div>
+                                            <div class="small text-gray"
+                                                 th:utext="${check.getCheckinTime()}"></div>
+                                        </div>
+                                        <span class="float-end ms-7" th:utext="${check.getCheckinDate()}"></span>
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="data" class="divv hide">
+            <a class="text-bg-light float-end mb-3 mx-2 btn btn-secondary eBtn" data-bs-toggle="modal"
+               data-bs-target="#checkin" title="Check-in un Adhérent"><i data-feather="user-plus"></i></a>
+            <table id="dataTable" class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
+                <tr style="background-color: white">
+                    <th>Id</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+
+                </tr>
+                <tbody class="tbody">
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- check members in Modal -->
+    <div class="modal fade" id="checkin" tabindex="-1" role="dialog" aria-labelledby="checkinLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="checkinlabel"></h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function myFunction() {
-            // Your code here
-            alert("Div clicked!");
+
+    <style>
+        .card-content.hide {
+            display: none;
         }
+
+        .table.hide {
+            display: none
+        }
+
+        .table.show {
+            display: table;
+        }
+
+        .divv.hide {
+            display: none
+        }
+
+        .divv.show {
+            display: block;
+        }
+
+        .card-content.show {
+            display: block;
+        }
+    </style>
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+        var originalContent = document.getElementById('cardContent').innerHTML;
+
+        function myFunction(id) {
+            // Your code here
+            // alert("Div clicked!");
+
+
+            $.get("/getCheckedInMembers?id=" + id, function (data) {
+                $('#dataTable').find('.tbody').html(data);
+            })
+            var cardContent = document.getElementById('cardContent');
+            var dataTable = document.getElementById('data');
+
+            cardContent.textContent = '';
+
+            var clonedTable = dataTable.cloneNode(true);
+            clonedTable.classList.remove('hide');
+            clonedTable.classList.add('show');
+            cardContent.appendChild(clonedTable);
+        }
+
+        function restore() {
+
+            var cardContent = document.getElementById('cardContent');
+            var memberTable = document.getElementById('data');
+
+            cardContent.innerHTML = originalContent;
+            memberTable.classList.add('hide');
+        }
+
+
+        $('#checkin').on('show.bs.modal', function () {
+            var d = document.querySelector('.divC');
+            var id = d.id;
+            $(".eBtn").click(function () {
+
+                $.get("/checkin?id=" + id, function (data) {
+                    $('#checkin').find('.modal-body').html(data);
+                })
+            })
+        })
+
     </script>
 </div>
+
 </body>
 </html>

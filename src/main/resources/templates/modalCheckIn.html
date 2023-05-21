@@ -1,10 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Members</title>
 </head>
 <body>
-$END$
+<form th:action="@{/checkin}" method="post" >
+<table id="dTable" class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
+    <tr style="background-color: white">
+        <input type="hidden" name="id" th:value="*{sessionId}">
+        <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+        <th>Id</th>
+        <th>Image</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+
+    </tr>
+    <tbody class="tbody">
+    <tr th:each="m:${membersList}" style="background-color: white">
+        <td>
+            <input type="checkbox" name="selectedCells" data-target="requests-all"
+                   th:value="${m.id}" />
+        </td>
+        <td th:utext="${m.getId()}"></td>
+        <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'/images/'+${m.pic}}"></td>
+        <td th:utext="${m.getName()}"></td>
+        <td th:utext="${m.getLname()}"></td>
+
+
+    </tr>
+    </tbody>
+
+</table>
+<button type="submit" class="btn btn-primary mt-2">Enregistre</button>
+
+</form>
+
 </body>
 </html>

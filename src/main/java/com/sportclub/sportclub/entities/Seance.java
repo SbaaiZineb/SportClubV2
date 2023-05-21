@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Data@AllArgsConstructor@NoArgsConstructor
@@ -35,4 +37,7 @@ public class Seance {
     private Coach coach;
     @OneToMany(mappedBy = "session")
     private List<CheckIn> checkIns;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "days")
+    private List<String> days=new ArrayList<>();
 }

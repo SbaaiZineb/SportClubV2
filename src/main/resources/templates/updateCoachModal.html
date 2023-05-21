@@ -8,7 +8,7 @@
 <body>
 <div class="card align-content-center">
   <div class="card-body">
-    <form  th:action="@{/editCoach}"
+    <form  th:action="@{coachList/editCoach}"
            method="POST" enctype="multipart/form-data">
       <div class="mb-3 mt-3">
         <label for="id" class="form-label">ID:</label>
@@ -26,7 +26,7 @@
         </div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
-            <label class="form-label">Prenom:</label>
+            <label class="form-label">Prénom:</label>
             <input class="form-control" type="text" th:field="*{coach.lname}"/>
           </div>
         </div>
@@ -35,13 +35,13 @@
         <div class="col-md-6 mb-4">
           <div class="form-outline">
 
-            <label class="form-label">email:</label>
+            <label class="form-label">Email:</label>
             <input class="form-control" type="text" th:field="*{coach.email}"/>
           </div>
         </div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
-            <label class="form-label">tele:</label>
+            <label class="form-label">Tele:</label>
             <input class="form-control" type="number" th:field="*{coach.tele}"/>
           </div>
         </div>
@@ -49,14 +49,14 @@
       <div class="row">
         <div class="col-md-6 mb-4">
           <div class="form-outline">
-            <label class="form-label">cin:</label>
+            <label class="form-label">Cin:</label>
             <input class="form-control" type="text" th:field="*{coach.cin}"/>
 
           </div>
         </div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
-            <label class="form-label">adress:</label>
+            <label class="form-label">Adresse:</label>
             <input class="form-control" type="text" th:field="*{coach.adress}"/>
           </div>
         </div>
