@@ -13,7 +13,9 @@ import java.util.List;
 public class CoachServiceImp implements CoachService {
     @Autowired
     CoachRepository coachRepository;
-
+    public long count() {
+        return coachRepository.count();
+    }
     @Override
     public void addCoach(Coach coach) {
         coachRepository.save(coach);

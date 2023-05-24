@@ -11,20 +11,25 @@
 
 <div layout:fragment="content">
     <div class="search-field d-none d-md-block">
-        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group">
+        <form th:action="@{abonnementList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group mb-3">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
-                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                <input type="text" class="form-control bg-transparent border-0" name="ab"
                        th:value="${keyword}" placeholder="Chercher">
             </div>
         </form>
     </div>
-    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i
-            class="bi bi-plus-circle"></i></button>
-    <table class="table table-centered table-hover table-responsive ">
+    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+            data-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
+
+    <form th:action="@{/deleteAbs}" method="post">
+        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+
+        <table class="table table-centered table-hover table-responsive ">
         <tr>
+            <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
             <th>ID</th>
             <th>Type d'abonnement</th>
             <th>Prix</th>
@@ -33,23 +38,27 @@
             <th>Action</th>
         </tr>
         <tr th:each="ab:${listAb}">
+            <td>
+                <input type="checkbox"  name="selectedab" data-target="requests-all"
+                       th:value="${ab.id}" />
+            </td>
             <td th:utext="${ab.getId()}"></td>
             <td th:utext="${ab.getNameAb()}"></td>
             <td th:utext="${ab.getPrice()}+' DH'"></td>
             <td th:utext="${ab.getPeriod()}+' mois'"></td>
             <td th:utext="${ab.getNbrSeance()}"></td>
 
-            <td><a onclick="return confirm('Vous avez sure')" class="btn btn-warning"
-                   th:href="@{abonnementList/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
-                    class="bi bi-trash "></i></a>
-                <button data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn"><i
-                        class="bi bi-pencil"></i></button>
-                <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal"
-                   class="btn btn-outline-info LBtn"><i class="bi bi-eye"></i></a>
+            <td><a onclick="return confirm('Vous avez sure')"
+                   th:href="@{/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
+                    class="bi bi-trash iconT me-1"></i></a>
+                <a data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                        class="bi bi-pencil-square iconE"></i></a>
+                <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal" class="LBtn ms-1"
+                  ><i class="bi bi-eye eyecon"></i></a>
 
             </td>
         </tr>
-    </table>
+        </table></form>
 
     <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">
@@ -75,7 +84,7 @@
                 <div class="modal-body">
                     <div class="card align-content-center">
                         <div class="card-body">
-                            <form th:action="@{abonnementList/addAbonnement}"
+                            <form th:action="@{/addAbonnement}"
                                   th:object="${abonnement}" method="POST">
                                 <label class="form-label">Nom d'abonnement:</label>
                                 <input class="form-control" type="text" th:field="*{nameAb}"/>
@@ -159,7 +168,7 @@
             $(".eBtn").click(function () {
                 var id = $(this).attr('id');
 
-                $.get("/abonnementList/editAbonnement?id=" + id, function (data) {
+                $.get("/editAbonnement?id=" + id, function (data) {
                     $('#editModal').find('.modal-body').html(data);
                 })
             })

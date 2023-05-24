@@ -40,7 +40,7 @@ public class SeanceServiceImp implements SeanceService {
 
     @Override
     public List<Seance> getSeanceBynName(String name) {
-        return seanceRepo.findByClassName(name);
+        return seanceRepo.findByClassNameContains(name);
     }
 
 

@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,9 @@ public class Paiement {
     private LocalDate start_date;
     private LocalDate end_date;
     private String statue;
+    private String payedBy;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private LocalDate payedAt;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

@@ -43,13 +43,7 @@ SeanceService seanceService;
 
                 System.out.println(di);
             }
-            LocalDate currentDate = LocalDate.now();
-            int weeksToAdd = 3;
 
-            LocalDate newDate = currentDate.plusWeeks(weeksToAdd);
-
-            System.out.println("Current Date: " + currentDate);
-            System.out.println("New Date after adding " + weeksToAdd + " weeks: " + newDate);
             
         }
    }

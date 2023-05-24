@@ -10,20 +10,21 @@
 
 <div layout:fragment="content">
         <div class="search-field d-none d-md-block">
-          <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group">
+          <form th:action="@{coachList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group mb-3">
               <div class="input-group-prepend bg-transparent">
                 <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
               </div>
-              <input type="text" class="form-control bg-transparent border-0" name="keyword"
+              <input type="text" class="form-control bg-transparent border-0" name="coach"
                      th:value="${keyword}" placeholder="Chercher">
             </div>
           </form>
         </div>
 
-    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
+  <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+          data-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
   <form th:action="@{/deleteCoachs}" method="post">
-    <button class=" float-start mb-3 btn btn-danger " type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash"></i></button>
+    <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
     <table class="table table-centered table-hover table-responsive">
       <tr>
@@ -48,11 +49,13 @@
         </td>
         <td th:utext="${m.getId()}"></td>
         <td>
-          <div class="d-flex align-items-center">
-            <img th:if="${m.pic}"  alt="user icon" th:src="@{'/images/'+${m.pic}}">
-            <div class="d-block px-2">
-              <span class="fw-bold" th:utext="${m.getName()}+' '+${m.getLname()}" ></span>
-              <div class="small text-gray" th:utext="${m.getEmail()}"></div>
+          <div class="user-info">
+            <div class="user-info__img">
+              <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+            </div>
+            <div class="user-info__basic">
+              <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+              <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
             </div>
           </div>
         </td>
@@ -63,10 +66,10 @@
         <td th:utext="${m.getSport_type()}"></td>
 
 
-        <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-warning"
-               th:href="@{coachList/deleteCoach(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
-        <td><a data-th-id="${m.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn"><i
-                class="bi bi-pencil"></i></a>
+        <td><a onclick="return confirm('Vous avez sure?')"
+               th:href="@{/deleteCoach(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash iconT"></i></a></td>
+        <td><a data-th-id="${m.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                class="bi bi-pencil-square iconE"></i></a>
         </td>
 
 
@@ -87,14 +90,14 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header" >
-        <h3 class="modal-title" id="exampleModalLabel">Ajouter coach</h3>
+        <h3 class="modal-title" id="exampleModalLabel">Ajouter Entraineur</h3>
         <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
         <div class="card align-content-center">
           <div class="card-body">
-            <form  th:action="@{coachList/addCoach}"
+            <form  th:action="@{/addCoach}"
                    th:object="${CoachForm}" method="POST" enctype="multipart/form-data">
               <div class="row">
                 <div class="col-md-6 mb-4">
@@ -141,7 +144,7 @@
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
                     <label class="form-label">Tele:</label>
-                    <input class="form-control" type="number" th:field="*{tele}"/>
+                    <input class="form-control" type="tel" th:field="*{tele}"/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
@@ -228,7 +231,7 @@
 
       $(".eBtn").click(function () {
         var id = $(this).attr('id');
-        $.get("coachList/editCoach?id=" + id, function (data) {
+        $.get("/editCoach?id=" + id, function (data) {
           $('#editModal').find('.modal-body').html(data);
         })
       })

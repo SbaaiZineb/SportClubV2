@@ -1,7 +1,9 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.service.CoachService;
+import com.sportclub.sportclub.service.RoleService;
 import com.sportclub.sportclub.service.SeanceService;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/coachList")
 public class CoachController {
     @Autowired
     CoachService coachService;
@@ -25,8 +27,11 @@ public class CoachController {
     SeanceService seanceService;
     @Autowired
     FileStorageService fileStorageService;
-
-    @GetMapping("")
+    @Autowired
+    CoachRepository coachRepository;
+    @Autowired
+    RoleService roleService;
+    @GetMapping("/coachList")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
                              @RequestParam(name = "keyword",defaultValue = "") String kw
@@ -56,20 +61,21 @@ public class CoachController {
         }
 
         // Redirect to a success page or return a response as needed
-        return "redirect:/membersList";
+        return "redirect:/coachList";
     }
 
-    /* @RequestMapping(path = {"/coachList","/search"})
-    public String search( Model model, String keyword) {
-
-        if(keyword!=null) {
-            List<Coach> list = service.getSeanceBynName(keyword);
-            model.addAttribute("listSeance", list);
+    @RequestMapping(path = {"/coachList/search"})
+    public String search( Model model, String coach) {
+        Coach coachForm = new Coach();
+        model.addAttribute("CoachForm", coachForm);
+        if(coach!=null) {
+            List<Coach> list = coachRepository.findByNameContains(coach);
+            model.addAttribute("listCoach", list);
         }else {
-            List<Coach> list = service.getAllSeance();
-            model.addAttribute("listSeance", list);}
-        return "seanceList";
-    }*/
+            List<Coach> list = coachService.getAllCoachs();
+            model.addAttribute("listCoach", list);}
+        return "coachList";
+    }
 
     @GetMapping("/addCoach")
     public String getAddCoachPage(Model model) {
@@ -82,6 +88,15 @@ public class CoachController {
     public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "coachList";
         c.setPic(file.getOriginalFilename());
+        List<Role> roles=roleService.findAllRoles();
+        List<Role> roleList=new ArrayList<>();
+        for (Role role:roles
+        ) {
+            if (role.getRoleName().equals("Coach")){
+                roleList.add(role);
+                c.setRoles(roleList);
+            }
+        }
         coachService.addCoach(c);
         fileStorageService.save(file);
 

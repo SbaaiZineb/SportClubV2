@@ -33,7 +33,7 @@ public class SecurityConfig {
 
         httpSecurity.formLogin().loginPage("/login").permitAll();
 
-        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar").permitAll()
+        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll()
                 .anyRequest().authenticated();
 
 

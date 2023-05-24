@@ -39,13 +39,29 @@ public class PaymentController {
 List<Paiement> paiements=paymentService.getAllPayment();
 model.addAttribute("paymentList",paiements);
         Paiement paiement = new Paiement();
-
-
         model.addAttribute("payment", paiement);
         return "paymentList";
 
     }
 
+@GetMapping("paymentList/pay")
+    public String getPay(@RequestParam(name = "id") Long id,Model model) {
+        LocalDate localDate=LocalDate.now();
+        model.addAttribute("date",localDate);
+        Paiement paiement=paymentService.getPaymentById(id);
+        model.addAttribute("payment",paiement);
+    return "paymentModal";
+}
+
+    @PostMapping("paymentList/pay")
+    public String addAb(@Validated Paiement paiement, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return "paymentModal";
+        paiement.setPayedAt(LocalDate.now());
+        paiement.setPayedBy("visa");
+        paiement.setStatue("Payé");
+        paymentService.updatePayment(paiement);
+        return "redirect:/paymentList";
+    }
 
 
 

@@ -3,67 +3,108 @@
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar:: header}">
 
-  <title>Paiment List</title>
-
-
-
+    <title>Paiment List</title>
 
 
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="search-field d-none d-md-block">
-    <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-      <div class="input-group">
-        <div class="input-group-prepend bg-transparent">
-          <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+    <div class="search-field d-none mb-1 d-md-block">
+        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group">
+                <div class="input-group-prepend bg-transparent">
+                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+                </div>
+                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                       th:value="${keyword}" placeholder="Chercher">
+            </div>
+        </form>
+    </div>
+    <table class="table table-centered table-hover table-responsive mt-3">
+        <tr>
+            <th>Id</th>
+            <th>Type d'abonnement</th>
+            <th>Adherent</th>
+            <th>Montant a paye</th>
+            <th>Date de debut</th>
+            <th>Date de fin</th>
+            <th>Statue</th>
+
+
+            <th colspan="2">Action</th>
+        </tr>
+        <tr th:each="p:${paymentList}">
+            <td th:utext="${p.getId()}"></td>
+            <td th:utext="${p.abonnement}"></td>
+            <td th:utext="${p.getMember()}"></td>
+            <td th:utext="${p.getAbonnement().price}+' DH'"></td>
+            <td th:utext="${p.getStart_date()}"></td>
+            <td th:utext="${p.getEnd_date()}"></td>
+
+            <td class="text-center">
+              <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+              <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+            </td>
+            <td><a  th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+                <style>
+                    .hide{
+                        display: none;
+                    }
+                </style>
+            </td>
+
+
+        </tr>
+    </table>
+    <!-- <ul class="nav nav-pills">
+       <li th:each="page,status:${pages}">
+         <a
+                 th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                 th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                 th:text="${status.index}">
+         </a>
+       </li>
+     </ul>-->
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="paymentLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="paymentlabel"></h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
         </div>
-        <input type="text" class="form-control bg-transparent border-0" name="keyword"
-               th:value="${keyword}" placeholder="Chercher">
-      </div>
-    </form>
-  </div>
-  <table class="table table-centered table-hover table-responsive mt-3">
-    <tr>
-      <th>Id</th>
-      <th>Type d'abonnement</th>
-      <th>Adherent</th>
-      <th>Montant a paye</th>
-      <th>Date de debut</th>
-      <th>Date de fin</th>
-<th>Statue</th>
+    </div>
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+    <script>
+        $('#payment').on('show.bs.modal', function () {
+
+            $(".pBn").click(function () {
+                var id = $(this).attr('id');
+
+                $.get("/paymentList/pay?id=" + id, function (data) {
+                    $('#payment').find('.modal-body').html(data);
+                })
+            })
 
 
-      <th colspan="2">Action</th>
-    </tr>
-    <tr th:each="p:${paymentList}">
-      <td th:utext="${p.getId()}"></td>
-      <td th:utext="${p.abonnement}"></td>
-      <td th:utext="${p.getMember()}" ></td>
-      <td th:utext="${p.getAbonnement().price}+' DH'" ></td>
-      <td th:utext="${p.getStart_date()}"></td>
-      <td th:utext="${p.getEnd_date()}"></td>
-      <td><span class="badge bg-danger">Impayée</span></td>
-      <td><a  class="btn btn-info">Payer</a></td>
-
-
-
-
-
-
-    </tr>
-  </table>
-  <ul class="nav nav-pills">
-    <li th:each="page,status:${pages}">
-      <a
-              th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-              th:href="@{/index(page=${status.index}, keyword=${keyword})}"
-              th:text="${status.index}">
-      </a>
-    </li>
-  </ul>
-
-
+        })
+    </script>
 
 </div>
 </body>

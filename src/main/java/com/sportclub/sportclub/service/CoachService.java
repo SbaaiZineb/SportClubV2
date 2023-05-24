@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CoachService {
     void addCoach(Coach coach);
-
+    long count();
     List<Coach> getCoachBynName(String name);
     void deleteCoach(Long id);
     Page<Coach> findByCoachName(String mc, Pageable pageable);

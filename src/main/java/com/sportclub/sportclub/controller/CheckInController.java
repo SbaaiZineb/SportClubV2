@@ -41,12 +41,11 @@ public class CheckInController {
         List<Seance> seances = seanceService.getAllSeance();
         for (Seance sess:seances
              ) {
-            model.addAttribute("count",c);
+            List<Member> memberList=sess.getMembers();
+           long size=memberList.size();
+
+                model.addAttribute("count",size);
         }
-
-
-
-
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         List<Seance> seanceList = new ArrayList<>();
 
@@ -55,7 +54,9 @@ public class CheckInController {
             for (String day:days
                  ) {
                 DayOfWeek df=DayOfWeek.valueOf(day);
+                System.out.println("Day is "+df+" "+day);
                 if (df == dayOfWeek) {
+
                     seanceList.add(session);
                     LocalTime currentTime = LocalTime.now();
                     model.addAttribute("currentTime", currentTime);

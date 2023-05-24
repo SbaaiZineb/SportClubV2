@@ -7,9 +7,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="search-field d-none d-md-block">
+    <div class="search-field d-none d-md-block ">
         <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group">
+            <div class="input-group mb-3">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
@@ -18,11 +18,11 @@
             </div>
         </form>
     </div>
-    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary "><i data-feather="printer"></i></a>
-    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal"
-            data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
+    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
+    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+            data-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
     <form th:action="@{/deleteCells}" method="post">
-    <button class=" float-start mb-3 btn btn-danger " type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash"></i></button>
+    <button class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
     <table class="table table-centered table-hover table-responsive">
         <tr>
@@ -47,11 +47,13 @@
             <td th:utext="${m.getId()}"></td>
             <td data-th-id="${m.id}"
                 onclick="getProfile($(this).attr('id'))">
-                <div class="d-flex align-items-center">
-                    <img th:if="${m.pic}" alt="user icon" th:src="@{'images/'+${m.pic}}">
-                    <div class="d-block px-2">
-                        <span class="fw-bold" th:utext="${m.getName()}+' '+${m.getLname()}"></span>
-                        <div class="small text-gray" th:utext="${m.getEmail()}"></div>
+                <div class="user-info">
+                    <div class="user-info__img">
+                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                </div>
+                    <div class="user-info__basic">
+                        <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                        <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
                     </div>
                 </div>
             </td>
@@ -68,12 +70,12 @@
             <td th:utext="${m.getGender()}"></td>
 
             <td th:utext="${m.abonnement}"></td>
-            <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-warning"
+            <td><a onclick="return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
-                    class="bi bi-trash"></i></a></td>
-            <td><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-info eBtn">
-                <i class="bi bi-pencil"></i></a></td>
-            </td>
+                    class="bi bi-trash iconT"></i></a></td>
+            <td><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+                <i class="bi bi-pencil-square iconE "></i></a></td>
+
 
         </tr>
     </table></form>
@@ -126,7 +128,7 @@
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Tele:</label>
-                                            <input class="form-control" type="number" th:field="*{tele}"/>
+                                            <input class="form-control" type="tel" th:field="*{tele}"/>
 
                                         </div>
                                     </div>

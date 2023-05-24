@@ -15,8 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Coach extends User {
     private String sport_type;
-    @OneToMany(mappedBy = "coach",fetch = FetchType.EAGER)
-    private List<Groupe> groupes;
+
 
     public Coach(String name, String lname, String adress, String cin, LocalDate dob, int tele, List<Role> roles, String email, String password, String sport_type) {
         super(name, lname, adress, cin, dob, tele, roles, email, password);

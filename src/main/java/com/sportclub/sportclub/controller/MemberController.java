@@ -4,9 +4,11 @@ import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Paiement;
+import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
 import com.sportclub.sportclub.service.PaymentService;
+import com.sportclub.sportclub.service.RoleService;
 import com.sportclub.sportclub.tools.FileStorageService;
 import com.sportclub.sportclub.tools.MemberPdf;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +47,8 @@ public class MemberController {
 
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    RoleService roleService;
 
     @RequestMapping(value = "/membersList",method = RequestMethod.GET)
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
@@ -53,6 +59,8 @@ public class MemberController {
         List<Abonnement> abos = abonnementService.getAllAbos();
         model.addAttribute("abos", abos);
         model.addAttribute("abonnement", new Abonnement());
+
+
 
         Page<Member> pageMember = memberService.findByMemberName(kw, PageRequest.of(page, size));
         model.addAttribute("listMember", pageMember.getContent());
@@ -129,9 +137,19 @@ public class MemberController {
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
         memberForm.setPic(file.getOriginalFilename());
+        List<Role> roles=roleService.findAllRoles();
+        List<Role> roleList=new ArrayList<>();
+        for (Role role:roles
+             ) {
+            if (role.getRoleName().equals("Adherent")){
+                roleList.add(role);
+                memberForm.setRoles(roleList);
+            }
+        }
         memberService.addMember(memberForm);
         Paiement paiement = new Paiement();
         paiement.setStart_date(localDate);
+        paiement.setStatue("Impayé");
         paiement.setAbonnement(memberForm.getAbonnement());
         String per = paiement.getAbonnement().getPeriod();
 //       int period=Integer.parseInt(per);
@@ -166,7 +184,7 @@ public class MemberController {
         return "redirect:/membersList";
     }
 
-    @GetMapping("images/{filename:.+}")
+    @GetMapping("/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         Resource file = storageService.load(filename);
 

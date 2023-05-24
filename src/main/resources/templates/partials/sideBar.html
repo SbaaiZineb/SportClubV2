@@ -61,7 +61,7 @@
 
 
                     <ul class="nav-group-items" style="height: auto;">
-                        <li class="sidebar-item"><a class="sidebar-link" href="#">Admin</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" th:href="@{/adminList}">Admin</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" th:href="@{/coachList}">Entraineur </a></li>
                         <li class="sidebar-item"><a class="sidebar-link" th:href="@{/membersList}">Adherent </a></li>
 
@@ -104,7 +104,7 @@
 
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="ui-buttons.html">
+                    <a class="sidebar-link" th:href="@{/parametre(id=${1})}">
                         <i class="bi bi-gear-fill"></i> <span class="align-middle">Parametre</span>
                     </a>
                 </li>
@@ -255,11 +255,11 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img th:src="@{images/Max-R_Headshot (1).jpg}" class="avatar img-fluid rounded me-1" th:text="${#authentication.name}"  /> <span class="text-dark"></span>
+                            <img th:src="@{/images/Max-R_Headshot (1).jpg}" class="avatar img-fluid rounded me-1" th:text="${#authentication.name}"  /> <span class="text-dark"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+                                <a class="dropdown-item" th:href="@{/parametre}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
 
                             </li>
                             <li>

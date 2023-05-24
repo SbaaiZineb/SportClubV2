@@ -2,6 +2,7 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,20 @@ import java.time.Period;
 import java.util.List;
 
 @Controller
-@RequestMapping("/abonnementList")
 public class AbonnementController {
     @Autowired
     AbonnementService abonnementService;
     @Autowired
     MemberService memberService;
+@Autowired
+    AbonnementRepo abonnementRepo;
 
 
 
-
-    @GetMapping("")
+    @GetMapping("/abonnementList")
 
     public String getAbs(Model model ,@RequestParam(name = "page",defaultValue = "0") int page,
-                             @RequestParam(name = "size",defaultValue = "5") int size,
+                             @RequestParam(name = "size",defaultValue = "7") int size,
                              @RequestParam(name = "keyword",defaultValue = "") String kw
     ) {
 
@@ -48,18 +49,30 @@ public class AbonnementController {
         return "abList";
 
     }
-    /* @RequestMapping(path = {"/abonnementList","/search"})
-    public String search( Model model, String keyword) {
+    @PostMapping("/deleteAbs")
+    public String deleteCells(@RequestParam("selectedab") Long[] selectedab) {
+        // Perform the delete operation using the selected cell IDs
 
-        if(keyword!=null) {
-            List<Seance> list = service.getSeanceBynName(keyword);
-            model.addAttribute("listSeance", list);
+        for (Long cellId : selectedab) {
+
+            abonnementService.deleteAbonnement(cellId);
+        }
+
+        // Redirect to a success page or return a response as needed
+        return "redirect:/abList";
+    }
+     @RequestMapping(path = {"/abonnementList/search"})
+    public String search( Model model, String ab) {
+
+        if(ab!=null) {
+            List<Abonnement> list = abonnementRepo.findByNameAbContains(ab);
+            model.addAttribute("listAb", list);
         }else {
-            List<Seance> list = service.getAllSeance();
-            model.addAttribute("listSeance", list);}
-        return "seanceList";
-    }*/
-    @GetMapping("/getMembers")
+            List<Abonnement> list = abonnementService.getAllAbos();
+            model.addAttribute("listAb", list);}
+        return "abList";
+    }
+    @GetMapping("/abonnementList/getMembers")
     public String getMembersByMembership(@RequestParam(name = "id") Long id,Model model){
         List<Member> members=memberService.getMemberByMembership(id);
         model.addAttribute("members",members);

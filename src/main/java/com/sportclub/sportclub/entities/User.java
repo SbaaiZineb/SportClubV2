@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public abstract class User extends Person {
+public class User extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
@@ -29,6 +29,7 @@ public abstract class User extends Person {
     }
 
     @ManyToMany
+    @Column(name = "role_id")
     private List<Role> roles;
     private String email;
 

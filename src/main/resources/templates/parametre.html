@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar  :: header}">
+    <meta charset="UTF-8">
+    <title>Parametre</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container-fluid mx-auto">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-7">
+
+                <h2 style="font-family: Arial, sans-serif !important;
+    color: #233247;font-weight: bold;">Les informations de la salle</h2>
+                <div class="card h-80" style="margin-top: 22px;">
+
+                    <form class="form-card" th:action="@{/parametre(id=${1})}"  method="POST">
+                        <input type="hidden" th:id="1">
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Nom de gym<span class="text-danger"> *</span></label> <input style="" type="text" id="name" name="name" placeholder="Enter your first name" th:field="*{gym.name}" > </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Adresse<span class="text-danger"> *</span></label> <input type="text" id="adress" name="adress" placeholder="Enter your last name" th:field="*{gym.address}"> </div>
+                        </div>
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Email<span class="text-danger"> *</span></label> <input type="text" id="email" name="email" placeholder="" th:field="*{gym.email}"> </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Telephone<span class="text-danger"> *</span></label> <input type="tel" id="tele" name="tele" placeholder="" th:field="*{gym.mobile}"> </div>
+                        </div>
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Paye<span class="text-danger"> *</span></label> <input type="text" id="paye" name="paye" placeholder="" th:field="*{gym.country}"> </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Code postal<span class="text-danger"> *</span></label> <input type="text" id="codePostal" name="codePostal" placeholder="" th:field="*{gym.postalCode}"> </input></div>
+                        </div>
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Site web<span class="text-danger"> *</span></label> <input type="text" id="website" name="website" placeholder="" th:field="*{gym.webSite}"> </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Logo<span class="text-danger"> *</span></label> <input type="text" id="logo" name="logo" placeholder="" th:field="*{gym.logo}"> </div>
+                        </div>
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">About Us <span class="text-danger">*</span></label> <textarea type="text" rows="4" cols="40" id="aboutUs" name="aboutUs" placeholder="" th:field="*{gym.aboutUs}"> </textarea> </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Terms et conditions<span class="text-danger"> *</span></label> <textarea type="text" rows="4" cols="40" id="terms" name="terms" placeholder="" th:field="*{gym.terms}"> </textarea> </div>
+                        </div>
+                        <div class="row mt-2 float-end">
+                            <div class="form-group"> <button type="submit"  class="btn btn-primary">Sauvegarder</button> </div>
+                        </div>
+                    </form>
+                </div>
+            <style>
+                body{color: #000;overflow-x: hidden;height: 100%;}.card{padding: 30px 40px;margin-top: 60px;margin-bottom: 60px;border: none !important;box-shadow: 0 6px 12px 0 rgba(0,0,0,0.2)}.blue-text{color: #00BCD4}.form-control-label{margin-bottom: 0}input, textarea, button{padding: 8px 15px;
+                                                                                                                                                                                                                                                                    border-radius: 9px !important;
+                                                                                                                                                                                                                                                                    margin: 5px 0px;
+                                                                                                                                                                                                                                                                    box-sizing: border-box;
+                                                                                                                                                                                                                                                                    border: 1px solid #eceef2;
+                                                                                                                                                                                                                                                                    font-size: 14px !important;
+                                                                                                                                                                                                                                                                    font-weight: 300;}input:focus, textarea:focus{-moz-box-shadow: none !important;-webkit-box-shadow: none !important;box-shadow: none !important;border: 1px solid #00BCD4;outline-width: 0;font-weight: 400}.btn-block{text-transform: uppercase;font-size: 15px !important;font-weight: 400;height: 43px;cursor: pointer}.btn-block:hover{color: #fff !important}button:focus{-moz-box-shadow: none !important;-webkit-box-shadow: none !important;box-shadow: none !important;outline-width: 0}
+            </style>
+        </div>
+        <div class="col-md-5">
+            <h2 style="font-family: Arial, sans-serif !important;
+    color: #233247;font-weight: bold;">Les roles</h2>
+            <div class="card h-80" style="margin-top: 22px;">
+
+                <div class="card-body">
+                    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+                            data-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
+                    <form th:action="@{/deleteRoles}" method="post">
+                        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+
+                        <table class="table table-centered table-hover table-responsive ">
+                        <tr>
+                            <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+                            <th>ID</th>
+                            <th>Nom de role</th>
+
+                        </tr>
+                        <tr th:each="role:${roles}">
+                            <td>
+                                <input type="checkbox"  name="selectedab" data-target="requests-all"
+                                       th:value="${role.getRole_id()}" />
+                            </td>
+                            <td th:utext="${role.getRole_id()}"></td>
+                            <td th:utext="${role.getRoleName()}"></td>
+                        </tr>
+                        </table></form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<!-- Add Role modal -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Ajouter role</h3>
+                    <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card align-content-center">
+                        <div class="card-body">
+                            <form th:action="@{/addRole}"
+                                  th:object="${roleForm}" method="POST">
+                                <label class="form-label">Nom de role:</label>
+                                <input class="form-control" type="text" th:field="*{roleName}"/>
+
+
+                                <input class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+</div>
+</body>
+</html>

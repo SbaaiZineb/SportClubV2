@@ -8,7 +8,7 @@
 <body>
 <div class="card align-content-center">
   <div class="card-body">
-    <form  th:action="@{coachList/editCoach}"
+    <form  th:action="@{/editCoach}"
            method="POST" enctype="multipart/form-data">
       <div class="mb-3 mt-3">
         <label for="id" class="form-label">ID:</label>
@@ -42,7 +42,7 @@
         <div class="col-md-6 mb-4">
           <div class="form-outline">
             <label class="form-label">Tele:</label>
-            <input class="form-control" type="number" th:field="*{coach.tele}"/>
+            <input class="form-control" type="tel" th:field="*{coach.tele}"/>
           </div>
         </div>
       </div>

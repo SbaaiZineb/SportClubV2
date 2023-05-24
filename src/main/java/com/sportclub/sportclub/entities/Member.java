@@ -44,8 +44,7 @@ public class Member extends User {
 private LocalDate createdAt;
     @OneToMany(mappedBy = "member",  fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
     private List<Paiement> paiement;
-    @ManyToMany
-    private List<Groupe> groupes;
+
     @ManyToMany
     private List<Seance> seanceList;
     @ManyToOne

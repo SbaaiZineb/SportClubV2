@@ -18,7 +18,7 @@
               </tr>
               <tr th:each="m:${members}">
                 <td th:utext="${m.getId()}"></td>
-                <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'membersList/images/'+${m.pic}}"></td>
+                <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'/images/'+${m.pic}}"></td>
                 <td th:utext="${m.getName()}"></td>
                 <td th:utext="${m.getLname()}"></td>
 
