@@ -34,6 +34,11 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
+    public Member getByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Override
     public List<Member> getMemberByMembership(Long abId) {
         Abonnement membership = abonnementRepo.findById(abId).get();
         return memberRepository.findByAbonnement(membership);

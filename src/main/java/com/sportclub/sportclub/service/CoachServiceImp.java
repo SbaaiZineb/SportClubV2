@@ -22,6 +22,11 @@ public class CoachServiceImp implements CoachService {
     }
 
     @Override
+    public Coach getCoachByEmail(String username) {
+        return coachRepository.getCoachByEmail(username);
+    }
+
+    @Override
     public List<Coach> getCoachBynName(String name) {
         return null;
     }

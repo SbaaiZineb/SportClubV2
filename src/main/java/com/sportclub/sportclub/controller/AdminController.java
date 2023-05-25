@@ -8,6 +8,8 @@ import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,10 +17,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
+    @Autowired
+    PasswordEncoder passwordEncoder;
 @Autowired
     RoleService roleService;
 @Autowired
@@ -35,7 +41,7 @@ public class AdminController {
     ) {
 
 
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserApp());
 
         List<Role> roles=roleService.findAllRoles();
         model.addAttribute("roles",roles);
@@ -45,7 +51,7 @@ public class AdminController {
             for (Role role:user.getRoles()
                  ) {
                 if (role.getRole_name().equals("Admin") || role.getRole_name().equals("Sub-admin")){*/
-        Page<User> pageAdmin;
+        Page<UserApp> pageAdmin;
 
         if ("Admin".equalsIgnoreCase(kw) || "Sub-admin".equalsIgnoreCase(kw)) {
             pageAdmin = adminService.getUsersByRoles(kw, PageRequest.of(page, size));
@@ -56,7 +62,7 @@ public class AdminController {
                     model.addAttribute("pages", new int[pageAdmin.getTotalPages()]);
                     model.addAttribute("currentPage", page);
                     model.addAttribute("keyword", kw);
-                    User userForm = new User();
+                    UserApp userForm = new UserApp();
                     model.addAttribute("userForm", userForm);
 
 
@@ -65,15 +71,29 @@ public class AdminController {
     }
 @GetMapping("/addAdmin")
     public String getAddAdminPage(Model model) {
-        User userForm = new User();
+        UserApp userForm = new UserApp();
         model.addAttribute("userForm", userForm);
         return "adminList";
     }
 
     @PostMapping("/addAdmin")
-    public String addAdmin(@Validated User admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
+    public String addAdmin(@Validated UserApp admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "adminList";
+
         admin.setPic(file.getOriginalFilename());
+
+        String password= admin.getPassword();
+        admin.setPassword(passwordEncoder.encode(password));
+       /* String name = admin.getLname();
+        String lname = admin.getLname();
+        String email = admin.getEmail();
+        String adress = admin.getAdress();
+        String cin = admin.getCin();
+        LocalDate dob = admin.getDob();
+        int tele = admin.getTele();
+        String password = admin.getPassword();
+        Role role=admin.getRoles();
+        UserApp admin=new UserApp(,name,lname,email,adress,cin,dob,tele,password,role);*/
         adminService.addAdmin(admin);
         fileStorageService.save(file);
 
@@ -93,9 +113,9 @@ public class AdminController {
 
         @RequestMapping(path = {"/adminList/search"})
         public String search (Model model, String user){
-            User userForm = new User();
+            UserApp userForm = new UserApp();
             model.addAttribute("userForm", userForm);
-            List<User> list;
+            List<UserApp> list;
             if (user != null) {
                 list = adminRepo.findByNameContains(user);
             } else {

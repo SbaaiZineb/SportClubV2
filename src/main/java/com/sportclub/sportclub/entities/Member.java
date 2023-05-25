@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member extends User {
+public class Member extends UserApp {
     private String gender;
 
     public Member(String pic, String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
@@ -36,7 +36,7 @@ public class Member extends User {
         return getName()+" "+getLname();
     }
 
-    public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, List<Role> roles, String email, String password, String gender) {
+    public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password, String gender) {
         super(name, lname, adress, cin, dob, tele, roles, email, password);
         this.gender = gender;
     }

@@ -17,6 +17,8 @@ public interface SeanceService {
     public List<Seance> getAllSeance();
     void deletSeance(Long id);
     Page<Seance> findBySeanceName(String mc, Pageable pageable);
+    Page<Seance> findSeanceByCoachEmail(String username,Pageable pageable);
+    List<Seance> getBYCoachEmail(String username);
     Seance getSeanceById(Long id);
     void updateSeance(Seance s);
 }

@@ -2,14 +2,19 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.CalendarEvent;
 import com.sportclub.sportclub.entities.Coach;
+import com.sportclub.sportclub.entities.Notification;
 import com.sportclub.sportclub.entities.Seance;
 import com.sportclub.sportclub.repository.EventRepo;
+import com.sportclub.sportclub.repository.SeanceRepo;
 import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.MemberService;
+import com.sportclub.sportclub.service.NotificationService;
 import com.sportclub.sportclub.service.SeanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +46,10 @@ public class SeanceController {
     MemberService memberService;
     @Autowired
     EventRepo eventRepo;
+    @Autowired
+    SeanceRepo seanceRepo;
+    @Autowired
+    NotificationService notificationService;
 
 
     @GetMapping("/calendar")
@@ -51,18 +61,32 @@ public class SeanceController {
     @GetMapping("/seanceList")
     public String getSeances(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int size,
-                             @RequestParam(name = "keyword", defaultValue = "") String kw
+                             @RequestParam(name = "keyword", defaultValue = "") String kw,Authentication authentication
     ) {
+        String username=authentication.getName();
+
+if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("COACH"))){
+    Page<Seance> seancePage=service.findSeanceByCoachEmail(username,PageRequest.of(page, size));
+    model.addAttribute("listSeance", seancePage.getContent());
+    model.addAttribute("pages", new int[seancePage.getTotalPages()]);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("keyword", kw);
+}else {
+    Page<Seance> pageS = service.findBySeanceName(kw, PageRequest.of(page, size));
+
+    model.addAttribute("listSeance", pageS.getContent());
+    model.addAttribute("pages", new int[pageS.getTotalPages()]);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("keyword", kw);
+}
+
+        System.out.println("username !!!!"+username);
+//Add coach to the dropdown list
         List<Coach> coaches = coachService.getAllCoachs();
         model.addAttribute("coaches", coaches);
         model.addAttribute("coach", new Coach());
-//        List<String> options = Arrays.asList("MONDAY", "TUESDAY", "WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY");
-//        model.addAttribute("options", options);
-        Page<Seance> pageS = service.findBySeanceName(kw, PageRequest.of(page, size));
-        model.addAttribute("listSeance", pageS.getContent());
-        model.addAttribute("pages", new int[pageS.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("keyword", kw);
+
+
         List<Seance> se = service.getAllSeance();
         for (Seance seance : se
         ) {
@@ -91,6 +115,7 @@ public class SeanceController {
          return "seanceList";
      }
     @GetMapping("/addSeance")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String getAddSeance(Model model) {
 
         Seance seance = new Seance();
@@ -99,15 +124,25 @@ public class SeanceController {
     }
 
     @PostMapping("/addSeance")
-    public String addSeance(@Validated Seance seance, BindingResult bindingResult) {
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    public String addSeance(@Validated Seance seance, BindingResult bindingResult,Authentication authentication) {
         if (bindingResult.hasErrors()) return "seanceList";
-
+String username=authentication.getName();
         service.addSeance(seance);
+        //Add Session Notification
+        Notification notification=new Notification();
+        notification.setTimestamp(LocalDateTime.now());
+        notification.setMessage(username+" vous a affecté à une nouvelle session consultez votre agenda");
+        notification.setRecipient(seance.getCoach());
+        notificationService.addNotification(notification);
+
+        //Add new Event based on the added session
         CalendarEvent calendarEvent = new CalendarEvent();
         calendarEvent.setTitle(seance.getClassName());
         calendarEvent.setStart(seance.getStartDate());
         calendarEvent.setStartTime(seance.getStartTime());
         calendarEvent.setEndTime(seance.getEndTime());
+        calendarEvent.setUsername(seance.getCoach().getEmail());
         int nbrToAdd = seance.getNumWeeks();
         LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
         calendarEvent.setEndRecur(newEnd);
@@ -137,6 +172,7 @@ public class SeanceController {
     }
 
     @PostMapping("/deleteSessions")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
         // Perform the delete operation using the selected cell IDs
 
@@ -150,6 +186,7 @@ public class SeanceController {
     }
 
     @GetMapping("/deleteSeance")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
         Seance seance = service.getSeanceById(id);
         service.deletSeance(id);
@@ -165,7 +202,7 @@ public class SeanceController {
     }
 
     @GetMapping("/editSeance")
-
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editSeance(@RequestParam(name = "id") Long id, Model model) {
         List<Coach> coaches = coachService.getAllCoachs();
         model.addAttribute("coaches", coaches);
@@ -177,6 +214,7 @@ public class SeanceController {
     }
 
     @PostMapping("/editSeance")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editSeance(@Validated Seance seance, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateSeanceModal";
         //TODO: Update session -> update event or add new event

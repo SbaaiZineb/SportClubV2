@@ -31,4 +31,5 @@ public class CalendarEvent {
     @ElementCollection
     @Column(name = "daysOfWeek")
     private List<Integer> daysOfWeek;
+    private String username;
 }

@@ -103,7 +103,7 @@ margin: 0 auto;" alt="icon">
             </div>
         </div>
         <div id="data" class="divv hide">
-            <a class="text-bg-light float-end mb-3 mx-2 btn btn-secondary eBtn" data-bs-toggle="modal"
+            <a th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary eBtn" data-bs-toggle="modal"
                data-bs-target="#checkin" title="Check-in un Adhérent"><i data-feather="user-plus"></i></a>
             <table id="dataTable" class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
                 <tr style="background-color: white">

@@ -54,6 +54,16 @@ public class SeanceServiceImp implements SeanceService {
         return seanceRepo.findByClassNameContains(mc, pageable);
     }
 
+    @Override
+    public Page<Seance> findSeanceByCoachEmail(String username, Pageable pageable) {
+        return seanceRepo.findSeanceByCoachEmail(username,pageable);
+    }
+
+    @Override
+    public List<Seance> getBYCoachEmail(String username) {
+        return seanceRepo.findSeanceByCoachEmail(username);
+    }
+
 
     @Override
     public Seance getSeanceById(Long id) {

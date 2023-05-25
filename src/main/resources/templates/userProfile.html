@@ -17,7 +17,9 @@
                 <div class="card h-100" style="background-color: #4c7abd;">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img th:if="${member.pic}" alt="user icon" class="rounded-circle" width="150"
+                            <img th:if="${member.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
+height: 200px;
+object-fit: cover;"
                                  th:src="@{'images/'+${member.pic}}">
                             <div class="mt-3">
                                 <h4 class="fw-bold" th:utext="${member.getName()}+' '+${member.getLname()}"></h4>
@@ -161,7 +163,10 @@
                                     <td th:utext="${p.getAbonnement().price}+' DH'" ></td>
                                     <td th:utext="${p.getStart_date()}"></td>
                                     <td th:utext="${p.getEnd_date()}"></td>
-                                    <td><span class="badge bg-danger">Impayée</span></td>
+                                    <td class="text-center">
+                                        <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                                        <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                                    </td>
 
 
 

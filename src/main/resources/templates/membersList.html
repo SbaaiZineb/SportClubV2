@@ -19,14 +19,14 @@
         </form>
     </div>
     <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
-    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
             data-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
     <form th:action="@{/deleteCells}" method="post">
-    <button class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
     <table class="table table-centered table-hover table-responsive">
         <tr>
-            <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
             <th>Id</th>
             <th>Adhérent</th>
@@ -37,10 +37,10 @@
             <th>Sexe</th>
 
             <th>Abonnement</th>
-            <th colspan="2">Action</th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
         </tr>
         <tr th:each="m:${listMember}" >
-            <td>
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
             <input type="checkbox" name="selectedCells" data-target="requests-all"
                    th:value="${m.id}" />
             </td>
@@ -70,10 +70,10 @@
             <td th:utext="${m.getGender()}"></td>
 
             <td th:utext="${m.abonnement}"></td>
-            <td><a onclick="return confirm('Vous avez sure?')"
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
                     class="bi bi-trash iconT"></i></a></td>
-            <td><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
                 <i class="bi bi-pencil-square iconE "></i></a></td>
 
 

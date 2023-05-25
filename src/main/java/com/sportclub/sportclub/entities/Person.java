@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @MappedSuperclass@Data@AllArgsConstructor@NoArgsConstructor
+
 public class Person {
     private String pic;
     private String name;

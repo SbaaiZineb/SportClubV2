@@ -8,6 +8,8 @@ import com.sportclub.sportclub.service.CheckInService;
 import com.sportclub.sportclub.service.MemberService;
 import com.sportclub.sportclub.service.SeanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -34,18 +36,18 @@ public class CheckInController {
     @Autowired
     CheckInRepo checkInRepo;
 
+
     @GetMapping("/enregistrement")
-    public String getCheckinPage(Model model) {
+    public String getCheckinPage(Model model, Authentication authentication) {
         LocalDate localDate = LocalDate.now();
+String username= authentication.getName();
+        List<Seance> seances;
+if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("COACH"))){
+    seances=seanceService.getBYCoachEmail(username);
+}else {
+    seances = seanceService.getAllSeance();
+}
 
-        List<Seance> seances = seanceService.getAllSeance();
-        for (Seance sess:seances
-             ) {
-            List<Member> memberList=sess.getMembers();
-           long size=memberList.size();
-
-                model.addAttribute("count",size);
-        }
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         List<Seance> seanceList = new ArrayList<>();
 
@@ -86,7 +88,8 @@ public class CheckInController {
     }
 
     @GetMapping("/checkin")
-    public String checkMembers(Model model, @RequestParam(name = "id") Long id) {
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    public String getCheckMembers(Model model, @RequestParam(name = "id") Long id) {
         List<Member> members = memberService.getAllMembers();
         List<Member> listFilter=new ArrayList<>();
         for (Member member:members
@@ -107,6 +110,7 @@ public class CheckInController {
     }
 
     @PostMapping("/checkin")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells ,Model model) {
 
         for (Long cellId : selectedCells) {

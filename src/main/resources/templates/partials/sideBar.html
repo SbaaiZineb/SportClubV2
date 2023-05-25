@@ -37,7 +37,7 @@
             <ul class="sidebar-nav">
 
 
-                <li class="sidebar-item pt-2 active">
+                <li class="sidebar-item active">
                     <a class="sidebar-link" aria-current="page" th:href="@{/}">
                         <i class="bi bi-sliders2"></i> <span class="align-middle">Dashboard</span>
                     </a>
@@ -55,14 +55,19 @@
                 </li>
 <!--<ul class="nav-group-show" aria-expanded="false">-->
                 <li class="sidebar-item">
-                    <a class="sidebar-link nav-group-toggle" >
+                    <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" th:href="@{/membersList}">
+                        <i class="bi bi-people"></i> <span class="align-middle">Users</span>
+                    </a>
+                </li>
+                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="sidebar-item">
+                    <a class="sidebar-link nav-group-toggle" href="#usersCollapse" data-toggle="collapse">
                         <i class="bi bi-people"></i><span class="align-middle">Users</span>
                     </a>
 
 
-                    <ul class="nav-group-items" style="height: auto;">
-                        <li class="sidebar-item"><a class="sidebar-link" th:href="@{/adminList}">Admin</a></li>
-                        <li class="sidebar-item"><a class="sidebar-link" th:href="@{/coachList}">Entraineur </a></li>
+                    <ul id="usersCollapse" class="nav-group-items collapse show"  style="height: auto;">
+                        <li class="sidebar-item"><a class="sidebar-link"  th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" th:href="@{adminList}">Admin</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link"  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" th:href="@{/coachList}">Entraineur </a></li>
                         <li class="sidebar-item"><a class="sidebar-link" th:href="@{/membersList}">Adherent </a></li>
 
                     </ul></li>
@@ -77,13 +82,13 @@
                         <a class=" sidebar-link dropdown-item" href="#">Adherent</a>
                     </div>
                 </li>-->
-                <li class="sidebar-item">
+                <li  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="sidebar-item">
                     <a class="sidebar-link" th:href="@{/abonnementList}">
                         <i class="bi bi-gem"></i><span class="align-middle">Abonnement</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item">
+                <li  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="sidebar-item">
                     <a class="sidebar-link" th:href="@{/paymentList}">
                         <i class="bi bi-credit-card-2-back"></i><span class="align-middle">Paiement</span>
                     </a>
@@ -103,7 +108,7 @@
 
 
 
-                <li class="sidebar-item">
+                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  class="sidebar-item">
                     <a class="sidebar-link" th:href="@{/parametre(id=${1})}">
                         <i class="bi bi-gear-fill"></i> <span class="align-middle">Parametre</span>
                     </a>
@@ -132,55 +137,7 @@
                             <div class="dropdown-menu-header">
                                 4 New Notifications
                             </div>
-                            <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2">
-                                            <i class="text-danger" data-feather="alert-circle"></i>
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="text-dark">Update completed</div>
-                                            <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
-                                            <div class="text-muted small mt-1">30m ago</div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2">
-                                            <i class="text-warning" data-feather="bell"></i>
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="text-dark">Lorem ipsum</div>
-                                            <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
-                                            <div class="text-muted small mt-1">2h ago</div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2">
-                                            <i class="text-primary" data-feather="home"></i>
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="text-dark">Login from 192.186.1.8</div>
-                                            <div class="text-muted small mt-1">5h ago</div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <div class="row g-0 align-items-center">
-                                        <div class="col-2">
-                                            <i class="text-success" data-feather="user-plus"></i>
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="text-dark">New connection</div>
-                                            <div class="text-muted small mt-1">Christina accepted your request.</div>
-                                            <div class="text-muted small mt-1">14h ago</div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+
                             <div class="dropdown-menu-footer">
                                 <a href="#" class="text-muted">Show all notifications</a>
                             </div>
@@ -303,7 +260,45 @@
                     </ul>
                 </div>
             </div>
-        </div> <script>
+
+        </div>
+
+    </footer>
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Handle click event for collapsed items
+            $('.sidebar-link[data-toggle="collapse"]').on('click', function() {
+                var target = $(this).attr('href');
+                var isCollapsed = $(target).hasClass('show');
+
+                if (isCollapsed) {
+                    // Collapse the item
+                    $(target).collapse('hide');
+                } else {
+                    // Expand the item
+                    $(target).collapse('show');
+                }
+            });
+        });
+        $(document).ready(function() {
+            // Get all sidebar links
+            var sidebarLinks = $('.sidebar-item');
+
+            // Add click event listener to each link
+            sidebarLinks.on('click', function() {
+                // Remove 'active' class from all links
+                sidebarLinks.removeClass('active');
+
+                // Add 'active' class to the clicked link
+                $(this).addClass('active');
+            });
+        });
+
         document.querySelectorAll('.sidebar-link').forEach(link => {
 
             console.log(link.href)
@@ -312,16 +307,14 @@
                 link.setAttribute('aria-current','page')
             }
         })
-       /* $(document).ready(function (){
-            $('li').on('click',function (){
-                $(this).siblings().removeClass('active');
-                $(this).addClass('active');
-            })
-        })*/
+        /* $(document).ready(function (){
+             $('li').on('click',function (){
+                 $(this).siblings().removeClass('active');
+                 $(this).addClass('active');
+             })
+         })*/
 
     </script>
-    </footer>
-
 
 
 </body>

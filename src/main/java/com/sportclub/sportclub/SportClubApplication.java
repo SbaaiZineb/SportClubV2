@@ -47,6 +47,14 @@ SeanceService seanceService;
             
         }
    }
+//   @Bean
+  /* CommandLineRunner commandLineRunnerUserDetails(AdminService adminService){
+        return args -> {
+
+            adminService.addNewUser("admin1","12345","12345");
+            adminService.addRoleToUser("admin1","ADMIN");
+        };
+   }*/
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

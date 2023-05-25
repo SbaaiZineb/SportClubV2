@@ -64,9 +64,9 @@
                 <td th:utext="${m.getCin()}"></td>
                 <td th:utext="${m.getDob()}"></td>
                 <td th:utext="${m.getTele()}"></td>
-                <td th:each="role:${m.getRoles()}">
-                    <p class="m-0" style="font-weight: bold;color: #16375d" th:utext="${role.roleName}" th:if="${role.roleName == 'Admin'}"></p>
-                    <p class="m-0" style="font-weight: bold;color: #0d5d73" th:utext="${role.roleName}" th:if="${role.roleName== 'Sub-admin'}"></p>
+                <td>
+                    <p class="m-0" style="font-weight: bold;color: #16375d" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName == 'ADMIN'}"></p>
+                    <p class="m-0" style="font-weight: bold;color: #0d5d73" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName== 'Sub-admin'}"></p>
                     <span class="bold" ></span>
                 </td>
 

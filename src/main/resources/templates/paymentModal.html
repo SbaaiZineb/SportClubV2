@@ -11,11 +11,12 @@
             <div class="card p-3">
                 <form th:action="@{paymentList/pay}" method="post" class="form-card">
                     <div class="row justify-content-center mb-4 radio-group">
-                        <input type="hidden" name="member_id" th:value="${payment.getMember().getId()}">
-                        <input type="hidden" name="abonnement_id" th:value="${payment.getAbonnement().getId()}">
+                        <input type="hidden" name="id" th:value="${payment.getId()}">
+                        <input type="hidden" name="member" th:value="${payment.getMember().id}">
+                        <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
                         <input type="hidden" name="start_date" th:value="${payment.getStart_date()}">
                         <input type="hidden" name="end_date" th:value="${payment.getEnd_date()}">
-                        <input type="hidden" name="id" th:value="${payment.getId()}">
+
                         <div class="col-sm-3 col-5">
                             <div class='radio selected align mx-auto' data-value="dk"> <img class="fit-image" src="https://i.imgur.com/5TqiRQV.jpg" width="105px" height="53px"> </div>
                         </div>

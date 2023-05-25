@@ -23,14 +23,14 @@
             </div>
           </form>
         </div>
-    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
             data-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
     <form th:action="@{/deleteSessions}" method="post">
-        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+        <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
         <table class="table table table-centered table-hover table-responsive ">
           <tr>
-            <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
             <th>Id</th>
             <th>Seance</th>
             <th>La date de debut</th>
@@ -39,10 +39,10 @@
             <th>Nombres des semains </th>
             <th>Entraineur</th>
 
-            <th colspan="2">Action</th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
           </tr>
           <tr th:each="s:${listSeance}">
-            <td>
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
               <input type="checkbox" name="seanceId" data-target="requests-all"
                      th:value="${s.id}" />
             </td>
@@ -57,9 +57,9 @@
 
             <td th:utext="${s.coach}" ></td>
 
-            <td><a onclick="return confirm('Vous avez sure?')"
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
                    th:href="@{/deleteSeance(id=${s.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash iconT"></i></a></td>
-            <td><a data-th-id="${s.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a data-th-id="${s.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
               <i class="bi bi-pencil-square iconE"></i></a></td>
 
 

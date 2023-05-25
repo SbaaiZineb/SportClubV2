@@ -9,6 +9,8 @@ import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
 public class CoachController {
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     CoachService coachService;
     @Autowired
@@ -88,13 +93,16 @@ public class CoachController {
     public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "coachList";
         c.setPic(file.getOriginalFilename());
+        c.setPic(file.getOriginalFilename());
+        String password= c.getPassword();
+        c.setPassword(passwordEncoder.encode(password));
         List<Role> roles=roleService.findAllRoles();
-        List<Role> roleList=new ArrayList<>();
+
         for (Role role:roles
         ) {
-            if (role.getRoleName().equals("Coach")){
-                roleList.add(role);
-                c.setRoles(roleList);
+            if (role.getRoleName().equals("COACH")){
+
+                c.setRoles(role);
             }
         }
         coachService.addCoach(c);

@@ -16,4 +16,6 @@ public interface SeanceRepo extends JpaRepository<Seance,Long> {
     List<Seance> findByClassNameContains(String s);
     List<Seance> findByCoach(Coach coach);
     List<Seance> findByStartDate(LocalDate date);
+    Page<Seance> findSeanceByCoachEmail(String email,Pageable pageable);
+    List<Seance> findSeanceByCoachEmail(String email);
 }

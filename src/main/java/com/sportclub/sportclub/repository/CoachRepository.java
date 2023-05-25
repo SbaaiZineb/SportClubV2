@@ -11,5 +11,6 @@ import java.util.List;
 public interface CoachRepository extends JpaRepository<Coach , Long> {
     Page<Coach> findByNameContains(String mc, Pageable pageable);
     List<Coach> findByNameContains(String name);
+    Coach getCoachByEmail(String email);
 
 }

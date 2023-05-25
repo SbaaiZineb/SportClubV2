@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,7 +39,8 @@ import java.util.List;
 
 @Controller
 public class MemberController {
-
+@Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     MemberService memberService;
     @Autowired
@@ -94,6 +97,7 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/addMember",method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String getAddPage(Model model) {
         Member memberForm = new Member();
         model.addAttribute("memberForm", memberForm);
@@ -132,18 +136,21 @@ public class MemberController {
          }
      }*/
     @PostMapping("/addMember")
+    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
     public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "membersList";
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
         memberForm.setPic(file.getOriginalFilename());
+        String password= memberForm.getPassword();
+        memberForm.setPassword(passwordEncoder.encode(password));
         List<Role> roles=roleService.findAllRoles();
-        List<Role> roleList=new ArrayList<>();
+
         for (Role role:roles
              ) {
-            if (role.getRoleName().equals("Adherent")){
-                roleList.add(role);
-                memberForm.setRoles(roleList);
+            if (role.getRoleName().equals("ADHERENT")){
+
+                memberForm.setRoles(role);
             }
         }
         memberService.addMember(memberForm);
@@ -193,13 +200,14 @@ public class MemberController {
     }
 
     @GetMapping("/deleteMember")
+    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page) {
         memberService.deletMember(id);
         return "redirect:/membersList?page=" + page + "&keyword=" + keyword;
     }
 
     @GetMapping("/editMember")
-
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editMember(@RequestParam(name = "id") Long id, Model model) {
         List<Abonnement> abos = abonnementService.getAllAbos();
         model.addAttribute("abos", abos);
@@ -210,6 +218,7 @@ public class MemberController {
     }
 
     @PostMapping("/editMember")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editMember(@Validated Member member, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateMemberModal";
         memberService.updateMember(member);
@@ -233,6 +242,7 @@ public class MemberController {
         exporter.export(response);
     }
     @PostMapping("/deleteCells")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
         // Perform the delete operation using the selected cell IDs
 
