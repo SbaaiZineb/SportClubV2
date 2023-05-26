@@ -105,6 +105,10 @@
                         <div class="card-body">
                             <form th:action="@{/addMember}"
                                   th:object="${memberForm}" method="POST" enctype="multipart/form-data">
+                                <!-- Display error message if username already exists -->
+                                <div class="error" th:if="${usernameExistsError}">
+                                    <span th:text="${usernameExistsError}"></span>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">

@@ -34,8 +34,8 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public Member getByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Boolean getByEmail(String email) {
+        return memberRepository.findExistByEmail(email);
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AdminService {
+  Boolean getByEmail(String email);
     void addAdmin(UserApp user);
   /*  UserApp addNewUser(String pic,String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password,String confirmPass);
     Role addNewRole(String role);

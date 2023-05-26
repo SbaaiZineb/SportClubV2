@@ -175,10 +175,18 @@ String username=authentication.getName();
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
         // Perform the delete operation using the selected cell IDs
-
+        Seance seance;
         for (Long cellId : seanceId) {
-
+            seance = service.getSeanceById(cellId);
             service.deletSeance(cellId);
+            List<CalendarEvent> calendarEvents = eventRepo.findAll();
+            for (CalendarEvent event : calendarEvents
+            ) {
+                if (event.getTitle().equals(seance.getClassName()) && event.getStart().equals(seance.getStartDate()) && event.getStartTime().equals(seance.getStartTime()) && event.getEndTime().equals(seance.getEndTime())) {
+                    eventRepo.delete(event);
+                }
+            }
+
         }
 
         // Redirect to a success page or return a response as needed

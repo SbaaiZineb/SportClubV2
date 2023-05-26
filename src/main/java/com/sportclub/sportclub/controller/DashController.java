@@ -1,6 +1,8 @@
 package com.sportclub.sportclub.controller;
 
+import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Paiement;
+import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ public class DashController {
     CoachService coachService;
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    MemberRepository memberRepository;
     @GetMapping("/")
     public String getDash(Model model){
 
@@ -43,5 +47,23 @@ public class DashController {
         model.addAttribute("countM",countM);
         return "index";
     }
+/*@GetMapping("/memberShipStatistic")
+    public String membership(Model model){
+    List<Object[]> userStats = memberRepository.countUsersByMembership();
 
+    List<String> membershipNames = new ArrayList<>();
+    List<Integer> userCounts = new ArrayList<>();
+
+    for (Object[] stat : userStats) {
+        Abonnement membership = (Abonnement) stat[0];
+        Long count = (Long) stat[1];
+
+        membershipNames.add(membership.getNameAb());
+        userCounts.add(count.intValue());
+    }
+
+    model.addAttribute("membershipNames", membershipNames);
+    model.addAttribute("userCounts", userCounts);
+        return "index";
+    }*/
 }

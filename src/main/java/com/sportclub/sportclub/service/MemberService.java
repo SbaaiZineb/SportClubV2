@@ -21,5 +21,5 @@ List<Member> getMemberByMembership(Long abid);
      void updateMember(Member m);
      List<Member> getAllMembers();
      long count();
-     Member getByEmail(String email);
+     Boolean getByEmail(String email);
 }

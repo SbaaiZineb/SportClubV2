@@ -114,4 +114,8 @@ public class AdminServiceImp implements AdminService {
     public UserApp loadUserByUsername(String email) {
         return adminRepo.findByEmail(email);
     }
+    @Override
+    public Boolean getByEmail(String email) {
+        return adminRepo.findExistByEmail(email);
+    }
 }

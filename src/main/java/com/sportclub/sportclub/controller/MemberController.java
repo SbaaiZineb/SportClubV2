@@ -137,8 +137,14 @@ public class MemberController {
      }*/
     @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
-    public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+    public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, BindingResult bindingResult, @RequestParam("file") MultipartFile file,Model model) {
         if (bindingResult.hasErrors()) return "membersList";
+        if (memberService.getByEmail(memberForm.getEmail())){
+            System.out.println("Username already exist");
+            bindingResult.rejectValue("email", "error.memberForm", "Username already exists");
+            model.addAttribute("usernameExistsError", "Username already exists");
+            return "redirect:/addMember";
+        }
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
         memberForm.setPic(file.getOriginalFilename());
