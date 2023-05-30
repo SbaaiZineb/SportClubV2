@@ -6,6 +6,6 @@ import com.sportclub.sportclub.entities.UserApp;
 import java.util.List;
 
 public interface NotificationService {
-    List<Notification> getNotificationByUser(UserApp userApp);
+    List<Notification> getNotificationByUser(List<UserApp> userApp);
     void addNotification(Notification notification);
 }

@@ -8,7 +8,9 @@ import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.repository.SeanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -51,6 +53,8 @@ public class SeanceServiceImp implements SeanceService {
 
     @Override
     public Page<Seance> findBySeanceName(String mc, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+
         return seanceRepo.findByClassNameContains(mc, pageable);
     }
 

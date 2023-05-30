@@ -65,7 +65,17 @@
                 eventColor: '#106972',
                 eventBackgroundColor:'rgb(18, 125, 136)',
                 eventDisplay:'block',
-                displayEventEnd:true
+                displayEventEnd:true,
+                eventRender: function (info) {
+                    // Find the latest added event
+                    var events = calendar.getEvents();
+                    var latestEvent = events[events.length - 1];
+
+                    // Customize the color for the latest added event
+                    if (info.event.id === latestEvent.id) {
+                        info.el.style.backgroundColor = 'red';
+                    }
+                }
 
 
             });

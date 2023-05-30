@@ -59,8 +59,8 @@
             <div class="card h-80" style="margin-top: 22px;">
 
                 <div class="card-body">
-                    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-toggle="modal"
-                            data-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
+                    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
                     <form th:action="@{/deleteRoles}" method="post">
                         <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
@@ -96,7 +96,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">Ajouter role</h3>
-                    <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
 
                     </button>
                 </div>
@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 
                 </div>
             </div>

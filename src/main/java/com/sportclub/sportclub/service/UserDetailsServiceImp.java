@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.service;
 
+import com.sportclub.sportclub.entities.CostumUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.sportclub.sportclub.entities.UserApp;
@@ -19,16 +20,14 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     AdminService adminService;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CostumUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserApp user=adminService.loadUserByUsername(username);
         if (user==null) throw new UsernameNotFoundException(String.format("User %s not found",username));
         SimpleGrantedAuthority authority=new SimpleGrantedAuthority(user.getRoles().getRoleName());
 
-        return User.withUsername(user.getEmail())
-                .password(user.getPassword())
-
-                .authorities(authority)
-//                .roles(String.valueOf(user.getRoles()))
+        return CostumUserDetails.builder()
+                .userApp(user)
+                .pic(user.getPic())
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import com.sportclub.sportclub.entities.Seance;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.repository.SeanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,13 +26,22 @@ public class CheckInServiceImp implements CheckInService{
     }
 
     @Override
+    public List<CheckIn> getCheckInOfCurrenteek() {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(java.time.DayOfWeek.SUNDAY);
+
+        return checkInRepo.findByCheckinDateBetween(startOfWeek,endOfWeek);
+    }
+
+    @Override
     public void addCheck(CheckIn checkIn) {
         checkInRepo.save(checkIn);
     }
 
     @Override
     public List<CheckIn> getAllCheckIns() {
-        return checkInRepo.findAll();
+        return checkInRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
     @Override
     public List<CheckIn> getAllbyTime(LocalTime time) {
@@ -39,6 +49,7 @@ public class CheckInServiceImp implements CheckInService{
     }
     @Override
     public List<CheckIn> findLatest(LocalDate date) {
-        return checkInRepo.getCheckInByCheckinDate(date);
+        Sort sortByDateDesc = Sort.by(Sort.Direction.DESC, "checkinTime");
+        return checkInRepo.getCheckInByCheckinDate(date,sortByDateDesc);
     }
 }

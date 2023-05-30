@@ -1,14 +1,9 @@
 package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Paiement;
-import com.sportclub.sportclub.entities.Role;
-import com.sportclub.sportclub.service.AbonnementService;
-import com.sportclub.sportclub.service.MemberService;
-import com.sportclub.sportclub.service.PaymentService;
-import com.sportclub.sportclub.service.RoleService;
+import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.AdminRepo;
+import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
 import com.sportclub.sportclub.tools.MemberPdf;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +28,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,15 +40,27 @@ public class MemberController {
     PasswordEncoder passwordEncoder;
     @Autowired
     MemberService memberService;
-    @Autowired
     AbonnementService abonnementService;
-    @Autowired
     FileStorageService storageService;
 
-    @Autowired
+
     PaymentService paymentService;
-    @Autowired
     RoleService roleService;
+FileStorageService fileService;
+    public MemberController(PasswordEncoder passwordEncoder, MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService,FileStorageService fileService) {
+        this.passwordEncoder = passwordEncoder;
+        this.memberService = memberService;
+        this.abonnementService = abonnementService;
+        this.storageService = storageService;
+        this.paymentService = paymentService;
+        this.roleService = roleService;
+        this.adminRepo = adminRepo;
+        this.notificationService = notificationService;
+        this.fileService=fileService;
+    }
+
+    AdminRepo adminRepo;
+    NotificationService notificationService;
 
     @RequestMapping(value = "/membersList",method = RequestMethod.GET)
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
@@ -104,40 +113,9 @@ public class MemberController {
         return "membersList";
     }
 
-    /* @RequestMapping(value = {"/addMember"}, method = RequestMethod.POST)
-     public String savePersonne(Model model,
-                                @ModelAttribute("MemberForm") Member MemberForm ,@RequestParam("pic") MultipartFile file
-                                )throws IOException {
-             String pic = new String(file.getBytes(), StandardCharsets.UTF_8);
-         String name = MemberForm.getName();
-         String lname = MemberForm.getLname();
-         String email = MemberForm.getEmail();
-         String adress = MemberForm.getAdress();
-         String cin = MemberForm.getCin();
-         LocalDate dob = MemberForm.getDob();
-         int tele = MemberForm.getTele();
-         String password = MemberForm.getPassword();
-         String gender = MemberForm.getGender();
-         List<Role> role=MemberForm.getRoles();
-         Abonnement abonnement = MemberForm.getAbonnement();
-         if (name != null && name.length() > 0 && lname != null && lname.length() > 0) {
-             Member newMember = new Member(pic ,name, lname,adress,cin,   dob,  tele,email, password, gender);
-             memberService.addMember(newMember);
-             return "redirect:/membersList";
-         }
-         model.addAttribute("errorMessage", "Il faut saisir toutes les information");
-         return "membersList";
-     }
-     @Configuration
-     public class AppConfig {
-         @Bean
-         public MultipartResolver multipartResolver() {
-             return new StandardServletMultipartResolver();
-         }
-     }*/
     @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
-    public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, BindingResult bindingResult, @RequestParam("file") MultipartFile file,Model model) {
+    public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
         if (bindingResult.hasErrors()) return "membersList";
         if (memberService.getByEmail(memberForm.getEmail())){
             System.out.println("Username already exist");
@@ -160,6 +138,14 @@ public class MemberController {
             }
         }
         memberService.addMember(memberForm);
+        Notification notification = new Notification();
+        String username=authentication.getName();
+        notification.setTimestamp(LocalDateTime.now());
+        notification.setMessage(username + " a ajouté un nouveau adherent");
+        List<UserApp> userApps=adminRepo.findByRolesRoleNameContains("ADMIN");
+        notification.setRecipient(userApps);
+        notification.setTitle("Nouveau Adherent");
+        notificationService.addNotification(notification);
         Paiement paiement = new Paiement();
         paiement.setStart_date(localDate);
         paiement.setStatue("Impayé");
@@ -225,8 +211,10 @@ public class MemberController {
 
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
-    public String editMember(@Validated Member member, BindingResult bindingResult) {
+    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "updateMemberModal";
+        member.setPic(file.getOriginalFilename());
+        fileService.save(file);
         memberService.updateMember(member);
         return "redirect:/membersList";
     }

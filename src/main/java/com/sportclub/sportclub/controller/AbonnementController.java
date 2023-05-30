@@ -4,6 +4,8 @@ import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.service.AbonnementService;
+import com.sportclub.sportclub.service.FingerprintSensorErrorCode;
+import com.sportclub.sportclub.service.FingerprintSensorEx;
 import com.sportclub.sportclub.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

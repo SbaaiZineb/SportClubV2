@@ -4,7 +4,9 @@ import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.repository.CoachRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +40,8 @@ public class CoachServiceImp implements CoachService {
 
     @Override
     public Page<Coach> findByCoachName(String name, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+
         return coachRepository.findByNameContains(name,pageable);
     }
 

@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
+import com.sportclub.sportclub.entities.CheckIn;
 import com.sportclub.sportclub.entities.Paiement;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
@@ -26,6 +27,8 @@ public class DashController {
     PaymentService paymentService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    CheckInService checkInService;
     @GetMapping("/")
     public String getDash(Model model){
 
@@ -42,7 +45,10 @@ public class DashController {
         model.addAttribute("price",totalPrice);
         System.out.println(totalPrice);
         long countM=memberService.count();
+        List<CheckIn> checkIns = checkInService.getCheckInOfCurrenteek();
+        long size=checkIns.size();
         long countC=coachService.count();
+        model.addAttribute("size",size);
         model.addAttribute("countC",countC);
         model.addAttribute("countM",countM);
         return "index";

@@ -14,6 +14,7 @@ import java.util.List;
 public interface AdminRepo extends JpaRepository<UserApp,Long> {
     Page<UserApp> findByNameContains(String mc, Pageable pageable);
     List<UserApp> findByNameContains(String name);
+    List<UserApp> findByRolesRoleNameContains(String name);
     UserApp findByEmail(String email);
     @Query("select count(p) = 1 from UserApp p where p.email= ?1")
     Boolean findExistByEmail(String email);

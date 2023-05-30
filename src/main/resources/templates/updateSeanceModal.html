@@ -19,7 +19,7 @@
             <input class="form-control" type="text" th:field="*{seance.className}"/>
             <span class="text-danger" th:errors="${seance.className}" th:value="${seance.className}"></span>
             <label class="form-label mt-3">Temps de debut:</label>
-            <input class="form-control" type="date" th:field="*{seance.startDate}"/>
+            <input class="form-control" type="date" th:field="*{seance.startDate}" />
             <div class="row mt-2">
                 <div class="col-md-6 mb-2">
                     <div class="form-outline">
@@ -34,6 +34,44 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <label class="form-label mt-2">Répéter :</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="lundi"  value="MONDAY" th:field="*{seance.days[0]}">
+                <label class="form-check-label" for="lundi">Lun</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="mardi"  value="TUESDAY" th:field="*{seance.days[1]}">
+                <label class="form-check-label" for="mardi">Mar</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="mercredi"  value="WEDNESDAY" th:field="*{seance.days[2]}" >
+                <label class="form-check-label" for="mercredi">Mer</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="jeudi"  value="THURSDAY" th:field="*{seance.days[3]}">
+                <label class="form-check-label" for="jeudi">Jeu</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="vendredi"  value="FRIDAY" th:field="*{seance.days[4]}">
+                <label class="form-check-label" for="vendredi">Ven</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="samedi"  value="SATURDAY" th:field="*{seance.days[5]}">
+                <label class="form-check-label" for="samedi">Sam </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="dimanch"  value="SUNDAY" th:field="*{seance.days[6]}">
+                <label class="form-check-label" for="dimanch">Dim </label>
+            </div>
+            <style>
+                .form-check-inline {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+            </style>
             <label class="form-label mt-3">Nombres des semains:</label>
             <input class="form-control" type="number" th:field="*{seance.numWeeks}"/>
 

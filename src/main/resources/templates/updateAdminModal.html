@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org" >
+<head th:insert="~{partials/sideBar:: header}">
+    <meta charset="UTF-8">
+    <title>Edit Coach</title>
+
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form  th:action="@{/editAdmin}"
+               method="POST" enctype="multipart/form-data">
+            <div style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+                <img th:if="${user.pic}" alt="user icon" th:src="@{'/images/'+${user.pic}}" style="width: 160px;
+height: 160px;
+object-fit: cover;border-radius: 50%"></div>
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${user.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${user.id}">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Nom:</label>
+                        <input class="form-control" type="text"th:field="*{user.name}" />
+                        <span class="text-danger" th:errors="${user.name}" th:value="${user.name}"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Prénom:</label>
+                        <input class="form-control" type="text" th:field="*{user.lname}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+                        <label class="form-label">Email:</label>
+                        <input class="form-control" type="text" th:field="*{user.email}"/>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Tele:</label>
+                        <input class="form-control" type="tel" th:field="*{user.tele}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Cin:</label>
+                        <input class="form-control" type="text" th:field="*{user.cin}"/>
+
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Adresse:</label>
+                        <input class="form-control" type="text" th:field="*{user.adress}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+                        <label class="form-label">Date de naissance:</label>
+                        <input class="form-control" type="date" th:field="*{user.dob}"/>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+
+                        <label class="form-label">Mot de pass:</label>
+                        <input class="form-control" type="password" th:field="*{user.password}"/>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+                        <label class="form-label">Confirmer mot de pass:</label>
+                        <input class="form-control" type="password" />
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control "
+                       id="image" accept="image/png, image/jpeg" name="file"/>
+            </div>
+
+
+            <button class="btn btn-primary mt-2" type="submit">Sauvgarder</button>
+        </form>
+
+    </div></div>
+</body>
+</html>

@@ -9,6 +9,12 @@
     <div class="card-body">
         <form  th:action="@{/editMember}" enctype="multipart/form-data"
                method="POST">
+            <div style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+                <img th:if="${member.pic}" alt="user icon" th:src="@{'/images/'+${member.pic}}" style="width: 160px;
+height: 160px;
+object-fit: cover;border-radius: 50%"></div>
             <div class="mb-3 mt-3">
             <label for="id" class="form-label">ID:</label>
             <label th:text="${member.id}"></label>

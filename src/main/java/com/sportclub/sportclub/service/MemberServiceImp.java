@@ -8,7 +8,9 @@ import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -54,6 +56,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         return memberRepository.findByNameContains(mc, pageable);
     }
 

@@ -45,7 +45,7 @@ public class UserApp extends Person {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role roles;
-    @OneToMany(mappedBy = "recipient")
+    @ManyToMany(mappedBy = "recipient")
     private List<Notification> notifications;
     @Column(unique = true)
     private String email;
@@ -57,7 +57,7 @@ public class UserApp extends Person {
     }
 
     private String password;
-
+@Builder
     public UserApp( String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
         super(name, Lname, adress, cin, dob, tele);
 //        this.id = id;

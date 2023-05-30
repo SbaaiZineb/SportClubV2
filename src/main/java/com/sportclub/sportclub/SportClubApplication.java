@@ -1,5 +1,6 @@
 package com.sportclub.sportclub;
 
+import com.sportclub.sportclub.controller.FingerPrint;
 import com.sportclub.sportclub.entities.CheckIn;
 import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
@@ -32,21 +33,11 @@ SeanceService seanceService;
 
     @Override
     public void run(String... args) throws Exception {
-        for (Seance seance:seanceService.getAllSeance()
-             ) {
-            List<Integer> dayInt=new ArrayList<>();
-            for (String day: seance.getDays()
-            ) {
-                DayOfWeek dayOfWeek=DayOfWeek.valueOf(day);
-                Integer di=dayOfWeek.getValue();
-                dayInt.add(di);
 
-                System.out.println(di);
             }
 
             
-        }
-   }
+
 //   @Bean
   /* CommandLineRunner commandLineRunnerUserDetails(AdminService adminService){
         return args -> {

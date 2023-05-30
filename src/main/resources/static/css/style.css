@@ -27,9 +27,9 @@
     transition: background .15s ease-in-out;
 }*/
 .sidebar-nav[aria-current]{
-    background: linear-gradient(90deg,rgba(59,125,221,.1),rgba(59,125,221,.088) 50%,transparent);
-    border-left-color: #3b7ddd;
-    color: #e9ecef;
+    background: linear-gradient(90deg,rgba(59,125,221,.1),rgba(59,125,221,.088) 50%,transparent) !important;
+    border-left-color: #3b7ddd !important;
+    color: #e9ecef !important;
 }
 
 .table {

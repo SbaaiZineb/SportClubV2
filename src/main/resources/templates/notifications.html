@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<a href="#" class="list-group-item" th:each="notification, iterStat : ${notifications}" th:if="${iterStat.index < 3}">
+    <div class="row g-0 align-items-center" >
+      <div class="col-2">
+        <i class="bi bi-calendar text-danger"th:if="${#authorization.expression('hasAuthority(''COACH'')')}" ></i>
+          <i class="bi bi-person-plus text-success"th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" ></i>
+      </div>
+      <div class="col-10">
+        <div class="text-dark" th:utext="${notification.getTitle()}" ></div>
+        <div class="text-muted small mt-1" th:utext="${notification.getMessage()}"></div>
+        <div class="text-muted small mt-1" th:utext="${#temporals.format(notification.getTimestamp(),'yyyy-MM-dd HH:mm')}"></div>
+      </div>
+    </div>
+</a>
+</body>
+</html>

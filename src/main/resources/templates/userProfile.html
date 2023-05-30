@@ -17,260 +17,206 @@
                 <div class="card h-100" style="background-color: #4c7abd;">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img th:if="${member.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
+                            <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
 height: 200px;
 object-fit: cover;"
-                                 th:src="@{'images/'+${member.pic}}">
+                                 th:src="@{'images/'+${user.pic}}">
                             <div class="mt-3">
-                                <h4 class="fw-bold" th:utext="${member.getName()}+' '+${member.getLname()}"></h4>
-                                <p class="text-secondary mb-1" th:utext="${member.getEmail()}"></p>
+                                <h4 class="fw-bold" th:utext="${#strings.capitalize(user.getName())}+' '+${#strings.capitalize(user.getLname())}"></h4>
+                                <p class="text-secondary fw-bold mb-1" style="color: #f2f7fd  !important;" th:utext="${user.getEmail()}"></p>
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="col-md-8">
                 <div class="card mb-3 h-100" style="background-color: #598edb26;">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-3">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
                                         <h6 class="mb-0">Nom</h6>
                                     </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getName()}">
 
-                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getName()}"></div>
                                 </div>
-                                <hr>
+
                             </div>
                             <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-1">Prénom</h6>
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Prénom</h6>
                                     </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getLname()}">
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getLname()}">
                                     </div>
                                 </div>
-                                <hr>
+
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-3">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
                                         <h6 class="mb-0">Email</h6>
                                     </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getEmail()}">
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getEmail()}">
                                     </div>
                                 </div>
-                                <hr>
+
                             </div>
                             <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-3" style="margin-bottom: 1rem;">
-                                        <h6 class="mb-1">Tele</h6>
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Tele</h6>
                                     </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getTele()}">
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getTele()}">
 
                                     </div>
-                                    <hr>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-1">Cin</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getCin()}">
-                                    </div>
-                                </div>
-                                <hr>
-                            </div>
-                            <div class="col-md-6">
-
-                                <div class="row">
-                                    <div class="col-sm-7">
-                                        <h6 class="mb-1">Date de naissance</h6>
-                                    </div>
-                                    <div class="col-sm-5 text-secondary" th:utext="${member.getDob()}">
-                                    </div>
-                                </div>
-                                <hr>
-                            </div>
-
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <h6 class="mb-0">Adresse</h6>
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Cin</h6>
                                         </div>
-                                        <div class="col-sm-9 text-secondary" th:utext="${member.getCin()}">
+                                        <div class="col-sm-9 text-secondary input" th:utext="${user.getCin()}">
                                         </div>
                                     </div>
-                                    <hr>
+
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <h6 class="mb-0">Sexe</h6>
+
+                                    <div class="row me-1">
+                                        <div class="col-sm-7 d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance</h6>
                                         </div>
-                                        <div class="col-sm-9 text-secondary" th:utext="${member.getGender()}">
+                                        <div class="col-sm-5 text-secondary input" th:utext="${user.getDob()}">
                                         </div>
                                     </div>
-                                    <hr>
+
                                 </div>
+
 
                                 <div class="row">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Mot de pass</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary" th:utext="${member.getPassword()}">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-sm-3 d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary input" th:utext="${user.getAdress()}">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <hr>
+
+                                <style>
+                                    .col-sm-5.text-secondary.input,
+                                    .col-sm-9.text-secondary.input {
+                                        box-sizing: border-box;
+                                        -webkit-box-sizing: border-box;
+                                        -moz-box-sizing: border-box;
+                                        outline: none;
+                                        display: block;
+                                        width: 100%;
+                                        padding: 7px;
+                                        border: none;
+                                        border-bottom: 1px solid #9997ba;
+                                        background: transparent;
+                                        margin-bottom: 10px;
+                                        font: 16px Arial, Helvetica, sans-serif;
+                                        height: 45px;
+                                        margin-left: 4px;
+                                    }
+
+                                    .mb-0 {
+                                        font-weight: bold;
+                                        color: #30639f;
+                                    }
+
+                                </style>
+
                             </div>
-
-
                         </div>
                     </div>
-
-
                 </div>
             </div>
+
+        </div>
+        <div  th:class="${user.getRoles().roleName == 'COACH' ? 'hide' : 'card mt-4'}">
+            <style>
+                .hide{
+                    display: none;
+                }
+            </style>
+            <div class="card-header" style="background-color: #4c7abd;">
+                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Historique des
+                    paiements</h3>
+            </div>
+
+            <table class="table table-centered table-hover table-responsive mt-3">
+
+                <tr th:each="p:${payments}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                    <td th:utext="${p.getId()}"></td>
+                    <td th:utext="${p.abonnement}"></td>
+
+                    <td th:utext="${p.getAbonnement().price}+' DH'"></td>
+                    <td th:utext="${p.getStart_date()}"></td>
+                    <td th:utext="${p.getEnd_date()}"></td>
+                    <td class="text-center">
+                        <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                        <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                    </td>
+
+
+                </tr>
+            </table>
+
         </div>
 
 
-                <div class="card mt-4" >
+        <!-- <div class="col-md-6">
+             <div class="card">
+                 <div class="card-body">
+                     <div class="card-content">
+                         <h3>Les abonnement effectue</h3>
+                     </div>
+                 </div>
+             </div>
+         </div>-->
 
-
-                        <div class="card-header text-white" style="background-color: #4c7abd;">
-                            <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Historique des paiements</h3>
-                        </div>
-
-                            <table class="table table-centered table-hover table-responsive mt-3">
-
-                                <tr th:each="p:${payments}" style="background-color: white">
-                                    <td th:utext="${p.getId()}"></td>
-                                    <td th:utext="${p.abonnement}"></td>
-
-                                    <td th:utext="${p.getAbonnement().price}+' DH'" ></td>
-                                    <td th:utext="${p.getStart_date()}"></td>
-                                    <td th:utext="${p.getEnd_date()}"></td>
-                                    <td class="text-center">
-                                        <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-                                        <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
-                                    </td>
-
-
-
-
-
-
-
-                                </tr>
-                            </table>
-
-                    </div>
-
-
-           <!-- <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-content">
-                            <h3>Les abonnement effectue</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
-
-        <div class="card mt-4" >
+        <div class="card mt-4">
             <div class="card-header" style="background-color: #4c7abd;">
                 <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
             </div>
-                <table class="table table-centered table-hover table-responsive mt-3">
+            <table class="table table-centered table-hover table-responsive mt-3">
+                <tr style="background-color: #e0e7f46b!important;">
 
-                    <tr th:each="check:${checkins}" style="background-color: white">
-                        <td th:utext="${check.getId}"></td>
-                        <td th:utext="${check.getSession().getClassName()}"></td>
+                    <th>Seance</th>
+                    <th>La date d'enregistrement</th>
+                    <th>Le temps d'enregistrement</th>
+                </tr>
 
-                        <td th:utext="${check.getCheckinDate()}"></td>
-                        <td th:utext="${check.getCheckinTime()}"></td>
+                <tr th:each="check:${checkins}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
 
-                    </tr>
-                </table>
+                    <td th:utext="${check.getSession().getClassName()}"></td>
 
-            </div>
+                    <td th:utext="${check.getCheckinDate()}"></td>
+                    <td th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
 
+                </tr>
+            </table>
+
+        </div>
 
 
     </div>
 </div>
-<style>
-    body {
-        margin-top: 20px;
-        color: #1a202c;
-        text-align: left;
-        background-color: #e2e8f0;
-    }
-
-    .main-body {
-        padding: 15px;
-    }
-
-    .card {
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
-    }
-
-    .card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        word-wrap: break-word;
-        background-color: #fff;
-        background-clip: border-box;
-        border: 0 solid rgba(0, 0, 0, .125);
-        border-radius: .25rem;
-    }
-
-    .card-body {
-        flex: 1 1 auto;
-        min-height: 1px;
-        padding: 1rem;
-    }
-
-    .gutters-sm {
-        margin-right: -8px;
-        margin-left: -8px;
-    }
-
-    .gutters-sm > .col, .gutters-sm > [class*=col-] {
-        padding-right: 8px;
-        padding-left: 8px;
-    }
-
-    .mb-3, .my-3 {
-        margin-bottom: 1rem !important;
-    }
-
-    .bg-gray-300 {
-        background-color: #e2e8f0;
-    }
-
-    .h-100 {
-        height: 100% !important;
-    }
-
-    .shadow-none {
-        box-shadow: none !important;
-    }
-</style>
 </body>
 </html>

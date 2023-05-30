@@ -16,8 +16,8 @@ public class NotificationServiceImp implements NotificationService{
         this.notificationRepository = notificationRepository;
     }
     @Override
-    public List<Notification> getNotificationByUser(UserApp userApp) {
-        return notificationRepository.findByRecipient(userApp);
+    public List<Notification> getNotificationByUser(List<UserApp> userApp) {
+        return notificationRepository.findByRecipientIn(userApp);
     }
 
     @Override

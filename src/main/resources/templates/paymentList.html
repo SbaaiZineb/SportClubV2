@@ -46,6 +46,7 @@
               <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
             </td>
             <td><a  th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+                <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
                 <style>
                     .hide{
                         display: none;
@@ -69,10 +70,31 @@
     <!-- Payment Modal -->
     <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="paymentLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="paymentlabel"></h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Payment Modal -->
+    <div class="modal fade" id="invoice" tabindex="-1" role="dialog" aria-labelledby="invoiceLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="invoicelabel"></h3>
                     <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
 
                     </button>
@@ -92,6 +114,39 @@
 
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
     <script>
+        function generateAndDownloadInvoice(paymentId) {
+            // Send an AJAX request to the server to generate the invoice
+            $.ajax({
+                type: "GET",
+                url: "/invoice?id="+paymentId,
+                data: { id: paymentId },
+                success: function(response) {
+                    // Create a Blob from the response data
+                    var blob = new Blob([response], { type: "application/pdf" });
+
+                    // Create a temporary URL for the Blob
+                    var url = URL.createObjectURL(blob);
+
+                    // Create a link element and set its attributes
+                    var link = document.createElement("a");
+                    link.href = url;
+                    link.download = "invoice.pdf";
+
+                    // Append the link to the document and click it programmatically to trigger the download
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up the temporary URL and remove the link element
+                    URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                },
+                error: function() {
+                    alert("Failed to generate the invoice.");
+                }
+            });
+        }
+
+
         $('#payment').on('show.bs.modal', function () {
 
             $(".pBn").click(function () {
@@ -104,6 +159,18 @@
 
 
         })
+       /* $('#invoice').on('show.bs.modal', function () {
+
+            $(".inv").click(function () {
+                var id = $(this).attr('id');
+
+                $.get("/invoice?id=" + id, function (data) {
+                    $('#invoice').find('.modal-body').html(data);
+                })
+            })
+
+
+        })*/
     </script>
 
 </div>

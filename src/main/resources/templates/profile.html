@@ -4,7 +4,7 @@
 <head th:insert="~{partials/sideBar  :: header}">
     <meta charset="UTF-8">
     <title>Profil</title>
-</head >
+</head>
 <body>
 <div layout:fragment="content" class="container">
     <div class="main-body">
@@ -14,85 +14,291 @@
 
         <div class="row gutters-sm">
             <div class="col-md-4 mb-3">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img th:src="@{/images/nnn.jpeg}" alt="Admin" class="rounded-circle" width="150">
+                            <img th:if="${userPic}" alt="user icon" class="rounded-circle" style="width: 212px;
+height: 212px;
+object-fit: cover;"
+                                 th:src="@{'images/'+${userPic}}">
                             <div class="mt-3">
-                                <h4>John Doe</h4>
-                                <p class="text-secondary mb-1">Full Stack Developer</p>
-                                <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                                <h4 class="fw-bold mt-3" style="color: #30639f;"
+                                    th:utext="${#strings.capitalize(userName)}+' '+${#strings.capitalize(userLname)}"></h4>
+                                <p class="text-secondary fw-bold mb-1" th:utext="${email}"></p>
+
 
                             </div>
                         </div>
                     </div>
-                </div></div><div class="col-md-8">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">Full Name</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            Kenneth Valdez
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">Email</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            fip@jukmuh.al
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">Phone</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            (239) 816-9029
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">Mobile</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            (320) 380-4539
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">Address</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            Bay Area, San Francisco, CA
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
-                        </div>
-                    </div>
                 </div>
-            </div></div></div></div></div>
+            </div>
+            <div class="col-md-8">
+                <form th:action="@{/editAdminProfile}" method="post" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+                    <input type="hidden"  name="id" th:value="${user.id}">
+                    <input type="hidden"  name="pic" th:value="${userPic}">
+                    <input type="hidden" name="roles" th:value="${user.roles.role_id}">
+                    <input type="hidden" name="password" th:value="${user.password}">
+                    <img  th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
+                         th:src="@{'images/'+${user.pic}}">
+                    <style>
+                        .hidden {
+                        display: none;
+                        }
+                    </style>
+                    <div class="card h-100" style="background-color: #598edb26;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Nom</h6>
+                                    </div>
+
+                                    <input class="col-sm-9 text-secondary input" th:field="*{user.name}">
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Prénom</h6>
+                                    </div>
+                                    <input class="col-sm-9 text-secondary input" th:field="${user.lname}">
+                                    </input>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Email</h6>
+                                    </div>
+                                    <input class="col-sm-9 text-secondary input" th:field="*{user.email}">
+                                    </input>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Tele</h6>
+                                    </div>
+                                    <input class="col-sm-9 text-secondary input" th:field="*{user.tele}">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Cin</h6>
+                                    </div>
+                                    <input class="col-sm-9 text-secondary input" th:field="*{user.cin}">
+                                    </input>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="row me-1">
+                                    <div class="col-sm-7 d-flex align-items-center">
+                                        <h6 class="mb-0">Date de naissance</h6>
+                                    </div>
+                                    <input class="col-sm-5 text-secondary input" th:field="*{user.dob}">
+                                    </input>
+                                </div>
+
+                            </div>
+
+                            <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" th:value="${user.sport_type}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Adresse</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{user.adress}">
+                                        </input>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <button class="btn btn-info" type="submit" style="float: right;
+margin-top: 4px;
+margin-right: 8px;">Sauvegarder
+                        </button>
+                    </div>
+
+                </div></form>
+                <style>
+                    .col-sm-5.text-secondary.input,
+                    .col-sm-9.text-secondary.input {
+                        box-sizing: border-box;
+                        -webkit-box-sizing: border-box;
+                        -moz-box-sizing: border-box;
+                        outline: none;
+                        display: block;
+                        width: 100%;
+                        padding: 7px;
+                        border: none;
+                        border-bottom: 1px solid #9997ba;
+                        background: transparent;
+                        margin-bottom: 10px;
+                        font: 16px Arial, Helvetica, sans-serif;
+                        height: 45px;
+                        margin-left: 4px;
+                    }
+
+                    .mb-0 {
+                        font-weight: bold;
+                        color: #30639f;
+                    }
+
+                    .col-sm-9.text-secondary.input:focus {
+                        border-bottom: 2px solid #16a7d3;
+                    }
+                </style>
+                <form th:action="@{/editCoachProfile}" method="POST" enctype="multipart/form-data" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
+                    <input type="hidden" id="id" name="id" th:value="${coach.id}">
+                    <input type="hidden" id="pic" name="pic" th:value="${userPic}">
+                    <input type="hidden" name="roles" th:value="${coach.roles.role_id}">
+                    <input type="hidden" name="password" th:value="${coach.password}">
+                    <img  th:if="${coach.pic}" alt="user icon"  class="rounded-circle hidden"
+                          th:src="@{'images/'+${coach.pic}}">
+                    <style>
+                        .hidden {
+                            display: none;
+                        }
+                    </style>
+                    <div class="card h-100" style="background-color: #598edb26;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Nom</h6>
+                                        </div>
+
+                                        <input class="col-sm-9 text-secondary input" th:field="*{coach.name}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Prénom</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{coach.lname}">
+                                        </input>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Email</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{coach.email}">
+                                        </input>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Tele</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{coach.tele}">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Cin</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{coach.cin}">
+                                        </input>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row me-1">
+                                        <div class="col-sm-7 d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance</h6>
+                                        </div>
+                                        <input class="col-sm-5 text-secondary input" th:field="*{coach.dob}">
+                                        </input>
+                                    </div>
+
+                                </div>
+
+                                <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" name="sport_type" th:value="${coach.sport_type}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-sm-3 d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse</h6>
+                                            </div>
+                                            <input class="col-sm-9 text-secondary input" th:field="*{coach.adress}">
+                                            </input>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <button class="btn btn-info" type="submit" style="float: right;
+margin-top: 4px;
+margin-right: 8px;">Sauvegarder
+                            </button>
+                        </div>
+
+                    </div></form>
+            </div>
+        </div>
+        <div class="card mt-4" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
+            <div class="card-header" style="background-color: #4c7abd;">
+                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
+            </div>
+            <table class="table table-centered table-hover table-responsive mt-3">
+
+                <tr th:each="check:${coachCheckIn}" style="background-color: white">
+                    <td th:utext="${check.getId}"></td>
+                    <td th:utext="${check.getSession().getClassName()}"></td>
+
+                    <td th:utext="${check.getCheckinDate()}"></td>
+                    <td th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
+
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
 <style>
-    body{
-        margin-top:20px;
-        color: #1a202c;
-        text-align: left;
-        background-color: #e2e8f0;
-    }
+
     .main-body {
         padding: 15px;
     }
+
     .card {
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
     }
 
     .card {
@@ -103,7 +309,7 @@
         word-wrap: break-word;
         background-color: #fff;
         background-clip: border-box;
-        border: 0 solid rgba(0,0,0,.125);
+        border: 0 solid rgba(0, 0, 0, .125);
         border-radius: .25rem;
     }
 
@@ -118,23 +324,23 @@
         margin-left: -8px;
     }
 
-    .gutters-sm>.col, .gutters-sm>[class*=col-] {
+    .gutters-sm > .col, .gutters-sm > [class*=col-] {
         padding-right: 8px;
         padding-left: 8px;
     }
+
     .mb-3, .my-3 {
-        margin-bottom: 1rem!important;
+        margin-bottom: 1rem !important;
     }
 
     .bg-gray-300 {
         background-color: #e2e8f0;
     }
+
     .h-100 {
-        height: 100%!important;
+        height: 100% !important;
     }
-    .shadow-none {
-        box-shadow: none!important;
-    }
+
 </style>
 </body>
 </html>
