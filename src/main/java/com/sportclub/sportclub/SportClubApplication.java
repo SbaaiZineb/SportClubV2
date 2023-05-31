@@ -1,10 +1,5 @@
 package com.sportclub.sportclub;
 
-import com.sportclub.sportclub.controller.FingerPrint;
-import com.sportclub.sportclub.entities.CheckIn;
-import com.sportclub.sportclub.entities.Coach;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Seance;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,12 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class SportClubApplication  implements CommandLineRunner {

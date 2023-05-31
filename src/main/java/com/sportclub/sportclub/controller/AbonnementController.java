@@ -4,8 +4,6 @@ import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.service.AbonnementService;
-import com.sportclub.sportclub.service.FingerprintSensorErrorCode;
-import com.sportclub.sportclub.service.FingerprintSensorEx;
 import com.sportclub.sportclub.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,11 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.beans.PropertyEditorSupport;
-import java.time.Period;
 import java.util.List;
 
 @Controller

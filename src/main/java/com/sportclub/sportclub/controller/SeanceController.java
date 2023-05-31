@@ -45,7 +45,7 @@ public class SeanceController {
     @Autowired
     NotificationService notificationService;
 
-
+    CalendarEvent calendarEvent = new CalendarEvent();
     @GetMapping("/calendar")
     public String getCalendar(Model model) {
         System.out.println(eventRepo.findAll());
@@ -142,7 +142,7 @@ public class SeanceController {
         notificationService.addNotification(notification);
 
         //Add new Event based on the added session
-        CalendarEvent calendarEvent = new CalendarEvent();
+
         calendarEvent.setTitle(seance.getClassName());
         calendarEvent.setStart(seance.getStartDate());
         calendarEvent.setStartTime(seance.getStartTime());
@@ -232,8 +232,46 @@ public class SeanceController {
     public String editSeance(@Validated Seance seance, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateSeanceModal";
 
+
         //TODO: Update session -> update event or add new event
-        service.updateSeance(seance);
+        List<CalendarEvent> calendarEvents = eventRepo.findAll();
+        for (CalendarEvent event : calendarEvents
+        ) {
+            if (event.getTitle().equals(seance.getClassName()) && event.getStart().equals(seance.getStartDate()) && event.getStartTime().equals(seance.getStartTime()) && event.getEndTime().equals(seance.getEndTime())) {
+                eventRepo.delete(event);
+                service.updateSeance(seance);
+                //Add new Event based on the added session
+                calendarEvent.setTitle(seance.getClassName());
+                calendarEvent.setStart(seance.getStartDate());
+                calendarEvent.setStartTime(seance.getStartTime());
+                calendarEvent.setEndTime(seance.getEndTime());
+                calendarEvent.setUsername(seance.getCoach().getEmail());
+                int nbrToAdd = seance.getNumWeeks();
+                LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+                calendarEvent.setEndRecur(newEnd);
+                calendarEvent.setStartRecur(seance.getStartDate());
+                List<Integer> dayInt = new ArrayList<>();
+                for (String day : seance.getDays()
+                ) {
+                    if (day != null) {
+                        try {
+                            System.out.println(day);
+                            DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                            Integer di = dayOfWeek.getValue();
+                            dayInt.add(di);
+                            System.out.println(dayOfWeek);
+                            System.out.println(di);
+                            System.out.println(dayInt);
+                            calendarEvent.setDaysOfWeek(dayInt);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Error " + e);
+                        }
+                    }
+
+                }
+                eventRepo.save(calendarEvent);
+            }
+        }
         return "redirect:/seanceList";
     }
 }

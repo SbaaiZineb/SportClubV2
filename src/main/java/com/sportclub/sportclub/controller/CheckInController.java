@@ -56,7 +56,10 @@ CoachService coachService;
             ) {
                 DayOfWeek df = DayOfWeek.valueOf(day);
                 System.out.println("Day is " + df + " " + day);
-                if (df == dayOfWeek) {
+                int nbrToAdd = session.getNumWeeks();
+                LocalDate newEnd = session.getStartDate().plusWeeks(nbrToAdd);
+
+                if (df == dayOfWeek && newEnd.isBefore(LocalDate.now())) {
 
                     seanceList.add(session);
                     LocalTime currentTime = LocalTime.now();

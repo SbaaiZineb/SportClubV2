@@ -24,5 +24,5 @@ public class CheckInCoach {
 
     private LocalDate checkinDate;
     private LocalTime checkinTime;
-    private int statut=1;
+    private String statut="Checkedin";
 }
