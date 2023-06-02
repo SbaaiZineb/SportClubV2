@@ -37,7 +37,7 @@ public class Seance {
     private Coach coach;
     @OneToMany(mappedBy = "session")
     private List<CheckIn> checkIns;
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "session",fetch = FetchType.EAGER)
     private List<CheckInCoach> checkInCoaches;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "days")

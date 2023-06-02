@@ -232,8 +232,6 @@ public class SeanceController {
     public String editSeance(@Validated Seance seance, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateSeanceModal";
 
-
-        //TODO: Update session -> update event or add new event
         List<CalendarEvent> calendarEvents = eventRepo.findAll();
         for (CalendarEvent event : calendarEvents
         ) {

@@ -197,18 +197,18 @@ object-fit: cover;"
             </div>
             <table class="table table-centered table-hover table-responsive mt-3">
                 <tr style="background-color: #e0e7f46b!important;">
-
+<th>ID de seance</th>
                     <th>Seance</th>
                     <th>La date d'enregistrement</th>
                     <th>Le temps d'enregistrement</th>
                 </tr>
 
                 <tr th:each="check:${checkins}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+<td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId()}"></td>
+                    <td style="font-weight: bold" th:utext="${check.getSession().getClassName()}"></td>
 
-                    <td th:utext="${check.getSession().getClassName()}"></td>
-
-                    <td th:utext="${check.getCheckinDate()}"></td>
-                    <td th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
 
                 </tr>
             </table>

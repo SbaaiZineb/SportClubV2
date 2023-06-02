@@ -58,14 +58,15 @@ CoachService coachService;
                 System.out.println("Day is " + df + " " + day);
                 int nbrToAdd = session.getNumWeeks();
                 LocalDate newEnd = session.getStartDate().plusWeeks(nbrToAdd);
-
-                if (df == dayOfWeek && newEnd.isBefore(LocalDate.now())) {
+                System.out.println(newEnd);
+                if (df == dayOfWeek && LocalDate.now().isBefore(newEnd)) {
 
                     seanceList.add(session);
                     LocalTime currentTime = LocalTime.now();
                     model.addAttribute("currentTime", currentTime);
                     model.addAttribute("TodaySession", seanceList);
-                }
+
+                }System.out.println(seanceList);
             }
 
         }
@@ -149,7 +150,7 @@ CoachService coachService;
     }
 
     // Manage coach check in
-    @GetMapping("coach/enregistrement")
+    @GetMapping("coach/enregistre")
     public String getCheckPage(Model model, Authentication authentication) {
 
         String username = authentication.getName();
@@ -167,7 +168,10 @@ CoachService coachService;
             ) {
                 DayOfWeek df = DayOfWeek.valueOf(day);
                 System.out.println("Day is " + df + " " + day);
-                if (df == dayOfWeek) {
+                int nbrToAdd = session.getNumWeeks();
+                LocalDate newEnd = session.getStartDate().plusWeeks(nbrToAdd);
+                System.out.println(newEnd);
+                if (df == dayOfWeek && LocalDate.now().isBefore(newEnd)) {
 
                     seanceList.add(session);
                     LocalTime currentTime = LocalTime.now();
@@ -197,6 +201,6 @@ CoachService coachService;
             coachCheckInService.addCheck(checkIn);
 
 
-        return "redirect:/coach/enregistrement";
+        return "redirect:/coach/enregistre";
     }
 }

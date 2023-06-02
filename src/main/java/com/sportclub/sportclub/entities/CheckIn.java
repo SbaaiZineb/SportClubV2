@@ -1,15 +1,14 @@
 package com.sportclub.sportclub.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckIn {
@@ -25,6 +24,6 @@ public class CheckIn {
     @JoinColumn(name = "session_id")
     private Seance session;
 
-private LocalDate checkinDate;
-private LocalTime checkinTime;
+    private LocalDate checkinDate;
+    private LocalTime checkinTime;
 }

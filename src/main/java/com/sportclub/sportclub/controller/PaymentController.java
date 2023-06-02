@@ -75,7 +75,6 @@ model.addAttribute("paymentList",paiements);
     public String addAb(@Validated Paiement paiement, BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "paymentModal";
         paiement.setPayedAt(LocalDate.now());
-        paiement.setPayedBy("visa");
         paiement.setStatue("Payé");
         paymentService.updatePayment(paiement);
         return "redirect:/paymentList";

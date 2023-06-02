@@ -22,7 +22,7 @@ public class Coach extends UserApp {
         this.sport_type = sport_type;
     }
 
-    @OneToMany(mappedBy = "coach", fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
     private List<CheckInCoach> checkInCoaches;
     @OneToMany(mappedBy = "coach",cascade = { CascadeType.ALL}, fetch = FetchType.LAZY )
     private List<Seance> seances;

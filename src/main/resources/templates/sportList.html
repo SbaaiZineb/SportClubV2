@@ -21,8 +21,8 @@
       </div>
     </form>
   </div>
-  <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
-          data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"></i>Ajouter</button>
+  <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"
+          data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1" ></i>Ajouter</button>
 
   <form th:action="@{/deleteSports}" method="post" enctype="multipart/form-data">
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
@@ -34,7 +34,7 @@
         <th>Image</th>
         <th>Nom de sport</th>
         <th>Description</th>
-        <th>Action</th>
+        <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">Action</th>
       </tr>
       <tr th:each="ab:${listSport}">
         <td>

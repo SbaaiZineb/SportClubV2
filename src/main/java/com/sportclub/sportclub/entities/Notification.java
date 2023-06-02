@@ -25,5 +25,5 @@ public class Notification {
 
     @ManyToMany
     @JoinColumn(name = "recipient_id")
-    private List<UserApp> recipient;
+        private List<UserApp> recipient;
 }

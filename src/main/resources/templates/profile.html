@@ -33,110 +33,113 @@ object-fit: cover;"
                 </div>
             </div>
             <div class="col-md-8">
-                <form th:action="@{/editAdminProfile}" method="post" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
-                    <input type="hidden"  name="id" th:value="${user.id}">
-                    <input type="hidden"  name="pic" th:value="${userPic}">
+                <form th:action="@{/editAdminProfile}" method="post"
+                      th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <input type="hidden" name="pic" th:value="${userPic}">
                     <input type="hidden" name="roles" th:value="${user.roles.role_id}">
                     <input type="hidden" name="password" th:value="${user.password}">
-                    <img  th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
+                    <img th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
                          th:src="@{'images/'+${user.pic}}">
                     <style>
                         .hidden {
-                        display: none;
+                            display: none;
                         }
                     </style>
                     <div class="card h-100" style="background-color: #598edb26;">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Nom</h6>
-                                    </div>
-
-                                    <input class="col-sm-9 text-secondary input" th:field="*{user.name}">
-                                </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Prénom</h6>
-                                    </div>
-                                    <input class="col-sm-9 text-secondary input" th:field="${user.lname}">
-                                    </input>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Email</h6>
-                                    </div>
-                                    <input class="col-sm-9 text-secondary input" th:field="*{user.email}">
-                                    </input>
-                                </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Tele</h6>
-                                    </div>
-                                    <input class="col-sm-9 text-secondary input" th:field="*{user.tele}">
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Cin</h6>
-                                    </div>
-                                    <input class="col-sm-9 text-secondary input" th:field="*{user.cin}">
-                                    </input>
-                                </div>
-
-                            </div>
-                            <div class="col-md-6">
-
-                                <div class="row me-1">
-                                    <div class="col-sm-7 d-flex align-items-center">
-                                        <h6 class="mb-0">Date de naissance</h6>
-                                    </div>
-                                    <input class="col-sm-5 text-secondary input" th:field="*{user.dob}">
-                                    </input>
-                                </div>
-
-                            </div>
-
-                            <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" th:value="${user.sport_type}">
+                        <div class="card-body">
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
                                         <div class="col-sm-3 d-flex align-items-center">
-                                            <h6 class="mb-0">Adresse</h6>
+                                            <h6 class="mb-0">Nom</h6>
                                         </div>
-                                        <input class="col-sm-9 text-secondary input" th:field="*{user.adress}">
+
+                                        <input class="col-sm-9 text-secondary input" th:field="*{user.name}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Prénom</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="${user.lname}">
                                         </input>
                                     </div>
+
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Email</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{user.email}">
+                                        </input>
+                                    </div>
 
-                        </div>
-                        <button class="btn btn-info" type="submit" style="float: right;
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Tele</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{user.tele}">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Cin</h6>
+                                        </div>
+                                        <input class="col-sm-9 text-secondary input" th:field="*{user.cin}">
+                                        </input>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row me-1">
+                                        <div class="col-sm-7 d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance</h6>
+                                        </div>
+                                        <input class="col-sm-5 text-secondary input" th:field="*{user.dob}">
+                                        </input>
+                                    </div>
+
+                                </div>
+
+                                <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}"
+                                       th:value="${user.sport_type}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-sm-3 d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse</h6>
+                                            </div>
+                                            <input class="col-sm-9 text-secondary input" th:field="*{user.adress}">
+                                            </input>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <button class="btn btn-info" type="submit" style="float: right;
 margin-top: 4px;
 margin-right: 8px;">Sauvegarder
-                        </button>
-                    </div>
+                            </button>
+                        </div>
 
-                </div></form>
+                    </div>
+                </form>
                 <style>
                     .col-sm-5.text-secondary.input,
                     .col-sm-9.text-secondary.input {
@@ -165,13 +168,14 @@ margin-right: 8px;">Sauvegarder
                         border-bottom: 2px solid #16a7d3;
                     }
                 </style>
-                <form th:action="@{/editCoachProfile}" method="POST" enctype="multipart/form-data" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
+                <form th:action="@{/editCoachProfile}" method="POST" enctype="multipart/form-data"
+                      th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
                     <input type="hidden" id="id" name="id" th:value="${coach.id}">
                     <input type="hidden" id="pic" name="pic" th:value="${userPic}">
                     <input type="hidden" name="roles" th:value="${coach.roles.role_id}">
                     <input type="hidden" name="password" th:value="${coach.password}">
-                    <img  th:if="${coach.pic}" alt="user icon"  class="rounded-circle hidden"
-                          th:src="@{'images/'+${coach.pic}}">
+                    <img th:if="${coach.pic}" alt="user icon" class="rounded-circle hidden"
+                         th:src="@{'images/'+${coach.pic}}">
                     <style>
                         .hidden {
                             display: none;
@@ -247,7 +251,8 @@ margin-right: 8px;">Sauvegarder
 
                                 </div>
 
-                                <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" name="sport_type" th:value="${coach.sport_type}">
+                                <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}"
+                                       name="sport_type" th:value="${coach.sport_type}">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
@@ -261,7 +266,6 @@ margin-right: 8px;">Sauvegarder
                                 </div>
 
 
-
                             </div>
                             <button class="btn btn-info" type="submit" style="float: right;
 margin-top: 4px;
@@ -269,7 +273,8 @@ margin-right: 8px;">Sauvegarder
                             </button>
                         </div>
 
-                    </div></form>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="card mt-4" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
@@ -277,13 +282,20 @@ margin-right: 8px;">Sauvegarder
                 <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
             </div>
             <table class="table table-centered table-hover table-responsive mt-3">
+                <tr style="background-color: #e0e7f46b!important;">
+                    <th>id de seance</th>
+                    <th>Seance</th>
+                    <th>La date d'enregistrement</th>
+                    <th>Le temps d'enregistrement</th>
+                </tr>
+
 
                 <tr th:each="check:${coachCheckIn}" style="background-color: white">
-                    <td th:utext="${check.getId}"></td>
-                    <td th:utext="${check.getSession().getClassName()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId}"></td>
+                    <td style="font-weight: bold" th:utext="${check.getSession().getClassName()}"></td>
 
-                    <td th:utext="${check.getCheckinDate()}"></td>
-                    <td th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
 
                 </tr>
             </table>

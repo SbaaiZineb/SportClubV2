@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CostumUserDetails implements UserDetails {
  private final UserApp userApp;
- private String pic;
+  String pic;
 
     public CostumUserDetails(UserApp userApp, String pic) {
         this.userApp = userApp;
