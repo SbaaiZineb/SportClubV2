@@ -24,6 +24,15 @@ public class CheckInCoach {
 
     private LocalDate checkinDate;
     private LocalTime checkinTime;
+
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
     private String statut="Checkedin";
 
 }

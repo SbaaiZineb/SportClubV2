@@ -57,10 +57,10 @@ public class SportController {
         return "redirect:/sportList";
     }
     @RequestMapping(path = {"/sportList/search"})
-    public String search( Model model, String ab) {
+    public String search( Model model, String sport) {
 
-        if(ab!=null) {
-            List<Sport> list = service.findByNameCon(ab);
+        if(sport!=null) {
+            List<Sport> list = service.findByNameCon(sport);
             model.addAttribute("listSport", list);
         }else {
             List<Sport> list = service.getAllSports();

@@ -35,9 +35,9 @@ public class Seance {
     @ManyToOne
     @JoinColumn(name = "coach_id")
     private Coach coach;
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "session",  fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
     private List<CheckIn> checkIns;
-    @OneToMany(mappedBy = "session",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "session",  fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
     private List<CheckInCoach> checkInCoaches;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "days")

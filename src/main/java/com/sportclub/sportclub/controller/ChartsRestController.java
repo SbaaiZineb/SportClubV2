@@ -1,17 +1,22 @@
 package com.sportclub.sportclub.controller;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.CheckIn;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.CheckInService;
+import com.sportclub.sportclub.service.CoachCheckInService;
+import com.sportclub.sportclub.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 
@@ -23,6 +28,10 @@ public class ChartsRestController {
     MemberRepository memberRepository;
     @Autowired
     CheckInService checkInService;
+    @Autowired
+    CoachCheckInService coachCheckInService;
+    @Autowired
+    CoachService coachService;
 
     @GetMapping("/memberShipStatistic")
     public ResponseEntity<Map<String, Integer>> membership(Model model) {
@@ -40,14 +49,14 @@ public class ChartsRestController {
     }
 
     @GetMapping("/checkInStatistic")
-    public ResponseEntity<Map<String, Integer>> checkins() {
+    public ResponseEntity<Map<String, Integer>> checkins(@RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
 
         Map<String, Integer> statistics = new HashMap<>();
 
-        List<CheckIn> checkIns = checkInService.getCheckInOfCurrenteek();
-        for (CheckIn check:checkIns
-             ) {
-            DayOfWeek dayOfWeek=check.getCheckinDate().getDayOfWeek();
+        List<CheckIn> checkIns = checkInService.getCheckInOfCurrenteek(selectedDate);
+        for (CheckIn check : checkIns
+        ) {
+            DayOfWeek dayOfWeek = check.getCheckinDate().getDayOfWeek();
             String day = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.FRENCH);
 
             // Increment the count for the specific day in the statistics map
@@ -55,6 +64,43 @@ public class ChartsRestController {
         }
 
 
-        return  ResponseEntity.ok(statistics);
+        return ResponseEntity.ok(statistics);
+    }
+
+    @GetMapping("/checkInMember")
+    public ResponseEntity<Map<String, Integer>> checkinMember(@RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate, @RequestParam("id") Long id) {
+
+        Map<String, Integer> statistics = new HashMap<>();
+        Member member = memberRepository.findById(id).get();
+        List<CheckIn> checkIns = checkInService.getByMember(member, selectedDate);
+        for (CheckIn check : checkIns
+        ) {
+            Month month = check.getCheckinDate().getMonth();
+            String monthName = month.getDisplayName(TextStyle.FULL, Locale.FRENCH);
+
+// Increment the count for the specific month in the statistics map
+            statistics.put(monthName, statistics.getOrDefault(monthName, 0) + 1);
+        }
+
+        return ResponseEntity.ok(statistics);
+    }
+
+    @GetMapping("/coachStatistic")
+    public ResponseEntity<Map<String, Integer>> coachCheck(@RequestParam("dateSelected") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateSelected, @RequestParam("id") Long id) {
+
+        Map<String, Integer> statistics = new HashMap<>();
+        Coach coach = coachService.getCoachById(id);
+        List<CheckInCoach> checkIns = coachCheckInService.getCheckInOfCurrentWeek(coach, dateSelected);
+        for (CheckInCoach check : checkIns
+        ) {
+            DayOfWeek dayOfWeek = check.getCheckinDate().getDayOfWeek();
+            String day = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.FRENCH);
+
+            // Increment the count for the specific day in the statistics map
+            statistics.put(day, statistics.getOrDefault(day, 0) + 1);
+        }
+
+
+        return ResponseEntity.ok(statistics);
     }
 }

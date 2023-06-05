@@ -9,7 +9,8 @@
 <div layout:fragment="content" class="container">
     <div class="row">
         <h2 style="font-family: Arial, sans-serif !important;
-             color: #233247;font-weight: bold;" th:utext="${'Bonjour Mr '+#authentication.name}"></h2>
+             color: #233247;font-weight: bold;" class="mb-5"
+            th:utext="${#strings.capitalize('Bonjour Mr '+#authentication.principal.userName)}"></h2>
         <div class="col-md-12">
 
             <div class="card h-100">
@@ -23,25 +24,28 @@
                     <div th:each="s:${TodaySessions}">
 
 
-                        <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89);" >
+                        <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89);">
 
                             <div class="card-body " style="padding: 9px;">
-                                <!-- <div title="nombre des adherents enregistre" class="float-end" th:utext="${count}" style=" display: flex;
+                                 <div title="nombre des adherents enregistre" class="float-end" th:utext="${#lists.size(s.getCheckIns())}" style=" display: flex;
                                         align-items: center;
                                         justify-content: center;
                                         flex-direction: column;
                                         background-color: #85a2f0;
                                         width: 2rem;
                                         height: 2rem;
-                                        border-radius: 50%;"></div>-->
+                                        border-radius: 50%;"></div>
                                 <div class="row">
                                     <div class="col-md-10">
-                                        <div class="media d-flex divC"  id="divC" data-th-id="${s.id}" data-bs-toggle="modal" data-bs-target="#checkinCoach">
+                                        <div class="media d-flex divC" id="divC" data-th-id="${s.id}"
+                                             data-bs-toggle="modal" data-bs-target="#checkinCoach">
 
                                             <div class="media-body text-left ">
 
-                                                <p class="text-info  fw-bold pp" th:if="${s.getStartTime() gt currentTime}">A venir</p>
-                                                <p class="text-danger fw-bold pf" th:if="${s.getEndTime() lt currentTime}">Fini</p>
+                                                <p class="text-info  fw-bold pp"
+                                                   th:if="${s.getStartTime() gt currentTime}">A venir</p>
+                                                <p class="text-danger fw-bold pf"
+                                                   th:if="${s.getEndTime() lt currentTime}">Fini</p>
                                                 <p class="text-success fw-bold pc"
                                                    th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">
                                                     En cours</p>
@@ -55,11 +59,19 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <a th:href="@{/coachcheckin(id=${s.getId()})}" class="btn btn-info" style="margin-top: 36px;margin-left: 60px;">Check in</a>
-<!--
-                                        <a th:if="${check != null and check.getStatut()=='Checkedin'}" style="margin-top: 36px;margin-left: 60px;"><i class="bi bi-check-all"></i></a>
--->
-
+                                        <a th:unless="${s.getEndTime() lt currentTime}" th:href="@{/coachcheckin(id=${s.getId()})}" class="btn btn-info"
+                                           style="margin-top: 36px;margin-left: 60px;">Enreg</a>
+                                        <a th:if="${s.getEndTime() lt currentTime}" class="text-danger fw-bold">Manqué</a>
+                                        <div th:each="check :${s.getCheckInCoaches()}">
+                                            <a th:if="${check != null and check.getStatut() == 'Checkedin' and check.getCheckinDate() == currentDate}"
+                                               style="margin-top: 36px;margin-left: 60px;font-size: 21px;
+color: #14ac24;"><i class="bi bi-check-all"></i></a>
+                                        </div>
+                                        <style>
+                                            .hide {
+                                                display: none;
+                                            }
+                                        </style>
                                     </div>
                                 </div>
 
@@ -85,7 +97,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table id="dataTable" class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
+                    <table id="dataTable"
+                           class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
                         <tr style="background-color: white">
                             <th>Id</th>
                             <th>Image</th>
@@ -118,9 +131,10 @@
                 })
             })
         })
-function checkIn(id){
-            $.get("/Coachcheckin?id=" +id);
-}
+
+        function checkIn(id) {
+            $.get("/Coachcheckin?id=" + id);
+        }
     </script>
 </div>
 

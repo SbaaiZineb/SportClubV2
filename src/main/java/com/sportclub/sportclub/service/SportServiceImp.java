@@ -46,6 +46,6 @@ public class SportServiceImp implements SportService {
 
     @Override
     public List<Sport> findByNameCon(String kw) {
-        return sportRepo.findByNom(kw);
+        return sportRepo.findByNomContains(kw);
     }
 }

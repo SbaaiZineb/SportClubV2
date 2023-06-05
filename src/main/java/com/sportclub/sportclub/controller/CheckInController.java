@@ -181,6 +181,7 @@ CoachService coachService;
             }
 
         }
+        model.addAttribute("currentDate",LocalDate.now());
         List<CheckInCoach> checkIn = coachCheckInService.findLatest(localDate);
         model.addAttribute("checkin", checkIn);
         return "coachCheckIn";

@@ -35,7 +35,7 @@ object-fit: cover;"
             <div class="col-md-8">
                 <form th:action="@{/editAdminProfile}" method="post"
                       th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
-                    <input type="hidden" name="id" th:value="${user.id}">
+                    <input type="hidden" name="id" th:value="${user.id}" >
                     <input type="hidden" name="pic" th:value="${userPic}">
                     <input type="hidden" name="roles" th:value="${user.roles.role_id}">
                     <input type="hidden" name="password" th:value="${user.password}">
@@ -170,7 +170,7 @@ margin-right: 8px;">Sauvegarder
                 </style>
                 <form th:action="@{/editCoachProfile}" method="POST" enctype="multipart/form-data"
                       th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
-                    <input type="hidden" id="id" name="id" th:value="${coach.id}">
+                    <input type="hidden" id="id" name="id" th:value="${coach.id}" >
                     <input type="hidden" id="pic" name="pic" th:value="${userPic}">
                     <input type="hidden" name="roles" th:value="${coach.roles.role_id}">
                     <input type="hidden" name="password" th:value="${coach.password}">
@@ -277,6 +277,7 @@ margin-right: 8px;">Sauvegarder
                 </form>
             </div>
         </div>
+
         <div class="card mt-4" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
             <div class="card-header" style="background-color: #4c7abd;">
                 <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
@@ -302,6 +303,7 @@ margin-right: 8px;">Sauvegarder
 
         </div>
     </div>
+
 </div>
 <style>
 
@@ -354,5 +356,6 @@ margin-right: 8px;">Sauvegarder
     }
 
 </style>
+
 </body>
 </html>

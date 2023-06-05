@@ -32,7 +32,7 @@ object-fit: cover;"
             </div>
 
 
-            <div class="col-md-8">
+            <div class="col-md-8 idd" th:id="${user.id}" >
                 <div class="card mb-3 h-100" style="background-color: #598edb26;">
                     <div class="card-body">
                         <div class="row">
@@ -149,6 +149,52 @@ object-fit: cover;"
             </div>
 
         </div>
+        <div class="row" th:class="${user.getRoles().roleName == 'COACH' ? 'hide' : 'card mt-4'}">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Graphique à barres</h5>
+                        <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                            effectués par ce adherent chaque mois.</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart chart-sm text-center">
+                            <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
+padding: 5px;
+color: #3b7ddd;
+border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
+background: transparent;margin-top: -17px">
+                            <canvas id="chartjs-bar"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row" th:class="${user.getRoles().roleName == 'COACH' ? 'card mt-4' : 'hide'}">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Graphique à barres</h5>
+                        <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                            effectués par ce entaineur par chaque jour du semaine.</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart chart-sm text-center">
+                            <input type="date" id="dateSelected" name="dateSelected" th:value="${today}" style="float: right;
+padding: 5px;
+color: #3b7ddd;
+border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
+background: transparent;margin-top: -17px">
+                            <canvas id="chartjs-bar-coach"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <div  th:class="${user.getRoles().roleName == 'COACH' ? 'hide' : 'card mt-4'}">
             <style>
                 .hide{
@@ -169,6 +215,8 @@ object-fit: cover;"
                     <td th:utext="${p.getAbonnement().price}+' DH'"></td>
                     <td th:utext="${p.getStart_date()}"></td>
                     <td th:utext="${p.getEnd_date()}"></td>
+                    <td th:utext="${p.payedBy}"></td>
+                    <td th:utext="${p.payedAt}"></td>
                     <td class="text-center">
                         <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
                         <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
@@ -181,15 +229,7 @@ object-fit: cover;"
         </div>
 
 
-        <!-- <div class="col-md-6">
-             <div class="card">
-                 <div class="card-body">
-                     <div class="card-content">
-                         <h3>Les abonnement effectue</h3>
-                     </div>
-                 </div>
-             </div>
-         </div>-->
+
 
         <div class="card mt-4">
             <div class="card-header" style="background-color: #4c7abd;">
@@ -217,6 +257,159 @@ object-fit: cover;"
 
 
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDateInput = document.getElementById("selectedDate");
+            function getQueryParamValue(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            // Function to fetch data and generate chart
+            function fetchDataAndGenerateChart(date,memberId) {
+                fetch('/checkInMember?selectedDate=' + date+ '&id=' + memberId)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+                        const checkInCount = labels.map(month => data[month.toLowerCase()] || 0);
+
+                        new Chart(document.getElementById("chartjs-bar"), {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Check-ins",
+                                    backgroundColor: window.theme.primary,
+                                    borderColor: window.theme.primary,
+                                    hoverBackgroundColor: window.theme.primary,
+                                    hoverBorderColor: window.theme.primary,
+                                    data: checkInCount,
+                                    barPercentage: .75,
+                                    categoryPercentage: .5
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        stacked: false,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: false,
+                                        gridLines: {
+                                            color: "transparent"
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to handle date change event
+            function handleDateChange() {
+                const selectedDate = selectedDateInput.value;
+                console.log("Selected date:", selectedDate);
+                const memberId = getQueryParamValue('id');
+                fetchDataAndGenerateChart(selectedDate, memberId);
+            }
+
+            // Attach event listener to date input
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            // Fetch data and generate chart on page load
+            const initialDate = selectedDateInput.value;
+            const initialMemberId = getQueryParamValue('id');
+            fetchDataAndGenerateChart(initialDate, initialMemberId);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDateInput = document.getElementById("dateSelected");
+            function getQueryParamValue(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            // Function to fetch data and generate chart
+            function fetchDataAndGenerateChart(date,coachId) {
+                fetch('/coachStatistic?dateSelected=' + date+ '&id=' + coachId)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+                        const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
+
+                        new Chart(document.getElementById("chartjs-bar-coach"), {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Enregistrement",
+                                    backgroundColor: window.theme.primary,
+                                    borderColor: window.theme.primary,
+                                    hoverBackgroundColor: window.theme.primary,
+                                    hoverBorderColor: window.theme.primary,
+                                    data: checkInCount,
+                                    barPercentage: .75,
+                                    categoryPercentage: .5
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        stacked: false,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: false,
+                                        gridLines: {
+                                            color: "transparent"
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to handle date change event
+            function handleDateChange() {
+                const dateSelected = selectedDateInput.value;
+                console.log("Selected date:", dateSelected);
+                const coachId = getQueryParamValue('id');
+                fetchDataAndGenerateChart(dateSelected, coachId);
+            }
+
+            // Attach event listener to date input
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            // Fetch data and generate chart on page load
+            const initialDate = selectedDateInput.value;
+            const initialCoachId = getQueryParamValue('id');
+            fetchDataAndGenerateChart(initialDate, initialCoachId);
+        });
+
+    </script>
 </div>
 </body>
 </html>

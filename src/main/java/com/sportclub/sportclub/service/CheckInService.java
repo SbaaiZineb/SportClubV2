@@ -11,7 +11,9 @@ import java.util.Optional;
 
 public interface CheckInService {
     List<CheckIn> getBySession(Long id);
-List<CheckIn> getCheckInOfCurrenteek();
+List<CheckIn> getCheckInOfCurrenteek(LocalDate selectedDate);
+List<CheckIn> getByMember(Member member,LocalDate selectedDAte);
+    List<CheckIn> getCheckInOfWeek();
     void addCheck(CheckIn checkIn);
     List<CheckIn> getAllCheckIns();
     List<CheckIn> findLatest(LocalDate date);

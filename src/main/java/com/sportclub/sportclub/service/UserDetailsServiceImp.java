@@ -28,6 +28,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         return CostumUserDetails.builder()
                 .userApp(user)
                 .pic(user.getPic())
+                .userName(user.getName()+" "+user.getLname())
                 .build();
     }
 }

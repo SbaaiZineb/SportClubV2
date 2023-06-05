@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -43,6 +44,8 @@ public class ProfilController {
         model.addAttribute("userName",coach.getName());
         model.addAttribute("userLname",coach.getLname());
         model.addAttribute("email",coach.getEmail());
+        model.addAttribute("id",coach.getId());
+
         model.addAttribute("coach",coach);
         model.addAttribute("coachCheckIn", checkInCoaches);
     }
@@ -60,6 +63,7 @@ public class ProfilController {
     model.addAttribute("userLname",userApp.getLname());
     model.addAttribute("email",userApp.getEmail());
     model.addAttribute("user",userApp);
+    model.addAttribute("today", LocalDate.now());
     return "profile";
 }
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="partials/layout.html">
 
-<head  th:insert="~{partials/sideBar  :: header}">
+<head th:insert="~{partials/sideBar  :: header}">
     <meta charset="utf-8">
 
 
@@ -13,278 +13,310 @@
 <body>
 
 
-                <div layout:fragment="content">
-                    <div class="row">
-                    <div class="col-xl-6 col-xxl-5 d-flex">
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">Adherents</h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="users"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${countM}"></h1>
-
-                                        </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">Entaineurs</h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="users"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${countC}"></h1>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">Les revenus</h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="dollar-sign"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${price+' '+'DH'}"></h1>
-
-                                        </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">Enregistrements par semaine</h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="shopping-cart"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${size}"></h1>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-xxl-7">
-                        <div class="card flex-fill w-100" style="height: 8.8cm !important;">
-                            <div class="card-header">
-                                <h5 class="card-title">Le diagramme circulaire</h5>
-                                <h6 class="card-subtitle text-muted">Ce diagramme circulaire montre le nombre d'utilisations de chaque adhésion par les membres.</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart">
-                                    <canvas id="membershipChart"></canvas>
-                                    <div id="legend" style="float: right;margin: 10px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div></div>
-                    <div class="row">
-                        <div class="col-xl-12 col-xxl-12">
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-xl-6 col-xxl-5 d-flex">
+            <div class="w-100">
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Graphique à barres</h5>
-                                <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments effectués chaque jour de cette semaine.</h6>
-                            </div>
                             <div class="card-body">
-                                <div class="chart chart-sm text-center">
-                                    <canvas id="chartjs-bar"></canvas>
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">Adherents</h5>
+                                    </div>
 
+                                    <div class="col-auto">
+                                        <div class="stat text-primary">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
                                 </div>
+                                <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${countM}"></h1>
+
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">Entaineurs</h5>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <div class="stat text-primary">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${countC}"></h1>
+
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">Les revenus</h5>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <div class="stat text-primary">
+                                            <i class="align-middle" data-feather="dollar-sign"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${price+' '+'DH'}"></h1>
+
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">Enregistrements par semaine</h5>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <div class="stat text-primary">
+                                            <i class="align-middle" data-feather="shopping-cart"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${size}"></h1>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-xxl-7">
+            <div class="card flex-fill w-100" style="height: 8.8cm !important;">
+                <div class="card-header">
+                    <h5 class="card-title">Le diagramme circulaire</h5>
+                    <h6 class="card-subtitle text-muted">Ce diagramme circulaire montre le nombre d'utilisations de
+                        chaque adhésion par les membres.</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <canvas id="membershipChart"></canvas>
+                        <div id="legend" style="float: right;margin: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-xxl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Graphique à barres</h5>
+                    <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                        effectués chaque jour de cette semaine.</h6>  <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
+padding: 5px;
+color: #3b7ddd;
+border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
+background: transparent;margin-top: -17px">
+                </div>
+                <div class="card-body">
+                    <div class="chart chart-sm text-center">
+
+                        <canvas id="chartjs-bar"></canvas>
 
                     </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 
-
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Line chart
-        new Chart(document.getElementById("chartjs-line"), {
-            type: "line",
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Sales ($)",
-                    fill: true,
-                    backgroundColor: "transparent",
-                    borderColor: window.theme.primary,
-                    data: [2115, 1562, 1584, 1892, 1487, 2223, 2966, 2448, 2905, 3838, 2917, 3327]
-                }, {
-                    label: "Orders",
-                    fill: true,
-                    backgroundColor: "transparent",
-                    borderColor: "#adb5bd",
-                    borderDash: [4, 4],
-                    data: [958, 724, 629, 883, 915, 1214, 1476, 1212, 1554, 2128, 1466, 1827]
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    intersect: false
-                },
-                hover: {
-                    intersect: true
-                },
-                plugins: {
-                    filler: {
-                        propagate: false
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        reverse: true,
-                        gridLines: {
-                            color: "rgba(0,0,0,0.05)"
-                        }
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            stepSize: 500
-                        },
-                        display: true,
-                        borderDash: [5, 5],
-                        gridLines: {
-                            color: "rgba(0,0,0,0)",
-                            fontColor: "#fff"
-                        }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Line chart
+            new Chart(document.getElementById("chartjs-line"), {
+                type: "line",
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        label: "Sales ($)",
+                        fill: true,
+                        backgroundColor: "transparent",
+                        borderColor: window.theme.primary,
+                        data: [2115, 1562, 1584, 1892, 1487, 2223, 2966, 2448, 2905, 3838, 2917, 3327]
+                    }, {
+                        label: "Orders",
+                        fill: true,
+                        backgroundColor: "transparent",
+                        borderColor: "#adb5bd",
+                        borderDash: [4, 4],
+                        data: [958, 724, 629, 883, 915, 1214, 1476, 1212, 1554, 2128, 1466, 1827]
                     }]
-                }
-            }
-        });
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Bar chart
-        fetch('/checkInStatistic')
-            .then(response => response.json())
-            .then(data => {
-                const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
-                const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
-
-                new Chart(document.getElementById("chartjs-bar"), {
-                    type: "bar",
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: "Check-ins",
-                            backgroundColor: window.theme.primary,
-                            borderColor: window.theme.primary,
-                            hoverBackgroundColor: window.theme.primary,
-                            hoverBorderColor: window.theme.primary,
-                            data: checkInCount,
-                            barPercentage: .75,
-                            categoryPercentage: .5
-                        }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
                     },
-                    options: {
-                        maintainAspectRatio: false,
-                        legend: {
-                            display: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                gridLines: {
+                    tooltips: {
+                        intersect: false
+                    },
+                    hover: {
+                        intersect: true
+                    },
+                    plugins: {
+                        filler: {
+                            propagate: false
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            reverse: true,
+                            gridLines: {
+                                color: "rgba(0,0,0,0.05)"
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                stepSize: 500
+                            },
+                            display: true,
+                            borderDash: [5, 5],
+                            gridLines: {
+                                color: "rgba(0,0,0,0)",
+                                fontColor: "#fff"
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDateInput = document.getElementById("selectedDate");
+
+            // Function to fetch data and generate chart
+            function fetchDataAndGenerateChart(date) {
+                fetch('/checkInStatistic?selectedDate=' + date)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+                        const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
+
+                        new Chart(document.getElementById("chartjs-bar"), {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Check-ins",
+                                    backgroundColor: window.theme.primary,
+                                    borderColor: window.theme.primary,
+                                    hoverBackgroundColor: window.theme.primary,
+                                    hoverBorderColor: window.theme.primary,
+                                    data: checkInCount,
+                                    barPercentage: .75,
+                                    categoryPercentage: .5
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
                                     display: false
                                 },
-                                stacked: false,
-                                ticks: {
-                                    stepSize: 1
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        stacked: false,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: false,
+                                        gridLines: {
+                                            color: "transparent"
+                                        }
+                                    }]
                                 }
-                            }],
-                            xAxes: [{
-                                stacked: false,
-                                gridLines: {
-                                    color: "transparent"
-                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to handle date change event
+            function handleDateChange() {
+                const selectedDate = selectedDateInput.value;
+                console.log("Selected date:", selectedDate);
+                fetchDataAndGenerateChart(selectedDate);
+            }
+
+            // Attach event listener to date input
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            // Fetch data and generate chart on page load
+            const initialDate = selectedDateInput.value; // Get the initial date value
+            fetchDataAndGenerateChart(initialDate);
+        });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch data from REST controller
+
+
+            fetch('/memberShipStatistic')
+
+                .then(response => response.json())
+                .then(data => {
+                    // Extract labels and values from the data
+                    const labels = Object.keys(data);
+                    const values = Object.values(data);
+
+                    // Pie chart
+                    new Chart(document.getElementById("membershipChart"), {
+                        type: "pie",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: [
+                                    window.theme.primary,
+                                    "#39afaf",
+                                    "#a81111",
+                                    "#dee2e6"
+                                ],
+                                borderColor: "transparent"
                             }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: true
+                            }
                         }
-                    }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            });
-    });
+        });
 
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <script>
-     document.addEventListener("DOMContentLoaded", function() {
-         // Fetch data from REST controller
-         fetch('/memberShipStatistic')
-             .then(response => response.json())
-             .then(data => {
-                 // Extract labels and values from the data
-                 const labels = Object.keys(data);
-                 const values = Object.values(data);
-
-                 // Pie chart
-                 new Chart(document.getElementById("membershipChart"), {
-                     type: "pie",
-                     data: {
-                         labels: labels,
-                         datasets: [{
-                             data: values,
-                             backgroundColor: [
-                                 window.theme.primary,
-                                 "#39afaf",
-                                 "#a81111",
-                                 "#dee2e6"
-                             ],
-                             borderColor: "transparent"
-                         }]
-                     },
-                     options: {
-                         maintainAspectRatio: false,
-                         legend: {
-                             display: true
-                         }
-                     }
-                 });
-             })
-             .catch(error => {
-                 console.error('Error:', error);
-             });
-     });
-
- </script>
+        function filterData() {
+            const dates = [...labels];
+            console.log(dates);
+        }
+    </script>
 
 
 </div>

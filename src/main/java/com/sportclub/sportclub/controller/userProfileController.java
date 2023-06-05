@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -38,15 +39,17 @@ public class userProfileController {
             Coach coach=coachService.getCoachById(id);
             List<CheckInCoach> checkInCoaches=coachCheckInRepo.getCheckInByCoach(coach);
             model.addAttribute("checkins",checkInCoaches);
+
         }else{
         Member member=memberService.getMemberById(id);
         List<CheckIn> checkIns=checkInRepo.getCheckInByMember(member);
         List<Paiement> paiements=paymentRepo.findPaiementByMember(member);
 
-
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("checkins",checkIns);
         model.addAttribute("payments",paiements);
         model.addAttribute("user",member);}
+        model.addAttribute("today",LocalDate.now());
         return "userProfile";
     }
 }

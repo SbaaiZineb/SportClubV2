@@ -38,32 +38,32 @@
                 <label class="form-label mt-2">Répéter :</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="lundi"  value="MONDAY" th:field="*{seance.days[0]}">
+                <input class="form-check-input" type="checkbox" id="lundi"  value="MONDAY" name="days" th:checked="${seance.days.contains('MONDAY')}">
                 <label class="form-check-label" for="lundi">Lun</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mardi"  value="TUESDAY" th:field="*{seance.days[1]}">
+                <input class="form-check-input" type="checkbox" id="mardi"  value="TUESDAY" name="days" th:checked="${seance.days.contains('TUESDAY')}">
                 <label class="form-check-label" for="mardi">Mar</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mercredi"  value="WEDNESDAY" th:field="*{seance.days[2]}" >
+                <input class="form-check-input" type="checkbox" id="mercredi" name="days" value="WEDNESDAY" th:checked="${seance.days.contains('WEDNESDAY')}">
                 <label class="form-check-label" for="mercredi">Mer</label>
             </div>
 
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="jeudi"  value="THURSDAY" th:field="*{seance.days[3]}">
+                <input class="form-check-input" type="checkbox" id="jeudi" name="days"  value="THURSDAY" th:checked="${seance.days.contains('THURSDAY')}">
                 <label class="form-check-label" for="jeudi">Jeu</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="vendredi"  value="FRIDAY" th:field="*{seance.days[4]}">
+                <input class="form-check-input" type="checkbox" id="vendredi"  name="days" value="FRIDAY" th:checked="${seance.days.contains('FRIDAY')}">
                 <label class="form-check-label" for="vendredi">Ven</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="samedi"  value="SATURDAY" th:field="*{seance.days[5]}">
+                <input class="form-check-input" type="checkbox" id="samedi"  value="SATURDAY" name="days" th:checked="${seance.days.contains('SATURDAY')}">
                 <label class="form-check-label" for="samedi">Sam </label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="dimanch"  value="SUNDAY" th:field="*{seance.days[6]}">
+                <input class="form-check-input" type="checkbox" id="dimanch"  value="SUNDAY" name="days" th:checked="${seance.days.contains('SUNDAY')}">
                 <label class="form-check-label" for="dimanch">Dim </label>
             </div>
             <style>

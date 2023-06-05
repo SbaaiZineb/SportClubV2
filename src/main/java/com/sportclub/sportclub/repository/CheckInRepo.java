@@ -14,6 +14,7 @@ public interface CheckInRepo extends JpaRepository<CheckIn, Long> {
     List<CheckIn> findBySession(Seance seance);
 
     List<CheckIn> findByMemberRolesRoleName(String role);
+    List<CheckIn> findByMemberAndCheckinDateBetween(Member member, LocalDate sDate, LocalDate eDate);
 
     List<CheckIn> findByCheckinDateBetween(LocalDate stratWeek, LocalDate endWeek);
 

@@ -7,6 +7,7 @@ import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.MemberService;
 import com.sportclub.sportclub.service.NotificationService;
 import com.sportclub.sportclub.service.SeanceService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +46,7 @@ public class SeanceController {
     @Autowired
     NotificationService notificationService;
 
-    CalendarEvent calendarEvent = new CalendarEvent();
+
     @GetMapping("/calendar")
     public String getCalendar(Model model) {
         System.out.println(eventRepo.findAll());
@@ -127,7 +128,7 @@ public class SeanceController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String addSeance(@Validated Seance seance, BindingResult bindingResult, Authentication authentication) {
         if (bindingResult.hasErrors()) return "seanceList";
-
+        CalendarEvent calendarEvent = new CalendarEvent();
 
         String username = authentication.getName();
         service.addSeance(seance);
@@ -143,6 +144,7 @@ public class SeanceController {
 
         //Add new Event based on the added session
 
+        calendarEvent.setId(seance.getId());
         calendarEvent.setTitle(seance.getClassName());
         calendarEvent.setStart(seance.getStartDate());
         calendarEvent.setStartTime(seance.getStartTime());
@@ -184,33 +186,34 @@ public class SeanceController {
         for (Long cellId : seanceId) {
             seance = service.getSeanceById(cellId);
             service.deletSeance(cellId);
-            List<CalendarEvent> calendarEvents = eventRepo.findAll();
-            for (CalendarEvent event : calendarEvents
-            ) {
-                if (event.getTitle().equals(seance.getClassName()) && event.getStart().equals(seance.getStartDate()) && event.getStartTime().equals(seance.getStartTime()) && event.getEndTime().equals(seance.getEndTime())) {
-                    eventRepo.delete(event);
-                }
-            }
+            CalendarEvent event=eventRepo.findById(cellId).get();
+            eventRepo.delete(event);
 
         }
 
         // Redirect to a success page or return a response as needed
         return "redirect:/seanceList";
     }
+// serach by coach
+    @GetMapping("/sessions/search")
+    public String searchSessionsByCoach(@RequestParam("coachId") Long coachId, Model model) {
+        Coach coach = coachService.getCoachById(coachId);
+        model.addAttribute("coachId",coachId);
+        List<Seance> sessions = service.getSeanceByCoach(coachId);
+        model.addAttribute("listSeance", sessions);
+        List<Coach> coaches = coachService.getAllCoachs();
+        model.addAttribute("coaches", coaches);
+        return "seanceList";
+    }
+
 
     @GetMapping("/deleteSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
         Seance seance = service.getSeanceById(id);
         service.deletSeance(id);
-        List<CalendarEvent> calendarEvents = eventRepo.findAll();
-        for (CalendarEvent event : calendarEvents
-        ) {
-            if (event.getTitle().equals(seance.getClassName()) && event.getStart().equals(seance.getStartDate()) && event.getStartTime().equals(seance.getStartTime()) && event.getEndTime().equals(seance.getEndTime())) {
-                eventRepo.delete(event);
-            }
-        }
-
+        CalendarEvent event=eventRepo.findById(id).get();
+        eventRepo.delete(event);
         return "redirect:/seanceList?page=" + page + "&keyword=" + keyword;
     }
 
@@ -223,22 +226,19 @@ public class SeanceController {
         Seance seance = service.getSeanceById(id);
         seance.setStartDate(LocalDate.parse(seance.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
-        model.addAttribute("seance", seance);
+                model.addAttribute("seance", seance);
         return "updateSeanceModal";
     }
 
     @PostMapping("/editSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
-    public String editSeance(@Validated Seance seance, BindingResult bindingResult) {
+    public String editSeance(@Validated Seance seance, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) return "updateSeanceModal";
-
-        List<CalendarEvent> calendarEvents = eventRepo.findAll();
-        for (CalendarEvent event : calendarEvents
-        ) {
-            if (event.getTitle().equals(seance.getClassName()) && event.getStart().equals(seance.getStartDate()) && event.getStartTime().equals(seance.getStartTime()) && event.getEndTime().equals(seance.getEndTime())) {
-                eventRepo.delete(event);
-                service.updateSeance(seance);
-                //Add new Event based on the added session
+        String[] selectedDays = request.getParameterValues("days");
+        seance.setDays(Arrays.asList(selectedDays));
+        service.updateSeance(seance);
+        CalendarEvent calendarEvent=eventRepo.findById(seance.getId()).get();
+                //Add new Event based on the updated  session
                 calendarEvent.setTitle(seance.getClassName());
                 calendarEvent.setStart(seance.getStartDate());
                 calendarEvent.setStartTime(seance.getStartTime());
@@ -253,13 +253,11 @@ public class SeanceController {
                 ) {
                     if (day != null) {
                         try {
-                            System.out.println(day);
+
                             DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
                             Integer di = dayOfWeek.getValue();
                             dayInt.add(di);
-                            System.out.println(dayOfWeek);
-                            System.out.println(di);
-                            System.out.println(dayInt);
+
                             calendarEvent.setDaysOfWeek(dayInt);
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error " + e);
@@ -268,8 +266,8 @@ public class SeanceController {
 
                 }
                 eventRepo.save(calendarEvent);
-            }
-        }
+
+
         return "redirect:/seanceList";
     }
 }

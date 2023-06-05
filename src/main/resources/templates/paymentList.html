@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="content">
     <div class="search-field d-none mb-1 d-md-block">
-        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/paymentList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
@@ -57,15 +57,15 @@
 
         </tr>
     </table>
-    <!-- <ul class="nav nav-pills">
+     <ul class="nav nav-pills">
        <li th:each="page,status:${pages}">
          <a
-                 th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                 th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                 th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                 th:href="@{/paymentList(page=${status.index}, keyword=${keyword})}"
                  th:text="${status.index}">
          </a>
        </li>
-     </ul>-->
+     </ul>
 
     <!-- Payment Modal -->
     <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="paymentLabel"

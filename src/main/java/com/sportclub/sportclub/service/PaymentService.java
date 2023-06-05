@@ -12,7 +12,8 @@ public interface PaymentService {
 
 Paiement findByMember(Long id);
     void deletePayment(Long id);
-
+    List<Paiement> getByMember(String kw);
+    Page<Paiement> getPage(String mc, Pageable pageable);
     Paiement getPaymentById(Long id);
     void updatePayment(Paiement m);
     List<Paiement> getAllPayment();

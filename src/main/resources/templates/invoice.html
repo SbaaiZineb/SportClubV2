@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Invoice</title>
+
     <style>
         img {
             width: 30%;
@@ -12,16 +13,10 @@
 <body>
 <img src="uploads/gym.png" alt="img"></img>
 <h1 style="text-align: center">Reçu</h1>
-<div class="row" style="--bs-gutter-x: 24px;
-      --bs-gutter-y: 0;
-      display: flex;
-      flex-wrap: wrap;
-      margin-left: calc(var(--bs-gutter-x)*-.5);
-      margin-right: calc(var(--bs-gutter-x)*-.5);
-      margin-top: calc(var(--bs-gutter-y)*-1);">
+<div class="row" style="float: end;">
     <div class="col-md-6" style="flex: 0 0 auto;
       width: 50%;">
-        <p th:text="'Numero de paiment : '+${payment.getId()}"></p>
+        <p th:text="'N° de paiment : '+${payment.getId()}"></p>
         <p th:text="'Adherent : Mr/Me '+${#strings.capitalize(payment.getMember().getName())}+' '+${#strings.capitalize(payment.getMember().getLname())}"></p>
     </div>
     <div class="col-md-6" style="flex: 0 0 auto;

@@ -12,17 +12,44 @@
 </head>
 <body>
 <div layout:fragment="content">
-        <div class="search-field d-none d-md-block">
-          <form th:action="@{seanceList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend bg-transparent">
-                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-              </div>
-              <input type="text" class="form-control bg-transparent border-0" name="seance"
-                     th:value="${keyword}" placeholder="Chercher">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="search-field d-none d-md-block">
+                <form th:action="@{seanceList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend bg-transparent">
+                            <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+                        </div>
+                        <input type="text" class="form-control bg-transparent border-0" name="seance"
+                               th:value="${keyword}" placeholder="Chercher">
+                    </div>
+                </form>
             </div>
-          </form>
         </div>
+        <div class="col-md-6" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+            <form th:action="@{/sessions/search}" method="get" style="float: right">
+            <label for="coachId"></label>
+            <select id="coachId" name="coachId" style="border-bottom: none;
+border-top: none;
+border-right: none;
+border-left: none;
+background: transparent;
+padding: 4px;
+margin: 2px;
+color: #686f76;
+border-radius: 3px;
+width: 13rem;">
+                <option value="">Chercher par entraineur</option>
+                <option th:each="coach : ${coaches}" th:value="${coach.id}" th:text="${coach.name}+' '+${coach.lname}" th:selected="${coach.id == coachId}"></option>
+            </select>
+            <button type="submit" style="background: transparent;
+border: none;
+color: #64686b;"><i class="bi bi-search"></i></button>
+        </form>
+        </div>
+    </div>
+
+
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
             data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
     <form th:action="@{/deleteSessions}" method="post">
@@ -36,6 +63,7 @@
             <th>La date de debut</th>
             <th>Temps de debut</th>
             <th>Temps de fin</th>
+
             <th>Nombres des semains </th>
             <th>Entraineur</th>
 
@@ -155,7 +183,7 @@
 
                     <select name="coach" id="coach" class="form-control mb-4">
                       <option th:each="coach : ${coaches}" th:value="${coach.id}"
-                              th:text="${coach.name}"></option>
+                              th:text="${coach.name}+' '${coach.lname}"></option>
                     </select>
                     <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                   </form>
@@ -205,6 +233,11 @@
         })
       })
     })
+    function getQueryParamValue(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+    const coachId = getQueryParamValue('id');
   </script>
 
 </div>

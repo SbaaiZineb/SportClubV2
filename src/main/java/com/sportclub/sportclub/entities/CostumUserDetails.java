@@ -15,10 +15,19 @@ import java.util.List;
 public class CostumUserDetails implements UserDetails {
  private final UserApp userApp;
   String pic;
-
-    public CostumUserDetails(UserApp userApp, String pic) {
+String userName;
+    public CostumUserDetails(UserApp userApp, String pic,String userName) {
         this.userApp = userApp;
         this.pic = pic;
+        this.userName=userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPic() {

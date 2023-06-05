@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class CoachController {
     @Autowired
     PasswordEncoder passwordEncoder;

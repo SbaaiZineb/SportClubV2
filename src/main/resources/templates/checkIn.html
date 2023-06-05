@@ -27,14 +27,14 @@
                         <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
 
                             <div class="card-body " style="padding: 9px;">
-                               <!-- <div title="nombre des adherents enregistre" class="float-end" th:utext="${count}" style=" display: flex;
+                                <div title="nombre des adherents enregistre" class="float-end" th:utext="${#lists.size(s.getCheckIns())}" style=" display: flex;
                                        align-items: center;
                                        justify-content: center;
                                        flex-direction: column;
                                        background-color: #85a2f0;
                                        width: 2rem;
                                        height: 2rem;
-                                       border-radius: 50%;"></div>-->
+                                       border-radius: 50%;"></div>
                                 <div class="media d-flex">
 
                                     <div class="media-body text-left ">
@@ -85,6 +85,7 @@
                                                  th:utext="${check.getCheckinTime()}"></div>
                                         </div>
                                         <span class="float-end ms-7" th:utext="${check.getCheckinDate()}"></span>
+
                                     </div>
                                 </td>
 
@@ -179,9 +180,6 @@ overflow: auto;">
         var originalContent = document.getElementById('cardContent').innerHTML;
 
         function myFunction(id) {
-            // Your code here
-            // alert("Div clicked!");
-
 
             $.get("/getCheckedInMembers?id=" + id, function (data) {
                 $('#dataTable').find('.tbody').html(data);

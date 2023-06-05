@@ -66,8 +66,13 @@
                         <i class="bi bi-people"></i> <span class="align-middle">Users</span>
                     </a>
                 </li>
-                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="sidebar-item">
-                    <a class="sidebar-link nav-group-toggle" href="#usersCollapse" data-toggle="collapse">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''SUBADMIN'') ')}" th:href="@{/membersList}">
+                        <i class="bi bi-people"></i> <span class="align-middle">Users</span>
+                    </a>
+                </li>
+                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="sidebar-item">
+                    <a class="sidebar-link nav-group-toggle"  data-toggle="collapse">
                         <i class="bi bi-people"></i><span class="align-middle">Users</span>
                     </a>
 
@@ -141,7 +146,7 @@
                         <a class="nav-icon dropdown-toggle" id="alertsDropdown" data-bs-toggle="dropdown" >
                             <div class="position-relative" onclick="functionC()" >
                                 <i class="bi bi-bell"></i>
-                                <span class="indicator">4</span>
+                                <span class="indicator"></span>
                             </div>
                             <!-- jQuery library -->
                             <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
@@ -158,14 +163,14 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
                             <div class="dropdown-menu-header">
-                                4 New Notifications
+                               Notifications
                             </div>
-                           <div id="notification" class="list-group">
+                           <div id="notification" class="list-group" style="overflow: auto;
+position: relative;
+height: 15rem;
+scrollbar-width: none;">
 
                            </div>
-                            <div class="dropdown-menu-footer">
-                                <a href="#" class="text-muted">Show all notifications</a>
-                            </div>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -241,7 +246,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" th:href="@{/parametre}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+                                <a class="dropdown-item" th:href="@{/profil}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
 
                             </li>
                             <li>
@@ -292,31 +297,17 @@
     <script>
 
 
-        $(document).ready(function() {
-            // Handle click event for collapsed items
-            $('.sidebar-link[data-toggle="collapse"]').on('click', function() {
-                var target = $(this).attr('href');
-                var isCollapsed = $(target).hasClass('show');
 
-                if (isCollapsed) {
-                    // Collapse the item
-                    $(target).collapse('hide');
-                } else {
-                    // Expand the item
-                    $(target).collapse('show');
-                }
-            });
-        });
         $(document).ready(function() {
             $('.sidebar-item').click(function (event){
-                event.preventDefault();
-                var url = $(this).find('a').attr('href');
+                /*event.preventDefault();
+                var url = $(this).find('a').attr('href');*/
                 $('.sidebar-item').removeClass('active');
                 $(this).addClass('active');
 
 
-                // Navigate to the URL
-                window.location.href = url;
+                // // Navigate to the URL
+                // window.location.href = url;
             });
         });
 

@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -113,7 +113,7 @@ public class AdminController {
         }
 
         @RequestMapping(path = {"/adminList/search"})
-        @PreAuthorize("hasAuthority('ADMIN')")
+
         public String search (Model model, String user){
             UserApp userForm = new UserApp();
             model.addAttribute("userForm", userForm);

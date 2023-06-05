@@ -1,6 +1,8 @@
 package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
+import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.InvoiceService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.TemplateEngine;
 import com.sportclub.sportclub.entities.Paiement;
 import com.sportclub.sportclub.service.PaymentService;
@@ -42,20 +45,21 @@ import java.util.List;
 public class PaymentController {
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    PaymentRepo paymentRepo;
     @GetMapping("/paymentList")
     public String getPayment(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                          @RequestParam(name = "size",defaultValue = "5") int size,
                          @RequestParam(name = "keyword",defaultValue = "") String kw
     ) {
 
-//        Page<Paiement> pageP = paymentService.getPaymentById(kw, PageRequest.of(page,size));
-//        model.addAttribute("listPayment",pageP.getContent());
-//        model.addAttribute("pages",new int[pageP.getTotalPages()]);
-//        model.addAttribute("currentPage",page);
-//        model.addAttribute("keyword",kw);
+        Page<Paiement> pageP = paymentService.getPage(kw, PageRequest.of(page,size));
+        model.addAttribute("paymentList",pageP.getContent());
+        model.addAttribute("pages",new int[pageP.getTotalPages()]);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("keyword",kw);
 
-List<Paiement> paiements=paymentService.getAllPayment();
-model.addAttribute("paymentList",paiements);
+
         Paiement paiement = new Paiement();
         model.addAttribute("payment", paiement);
         return "paymentList";
@@ -70,6 +74,21 @@ model.addAttribute("paymentList",paiements);
         model.addAttribute("payment",paiement);
     return "paymentModal";
 }
+
+    @RequestMapping(path = { "/paymentList/search"})
+    public String search(Model model, String keyword) {
+
+        Paiement paiement = new Paiement();
+        model.addAttribute("payment", paiement);
+        List<Paiement> list;
+        if (keyword != null) {
+            list = paymentRepo.findByMemberNameContains(keyword);
+        } else {
+            list = paymentService.getAllPayment();
+        }
+        model.addAttribute("paymentList", list);
+        return "paymentList";
+    }
 
     @PostMapping("paymentList/pay")
     public String addAb(@Validated Paiement paiement, BindingResult bindingResult){

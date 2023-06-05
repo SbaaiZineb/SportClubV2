@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +46,10 @@ public class DashController {
         model.addAttribute("price",totalPrice);
         System.out.println(totalPrice);
         long countM=memberService.count();
-        List<CheckIn> checkIns = checkInService.getCheckInOfCurrenteek();
+        List<CheckIn> checkIns = checkInService.getCheckInOfWeek();
         long size=checkIns.size();
         long countC=coachService.count();
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("size",size);
         model.addAttribute("countC",countC);
         model.addAttribute("countM",countM);
