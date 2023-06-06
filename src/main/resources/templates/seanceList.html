@@ -183,7 +183,7 @@ color: #64686b;"><i class="bi bi-search"></i></button>
 
                     <select name="coach" id="coach" class="form-control mb-4">
                       <option th:each="coach : ${coaches}" th:value="${coach.id}"
-                              th:text="${coach.name}+' '${coach.lname}"></option>
+                              th:text="${coach.name}+' '+${coach.lname}"></option>
                     </select>
                     <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                   </form>
@@ -233,11 +233,7 @@ color: #64686b;"><i class="bi bi-search"></i></button>
         })
       })
     })
-    function getQueryParamValue(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-    const coachId = getQueryParamValue('id');
+
   </script>
 
 </div>

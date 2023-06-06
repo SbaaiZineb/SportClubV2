@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -26,4 +28,5 @@ public class CheckIn {
 
     private LocalDate checkinDate;
     private LocalTime checkinTime;
+
 }

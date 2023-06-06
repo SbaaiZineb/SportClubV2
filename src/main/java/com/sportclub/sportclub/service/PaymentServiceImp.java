@@ -42,6 +42,8 @@ paymentRepo.deleteById(id);
 
     @Override
     public Page<Paiement> getPage(String kw,Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+
         return paymentRepo.findByMemberNameContains(kw, pageable);
     }
 

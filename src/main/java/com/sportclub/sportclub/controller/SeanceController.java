@@ -114,7 +114,9 @@ public class SeanceController {
     @GetMapping("/addSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String getAddSeance(Model model) {
-
+        List<Coach> coaches = coachService.getAllCoachs();
+        model.addAttribute("coaches", coaches);
+        model.addAttribute("coach", new Coach());
         Seance seance = new Seance();
         model.addAttribute("seance", seance);
         return "seanceList";

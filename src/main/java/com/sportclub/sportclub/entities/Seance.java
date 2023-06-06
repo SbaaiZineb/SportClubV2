@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Data@AllArgsConstructor@NoArgsConstructor
 public class Seance {
@@ -42,4 +44,11 @@ public class Seance {
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "days")
     private List<String> days=new ArrayList<>();
+
+    public List<CheckIn> getCheckInsToday() {
+        LocalDate today = LocalDate.now();
+        return checkIns.stream()
+                .filter(checkIn -> checkIn.getCheckinDate().isEqual(today))
+                .collect(Collectors.toList());
+    }
 }
