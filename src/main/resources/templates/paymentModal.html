@@ -36,7 +36,7 @@ padding: 7px;"
                                         Visa
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                                <div class="form-check form-check-inline mb-0 me-4 mt-3" onclick="selectCash()">
                                     <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
 padding: 7px;"
                                            value="cash" id="flexRadioDefault3" th:field="${payment.payedBy}" checked>
@@ -70,9 +70,9 @@ padding: 7px;"
                             </div>
                         </div>
                     </div>
-                    <div class="row justify-content-center">
+</div><div class="row justify-content-center">
                         <div class="col-md-12"> <button class="btn btn-primary mt-2" type="submit">Payer</button></div>
-                    </div></div>
+                    </div>
                 </form>
             </div>
 
@@ -84,7 +84,10 @@ padding: 7px;"
         .form-card{margin-left: 20px;margin-right: 20px}.form-card input, .form-card textarea{padding: 10px 15px 5px 15px;border: 1px solid lightgrey;border-radius: 6px;margin-bottom: 25px;margin-top: 2px;width: 100%;box-sizing: border-box;font-family: arial,sans-serif;color: #2C3E50;font-size: 14px;letter-spacing: 1px}.form-card input:focus, .form-card textarea:focus{-moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;-webkit-box-shadow: 0px 0px 0px 1.5px skyblue !important;box-shadow: 0px 0px 0px 1.5px skyblue !important;font-weight: bold;border: 1px solid #304FFE;outline-width: 0}.input-group{position:relative;width:100%;overflow:hidden}.input-group input{position:relative;height:60px;margin-left: 1px;margin-right: 1px;border-radius:6px;padding-top: 30px;padding-left: 25px}.input-group label{position:absolute;height: 24px;background: none;border-radius: 6px;line-height: 48px;font-size: 15px;color: gray;width:100%;font-weight:100;padding-left: 25px}input:focus + label{color: #304FFE}.btn-pay{background-color: #304FFE;height: 60px;color: #ffffff !important;font-weight: bold}
     </style>
 
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
 
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
     <script>
         //For Card Number formatted input
         var cardNum = document.getElementById('cr_no');
@@ -124,7 +127,11 @@ padding: 7px;"
                 }
             });
         });
+function selectCash(){
 
+    var div = document.getElementById('dd');
+    div.style.display = 'none';
+}
     </script>
 </div>
 </body>

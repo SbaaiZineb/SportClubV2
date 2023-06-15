@@ -63,7 +63,7 @@ public class AdminController {
                     UserApp userForm = new UserApp();
                     model.addAttribute("userForm", userForm);
 
-
+model.addAttribute("user",userForm);
         return "adminList";
 
     }
@@ -135,19 +135,24 @@ public class AdminController {
         return "redirect:/adminList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editAdmin")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public String editAdmin(@RequestParam(name = "id") Long id, Model model){
         UserApp userApp=adminService.getAdminById(id);
-        model.addAttribute("user",userApp);
+        model.addAttribute("userApp",userApp);
+        model.addAttribute("pic",userApp.getPic());
+        model.addAttribute("role",userApp.getRoles().getRole_id());
+        model.addAttribute("id",userApp.getId());
         return "updateAdminModal";
     }
 
     @PostMapping("/editAdmin")
-    public String editAdmin(@Validated UserApp c, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
+    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "updateAdminModal";
-        c.setPic(file.getOriginalFilename());
-        adminService.updateAdmin(c);
-        fileStorageService.save(file);
+//        user.setPic(file.getOriginalFilename());
+        adminService.updateAdmin(user);
+//        if (file==null){
+//            System.out.println("no file to add");
+//        }
+//        fileStorageService.save(file);
 
         return "redirect:/adminList";
     }

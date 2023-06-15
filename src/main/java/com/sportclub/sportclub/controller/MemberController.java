@@ -211,10 +211,9 @@ FileStorageService fileService;
 
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
-    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+    public String editMember(@Validated Member member, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "updateMemberModal";
-        member.setPic(file.getOriginalFilename());
-        fileService.save(file);
+
         memberService.updateMember(member);
         return "redirect:/membersList";
     }

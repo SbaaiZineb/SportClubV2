@@ -86,7 +86,7 @@
           <div class="card align-content-center">
             <div class="card-body">
               <form th:action="@{/addSport}"
-                    th:object="${sport}" method="POST">
+                    th:object="${sport}" method="POST" enctype="multipart/form-data">
                 <label class="form-label">Nom de sport:</label>
                 <input class="form-control" type="text" th:field="*{nom}"/>
                 <label class="form-label mt-3">Description:</label>

@@ -57,7 +57,6 @@ public class UserApp extends Person {
     }
 
     private String password;
-@Builder
     public UserApp( String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
         super(name, Lname, adress, cin, dob, tele);
 //        this.id = id;
@@ -65,7 +64,6 @@ public class UserApp extends Person {
         this.email = email;
         this.password = password;
     }
-@Builder
     public UserApp(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password) {
         super(name, lname, adress, cin, dob, tele);
         this.roles = roles;

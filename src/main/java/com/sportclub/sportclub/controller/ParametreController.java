@@ -6,6 +6,7 @@ import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.repository.GymRepo;
 import com.sportclub.sportclub.service.GymService;
+import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class ParametreController {
     GymRepo gymRepo;
     @Autowired
     GymService gymService;
+    @Autowired
+    FileStorageService fileStorageService;
 
     @GetMapping("/parametre")
 
@@ -68,8 +72,10 @@ public class ParametreController {
         return "redirect:/parametre?id=1";
     }
     @PostMapping("/parametre")
-    public String para(@Validated Gym gym, BindingResult bindingResult) {
+    public String para(@Validated Gym gym, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "parametre";
+        gym.setLogo(file.getOriginalFilename());
+        fileStorageService.save(file);
         gymRepo.save(gym);
         return "redirect:/parametre?id=1";
     }

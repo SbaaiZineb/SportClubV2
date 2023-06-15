@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
 <head th:fragment="header" id="header">
     <meta charset="UTF-8">
     <link rel="preconnect" th:href="@{https://fonts.gstatic.com}">
@@ -39,14 +39,14 @@
             <ul class="sidebar-nav">
 
 
-                <li class="sidebar-item active">
+                <li class="sidebar-item ">
                     <a class="sidebar-link"  th:href="@{/}">
                         <i class="bi bi-sliders2"></i> <span class="align-middle">Tableau de bord</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/profil}">
+                <li class="sidebar-item" >
+                    <a class="sidebar-link" th:href="@{/profil}" >
                         <i class="bi bi-person-circle"></i><span class="align-middle">Profil</span>
                     </a>
                 </li>
@@ -72,17 +72,31 @@
                     </a>
                 </li>
                 <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="sidebar-item">
-                    <a class="sidebar-link nav-group-toggle"  data-toggle="collapse">
+                    <a class="sidebar-link nav-group-toggle" data-toggle="collapse" href="#usersCollapse">
                         <i class="bi bi-people"></i><span class="align-middle">Users</span>
                     </a>
 
+                    <ul id="usersCollapse" class="nav-group-items collapse show">
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                            <a class="sidebar-link" th:href="@{adminList}">Admin</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" th:href="@{/coachList}">Entraineur</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" th:href="@{/membersList}">Adherent</a>
+                        </li>
+                    </ul>
+                </li>
 
-                    <ul id="usersCollapse" class="nav-group-items collapse show"  style="height: auto;">
-                        <li class="sidebar-item"  th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"><a class="sidebar-link"  th:href="@{adminList}">Admin</a></li>
-                        <li class="sidebar-item"><a class="sidebar-link"  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" th:href="@{/coachList}">Entraineur </a></li>
-                        <li class="sidebar-item"><a class="sidebar-link" th:href="@{/membersList}">Adherent </a></li>
+                <style>
+                    .collapse {
+                    display: none;
+                }
 
-                    </ul></li>
+                .show {
+                    display: block;
+                }</style>
 <!--                </ul>-->
                 <!--<li class="sidebar-item dropdown">
                     <a class="sidebar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,7 +173,32 @@
                                     });
                                 }
                             </script>
+                            <script>
+                                $(document).ready(function() {
+                                    $('.sidebar-link.nav-group-toggle').click(function(e) {
+                                        e.preventDefault();
+                                        $(this).toggleClass('active');
+                                        var target = $($(this).attr('href'));
+                                        if (target.hasClass('show')) {
+                                            target.collapse('hide');
+                                        } else {
+                                            target.collapse('show');
+                                        }
+                                    });
+                                });
 
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var currentURL = window.location.href;
+                                    var sidebarLinks = document.querySelectorAll(".sidebar-link");
+
+                                    sidebarLinks.forEach(function(link) {
+                                        if (link.href === currentURL) {
+                                            link.parentElement.classList.add("active");
+                                        }
+                                    });
+                                });
+
+                            </script>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
                             <div class="dropdown-menu-header">
@@ -298,18 +337,18 @@ scrollbar-width: none;">
 
 
 
-        $(document).ready(function() {
+       /* $(document).ready(function() {
             $('.sidebar-item').click(function (event){
-                /*event.preventDefault();
-                var url = $(this).find('a').attr('href');*/
+                /!*event.preventDefault();
+                var url = $(this).find('a').attr('href');*!/
                 $('.sidebar-item').removeClass('active');
-                $(this).addClass('active');
+                $(this).addClass('active');*/
 
 
                 // // Navigate to the URL
                 // window.location.href = url;
-            });
-        });
+        //     });
+        // });
 
        /* document.querySelectorAll('.sidebar-link').forEach(link => {
 

@@ -7,8 +7,9 @@
 <body>
 <div class="card align-content-center">
     <div class="card-body">
-        <form  th:action="@{/editMember}" enctype="multipart/form-data"
+        <form  th:action="@{/editMember}"
                method="POST">
+            <input type="hidden" name="pic" th:value="${member.pic}">
             <div style=" display: flex;
         justify-content: center;
         align-items: center;">
@@ -62,6 +63,9 @@ object-fit: cover;border-radius: 50%"></div>
                             <input class="form-control" type="date" th:field="*{member.dob}"/>
                         </div>
                     </div>
+                    <input type="hidden" name="roles" th:value="${member.getRoles().getRole_id()}">
+                    <input class="form-control" type="hidden" th:field="*{member.password}"/>
+
                 </div>
                 <div class="row">
                         <div class="form-outline">

@@ -8,8 +8,8 @@
 <a href="#" class="list-group-item" th:each="notification: ${notifications}" >
     <div class="row g-0 align-items-center" >
       <div class="col-2">
-        <i class="bi bi-calendar text-danger"th:if="${#authorization.expression('hasAuthority(''COACH'')')}" ></i>
-          <i class="bi bi-person-plus text-success"th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" ></i>
+        <i class="bi bi-calendar text-danger" th:if="${#authorization.expression('hasAuthority(''COACH'')')}" ></i>
+          <i class="bi bi-person-plus text-success" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" ></i>
       </div>
       <div class="col-10">
         <div class="text-dark" th:utext="${notification.getTitle()}" ></div>

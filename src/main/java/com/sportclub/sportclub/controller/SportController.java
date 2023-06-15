@@ -106,10 +106,9 @@ public class SportController {
     }
 
     @PostMapping("/editSport")
-    public String editAb(@Validated Sport sport, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
+    public String editSport(@Validated Sport sport, BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "EditSportModal";
-        sport.setPic(file.getOriginalFilename());
-        fileStorageService.save(file);
+
         service.updateSport(sport);
         return "redirect:/sportList";
     }

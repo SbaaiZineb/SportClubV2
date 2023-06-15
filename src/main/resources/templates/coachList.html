@@ -20,6 +20,7 @@
             </div>
           </form>
         </div>
+  <a th:href="@{/coachList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
 
   <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
           data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
@@ -64,7 +65,7 @@
         <td th:utext="${m.getCin()}"></td>
         <td th:utext="${m.getDob()}"></td>
         <td th:utext="${m.getTele()}"></td>
-        <td th:utext="${m.getSport_type()}"></td>
+        <td th:utext="${m.getSportType()}"></td>
 
 
         <td><a onclick="return confirm('Vous avez sure?')"
@@ -149,22 +150,22 @@
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                  <div class="form-outline">
-                    <label class="form-label" >Type de sport:</label>
-                    <input class="form-control" type="text" th:field="*{sport_type}"/>
-                  </div>
-                </div>
+                <label class="form-label ">Type de sport :</label>
+                <select name="sportType" id="sportType" class="form-control ">
+                  <option th:each="sport : ${sports}" th:value="${sport.nom}"
+                          th:text="${sport.nom}"></option>
+                </select></div>
               </div>
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Mot de pass:</label>
+                    <label class="form-label">Mot de passe:</label>
                     <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Confirm Mot de pass:</label>
+                    <label class="form-label">Confirm Mot de passe:</label>
                     <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
                   </div>
                 </div>

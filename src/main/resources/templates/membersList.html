@@ -35,7 +35,7 @@
             <th>Date de naissance</th>
             <th>Tele</th>
             <th>Sexe</th>
-
+<th>Inscrie le</th>
             <th>Abonnement</th>
             <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
         </tr>
@@ -68,7 +68,7 @@
             <td th:utext="${m.getDob()}"></td>
             <td th:utext="${m.getTele()}"></td>
             <td th:utext="${m.getGender()}"></td>
-
+<td th:utext="${m.createdAt}"></td>
             <td th:utext="${m.abonnement}"></td>
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
@@ -182,17 +182,30 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Mot de pass:</label>
-                                            <input class="form-control" type="password" th:field="*{password}"/>
+                                            <label class="form-label">Mot de passe:</label>
+                                            <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Confirm mot de pass:</label>
-                                            <input class="form-control" type="password"/>
+                                            <label class="form-label">Confirm Mot de passe:</label>
+                                            <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
                                         </div>
                                     </div>
                                 </div>
+                                <style>
+                                    .input-border {
+                                        border: 1px solid gray;
+                                    }
+
+                                    .matched-border {
+                                        border: 1px solid green;
+                                    }
+
+                                    .mismatched-border {
+                                        border: 1px solid red;
+                                    }
+                                </style>
 
                                 <label class="form-label">Abonnement</label>
                                 <select name="abonnement" id="abonnement" class="form-control mb-3">
@@ -275,7 +288,24 @@
         }
     </script>
 
+    <script th:inline="javascript">
+        function validateInput() {
+            var input1 = document.getElementById('input1');
+            var input2 = document.getElementById('input2');
 
+            if (input1.value === input2.value) {
+                input1.classList.remove('mismatched-border');
+                input2.classList.remove('mismatched-border');
+                input1.classList.add('matched-border');
+                input2.classList.add('matched-border');
+            } else {
+                input1.classList.remove('matched-border');
+                input2.classList.remove('matched-border');
+                input1.classList.add('mismatched-border');
+                input2.classList.add('mismatched-border');
+            }
+        }
+    </script>
 </div>
 </body>
 </html>

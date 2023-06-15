@@ -14,12 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Coach extends UserApp {
-    private String sport_type;
+    private String sportType;
 
 
-    public Coach(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password, String sport_type) {
+    public Coach(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password, String sportType) {
         super(name, lname, adress, cin, dob, tele, roles, email, password);
-        this.sport_type = sport_type;
+        this.sportType = sportType;
     }
 
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })

@@ -1,11 +1,16 @@
 package com.sportclub.sportclub.controller;
 
+import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.RoleService;
 import com.sportclub.sportclub.service.SeanceService;
+import com.sportclub.sportclub.service.SportService;
+import com.sportclub.sportclub.tools.CoachPdf;
 import com.sportclub.sportclub.tools.FileStorageService;
+import com.sportclub.sportclub.tools.MemberPdf;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +23,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -36,6 +45,8 @@ public class CoachController {
     CoachRepository coachRepository;
     @Autowired
     RoleService roleService;
+    @Autowired
+    SportService sportService;
     @GetMapping("/coachList")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -48,6 +59,8 @@ public class CoachController {
         model.addAttribute("keyword",kw);
         Coach CoachForm = new Coach();
         model.addAttribute("CoachForm", CoachForm);
+        List<Sport> sports=sportService.getAllSports();
+        model.addAttribute("sports",sports);
         return "coachList";
 
     }
@@ -145,20 +158,36 @@ public class CoachController {
 
     public String editCoach(@RequestParam(name = "id") Long id, Model model){
         Coach coach=coachService.getCoachById(id);
+        List<Sport> sports=sportService.getAllSports();
+        model.addAttribute("sports",sports);
         model.addAttribute("coach",coach);
         return "updateCoachModal";
     }
 
     @PostMapping("/editCoach")
-    public String editCoach(@Validated Coach c, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
+    public String editCoach(@Validated Coach c, BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "updateCoachModal";
-        c.setPic(file.getOriginalFilename());
         coachService.updateCoach(c);
-        fileStorageService.save(file);
+
 
         return "redirect:/coachList";
     }
 
+    @GetMapping("coachList/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
 
+
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=coach_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        List<Coach> listUsers = coachService.getAllCoachs();
+        CoachPdf exporter = new CoachPdf(listUsers);
+        exporter.export(response);
+    }
 
 }

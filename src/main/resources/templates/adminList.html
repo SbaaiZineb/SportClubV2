@@ -156,17 +156,30 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Mot de pass:</label>
-                                            <input class="form-control" type="password" th:field="*{password}"/>
+                                            <label class="form-label">Mot de passe:</label>
+                                            <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Confirm Mot de pass:</label>
-                                            <input class="form-control" type="password"/>
+                                            <label class="form-label">Confirm Mot de passe:</label>
+                                            <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
                                         </div>
                                     </div>
                                 </div>
+                                <style>
+                                    .input-border {
+                                        border: 1px solid gray;
+                                    }
+
+                                    .matched-border {
+                                        border: 1px solid green;
+                                    }
+
+                                    .mismatched-border {
+                                        border: 1px solid red;
+                                    }
+                                </style>
 
                                 <div class="mb-3 mt-3">
                                     <label class="form-label">Image</label>
@@ -179,13 +192,13 @@
                                     </label>
                                     <style>
                                         .checkbox-row {
-                                        display: flex;
-                                        flex-wrap: wrap;
-                                    }
+                                            display: flex;
+                                            flex-wrap: nowrap; /* Prevent wrapping to the next line */
+                                        }
 
-                                    .checkbox-row label {
-                                        margin-right: 20px;
-                                    }</style>
+                                        .checkbox-row label {
+                                            margin-right: 20px;
+                                        }</style>
                                 </div>
                                 <!--<label class="form-label">Gender:</label>
 
@@ -249,6 +262,24 @@
                 })
             })
         })
+    </script>
+    <script th:inline="javascript">
+        function validateInput() {
+            var input1 = document.getElementById('input1');
+            var input2 = document.getElementById('input2');
+
+            if (input1.value === input2.value) {
+                input1.classList.remove('mismatched-border');
+                input2.classList.remove('mismatched-border');
+                input1.classList.add('matched-border');
+                input2.classList.add('matched-border');
+            } else {
+                input1.classList.remove('matched-border');
+                input2.classList.remove('matched-border');
+                input1.classList.add('mismatched-border');
+                input2.classList.add('mismatched-border');
+            }
+        }
     </script>
 </div>
 </body>
