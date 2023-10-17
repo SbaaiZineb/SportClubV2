@@ -1,56 +1,72 @@
 <!DOCTYPE html>
 <html lang="en"xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="partials/layout.html">
+      >
 
-<head th:insert="~{partials/sideBar  :: header}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}">
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+    <link th:href="@{css/style.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{css/app.css}" type="text/css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    <script type="module" th:src="@{/js/app.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <title>Log in</title>
 
 </head>
 
-<body>
+<body style="background-color: #f5f7fb">
 <main class="d-flex w-100">
     <div class="container d-flex flex-column">
         <div class="row vh-100">
-            <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+            <div class="col-sm-10 col-md-8 col-lg-5 mx-auto d-table h-100">
                 <div class="d-table-cell align-middle">
 
                     <div class="text-center mt-4">
-                        <h1 class="h2">Welcome back, Charles</h1>
+                        <h1 class="h2">Bienvenue</h1>
                         <p class="lead">
-                            Sign in to your account to continue
+                            Connectez-vous à votre compte pour continuer
                         </p>
                     </div>
 
-                    <div class="card">
+                    <div class="card smooth-shadow-md">
                         <div class="card-body">
                             <div class="m-sm-4">
-                                <div class="text-center">
-                                    <img src="img/avatars/avatar.jpg" alt="Charles Hall" class="img-fluid rounded-circle" width="132" height="132" />
+
+                                <form method="post" th:action="@{/login}">
+                                    <div th:if="${param.error}" class="error" style="color: red">
+                                    email ou mot de pass invalid
                                 </div>
-                                <form>
                                     <div class="mb-3">
                                         <label class="form-label">Email</label>
-                                        <input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" />
+                                        <input class="form-control form-control-lg" type="text" name="username" placeholder="Enter your email" />
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Password</label>
                                         <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
-                                        <small>
-                                            <a href="index.html">Forgot password?</a>
-                                        </small>
                                     </div>
+
                                     <div>
                                         <label class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="remember-me" name="remember-me" checked>
+                                            <input class="form-check-input" type="checkbox" value="remember-me" name="remember-me" >
                                             <span class="form-check-label">
               Remember me next time
             </span>
                                         </label>
                                     </div>
                                     <div class="text-center mt-3">
-                                        <a href="index.html" class="btn btn-lg btn-primary">Sign in</a>
+                                        <button type="submit" class="btn-login">Sign in</button>
                                         <!-- <button type="submit" class="btn btn-lg btn-primary">Sign in</button> -->
                                     </div>
                                 </form>

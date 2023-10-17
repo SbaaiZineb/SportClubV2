@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar  :: header}">
+    <meta charset="UTF-8">
+    <title>Enregistrement</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="row">
+        <h2 style="font-family: Arial, sans-serif !important;
+             color: #233247;font-weight: bold;" class="mb-5"
+            th:utext="${#strings.capitalize('Bonjour Mr '+#authentication.principal.userName)}"></h2>
+        <div class="col-md-12">
+
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="mb-3 fw-bold" style="font-family: Arial, sans-serif;color: #4c5152">Session
+                                d'aujourd'hui </h3>
+                        </div>
+                    </div>
+                    <div th:each="s:${TodaySessions}">
+
+
+                        <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89);">
+
+                            <div class="card-body " style="padding: 9px;">
+                                 <div title="nombre des adherents enregistre" class="float-end" th:utext="${#lists.size(s.getCheckInsToday())}" style=" display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        flex-direction: column;
+                                        background-color: #85a2f0;
+                                        width: 2rem;
+                                        height: 2rem;
+                                        border-radius: 50%;"></div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="media d-flex divC" id="divC" data-th-id="${s.id}"
+                                             data-bs-toggle="modal" data-bs-target="#checkinCoach">
+
+                                            <div class="media-body text-left ">
+
+                                                <p class="text-info  fw-bold pp"
+                                                   th:if="${s.getStartTime() gt currentTime}">A venir</p>
+                                                <p class="text-danger fw-bold pf"
+                                                   th:if="${s.getEndTime() lt currentTime}">Fini</p>
+                                                <p class="text-success fw-bold pc"
+                                                   th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">
+                                                    En cours</p>
+                                                <h4 class="fw-bold mt-1 " style="color: #3e6fb0"
+                                                    th:utext="${s.getStartTime()}+'-'+${s.getEndTime()}"></h4>
+                                                <span class="fw-bold" style="color: #3a4456"
+                                                      th:utext="${s.getClassName()}"></span>
+                                                <div class="small text-gray " th:utext="${s.getCoach()}"></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a  th:href="@{/coachcheckin(id=${s.getId()})}" class="btn btn-info"
+                                           style="margin-top: 36px;margin-left: 60px;">Enreg</a>
+                                        <div th:each="check :${s.getCheckInCoaches()}">
+
+                                            <a th:if="${check != null and check.getStatut() == 'Checkedin' and check.getCheckinDate() == currentDate}"
+                                               style="margin-top: 36px;margin-left: 60px;font-size: 21px;
+color: #14ac24;"><i class="bi bi-check-all"></i></a>
+                                        </div>
+                                        <style>
+                                            .hide {
+                                                display: none;
+                                            }
+                                        </style>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- check members in Modal -->
+    <div class="modal fade" id="checkinCoach" tabindex="-1" role="dialog" aria-labelledby="checkinCoachLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="checkinCoachlabel"></h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="dataTable"
+                           class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
+                        <tr style="background-color: white">
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+
+                        </tr>
+                        <tbody class="tbody">
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $('#checkinCoach').on('show.bs.modal', function () {
+            var d = document.querySelector('.divC');
+            var id = d.id;
+
+            $(".divC").click(function () {
+                $.get("/getCheckedInMembers?id=" + id, function (data) {
+                    $('#checkinCoach').find('.tbody').html(data);
+                })
+            })
+        })
+
+        function checkIn(id) {
+            $.get("/Coachcheckin?id=" + id);
+        }
+    </script>
+</div>
+
+</body>
+</html>

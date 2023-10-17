@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Seance</title>
+
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form th:action="@{/editSeance}"
+              method="POST">
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${seance.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${seance.id}">
+            </div>
+            <label class="form-label">Seance:</label>
+            <input class="form-control" type="text" th:field="*{seance.className}"/>
+            <span class="text-danger" th:errors="${seance.className}" th:value="${seance.className}"></span>
+            <label class="form-label mt-3">Temps de debut:</label>
+            <input class="form-control" type="date" th:field="*{seance.startDate}" />
+            <div class="row mt-2">
+                <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label mt-2">Temps de debut :</label>
+                        <input class="form-control" type="time" th:field="*{seance.startTime}"/>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label mt-2">Temps de fin :</label>
+                        <input class="form-control" type="time" th:field="*{seance.endTime}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="form-label mt-2">Répéter :</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="lundi"  value="MONDAY" name="days" th:checked="${seance.days.contains('MONDAY')}">
+                <label class="form-check-label" for="lundi">Lun</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="mardi"  value="TUESDAY" name="days" th:checked="${seance.days.contains('TUESDAY')}">
+                <label class="form-check-label" for="mardi">Mar</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="mercredi" name="days" value="WEDNESDAY" th:checked="${seance.days.contains('WEDNESDAY')}">
+                <label class="form-check-label" for="mercredi">Mer</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="jeudi" name="days"  value="THURSDAY" th:checked="${seance.days.contains('THURSDAY')}">
+                <label class="form-check-label" for="jeudi">Jeu</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="vendredi"  name="days" value="FRIDAY" th:checked="${seance.days.contains('FRIDAY')}">
+                <label class="form-check-label" for="vendredi">Ven</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="samedi"  value="SATURDAY" name="days" th:checked="${seance.days.contains('SATURDAY')}">
+                <label class="form-check-label" for="samedi">Sam </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="dimanch"  value="SUNDAY" name="days" th:checked="${seance.days.contains('SUNDAY')}">
+                <label class="form-check-label" for="dimanch">Dim </label>
+            </div>
+            <style>
+                .form-check-inline {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+            </style>
+            <label class="form-label mt-3">Nombres des semains:</label>
+            <input class="form-control" type="number" th:field="*{seance.numWeeks}"/>
+
+            <label class="form-label mt-2">Entraineur :</label>
+
+            <select name="coach" id="coach" class="form-control mb-4">
+                <option th:each="coach : ${coaches}" th:value="${coach.id}" th:field="${seance.coach}"
+                        th:text="${coach.name}"></option>
+            </select>
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarder</button>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit member</title>
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form  th:action="@{/editMember}"
+               method="POST">
+            <input type="hidden" name="pic" th:value="${member.pic}">
+            <div style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+                <img th:if="${member.pic}" alt="user icon" th:src="@{'/images/'+${member.pic}}" style="width: 160px;
+height: 160px;
+object-fit: cover;border-radius: 50%"></div>
+            <div class="mb-3 mt-3">
+            <label for="id" class="form-label">ID:</label>
+            <label th:text="${member.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${member.id}">
+            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                            <label class="form-label">Nom:</label>
+                            <input class="form-control" type="text"th:field="*{member.name}" />
+                            <span class="text-danger" th:errors="${member.name}" th:value="${member.name}"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                            <label class="form-label">Prénom:</label>
+                            <input class="form-control" type="text" th:field="*{member.lname}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                            <label class="form-label">Email:</label>
+                            <input class="form-control" type="text" th:field="*{member.email}"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                        <label class="form-label">Tele:</label>
+                        <input class="form-control" type="tel" th:field="*{member.tele}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                            <label class="form-label">Cin:</label>
+                            <input class="form-control" type="text" th:field="*{member.cin}"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                            <label class="form-label">Date de naissance:</label>
+                            <input class="form-control" type="date" th:field="*{member.dob}"/>
+                        </div>
+                    </div>
+                    <input type="hidden" name="roles" th:value="${member.getRoles().getRole_id()}">
+                    <input class="form-control" type="hidden" th:field="*{member.password}"/>
+
+                </div>
+                <div class="row">
+                        <div class="form-outline">
+                            <label class="form-label">Adresse:</label>
+                            <input class="form-control" type="text" th:field="*{member.adress}"/>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="form-outline">
+                            <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                                <h6 class="form-label mb-0 me-4 mt-3">Sexe:</h6>
+
+                                <div class="form-check form-check-inline mb-0 me-4 mt-3">
+
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                           value="Femme" id="flexRadioDefault1" th:field="${member.gender}">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Femme
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                           value="Homme" id="flexRadioDefault2" th:field="${member.gender}" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Homme
+                                    </label>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+            <label class="form-label">Abonnement</label>
+            <select name="abonnement" id="abonnement" class="form-control mb-3" >
+                <option th:each="abonnement :${abos}" th:value="${abonnement.id}" th:field="*{member.abonnement}"
+                        th:text="${abonnement.nameAb}"></option>
+            </select>
+
+            <div class="mb-3 mt-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control"
+                       id="image" accept="image/png, image/jpeg" name="file"/>
+            </div>
+
+
+
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarde</button>
+        </form>
+
+    </div></div>
+</body>
+</html>

@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member extends User {
+public class Member extends UserApp {
     private String gender;
 
     public Member(String pic, String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
@@ -33,22 +33,23 @@ public class Member extends User {
 
     @Override
     public String toString() {
-        return getName()+""+getLname();
+        return getName()+" "+getLname();
     }
 
-    public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, List<Role> roles, String email, String password, String gender) {
+    public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password, String gender) {
         super(name, lname, adress, cin, dob, tele, roles, email, password);
         this.gender = gender;
     }
     @Temporal(value = TemporalType.DATE)
 private LocalDate createdAt;
-    @OneToOne
-    private Paiement paiement;
-    @ManyToMany
-    private List<Groupe> groupes;
+    @OneToMany(mappedBy = "member",  fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+    private List<Paiement> paiement;
+
     @ManyToMany
     private List<Seance> seanceList;
     @ManyToOne
     @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+    private List<CheckIn> checkIn;
 }

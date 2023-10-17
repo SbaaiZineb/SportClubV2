@@ -4,7 +4,9 @@ import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,8 @@ public class AbonnementServiceImp implements AbonnementService {
 
     @Override
     public Page<Abonnement> findByAboName(String ac, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+
         return abonnementRepo.findByNameAbContains(ac, pageable);
     }
 

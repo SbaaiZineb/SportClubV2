@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar  :: header}">
+    <meta charset="UTF-8">
+    <title>Profil</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="main-body">
+
+
+        <!-- /Breadcrumb -->
+
+        <div class="row gutters-sm">
+            <div class="col-md-4">
+                <div class="card h-100" style="background-color: #4c7abd;">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
+height: 200px;
+object-fit: cover;"
+                                 th:src="@{'images/'+${user.pic}}">
+                            <div class="mt-3">
+                                <h4 class="fw-bold" th:utext="${#strings.capitalize(user.getName())}+' '+${#strings.capitalize(user.getLname())}"></h4>
+                                <p class="text-secondary fw-bold mb-1" style="color: #f2f7fd  !important;" th:utext="${user.getEmail()}"></p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-8 idd" th:id="${user.id}" >
+                <div class="card mb-3 h-100" style="background-color: #598edb26;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Nom</h6>
+                                    </div>
+
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getName()}"></div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Prénom</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getLname()}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Email</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getEmail()}">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row me-1">
+                                    <div class="col-sm-3 d-flex align-items-center">
+                                        <h6 class="mb-0">Tele</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getTele()}">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row me-1">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">Cin</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary input" th:utext="${user.getCin()}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row me-1">
+                                        <div class="col-sm-7 d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance</h6>
+                                        </div>
+                                        <div class="col-sm-5 text-secondary input" th:utext="${user.getDob()}">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-sm-3 d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary input" th:utext="${user.getAdress()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .col-sm-5.text-secondary.input,
+                                    .col-sm-9.text-secondary.input {
+                                        box-sizing: border-box;
+                                        -webkit-box-sizing: border-box;
+                                        -moz-box-sizing: border-box;
+                                        outline: none;
+                                        display: block;
+                                        width: 100%;
+                                        padding: 7px;
+                                        border: none;
+                                        border-bottom: 1px solid #9997ba;
+                                        background: transparent;
+                                        margin-bottom: 10px;
+                                        font: 16px Arial, Helvetica, sans-serif;
+                                        height: 45px;
+                                        margin-left: 4px;
+                                    }
+
+                                    .mb-0 {
+                                        font-weight: bold;
+                                        color: #30639f;
+                                    }
+
+                                </style>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row" th:class="${user.getRoles().roleName == 'COACH' ? 'hide' : 'card mt-4'}">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Graphique à barres</h5>
+                        <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                            effectués par ce adherent chaque mois.</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart chart-sm text-center">
+                            <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
+padding: 5px;
+color: #3b7ddd;
+border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
+background: transparent;margin-top: -17px">
+                            <canvas id="chartjs-bar"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row" th:class="${user.getRoles().roleName == 'COACH' ? 'card mt-4' : 'hide'}">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Graphique à barres</h5>
+                        <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                            effectués par ce entaineur par chaque jour du semaine.</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart chart-sm text-center">
+                            <input type="date" id="dateSelected" name="dateSelected" th:value="${today}" style="float: right;
+padding: 5px;
+color: #3b7ddd;
+border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
+background: transparent;margin-top: -17px">
+                            <canvas id="chartjs-bar-coach"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div  th:class="${user.getRoles().roleName == 'COACH' ? 'hide' : 'card mt-4'}">
+            <style>
+                .hide{
+                    display: none;
+                }
+            </style>
+            <div class="card-header" style="background-color: #4c7abd;">
+                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Historique des
+                    paiements</h3>
+            </div>
+
+            <table class="table table-centered table-hover table-responsive mt-3">
+
+                <tr th:each="p:${payments}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                    <td th:utext="${p.getId()}"></td>
+                    <td th:utext="${p.abonnement}"></td>
+
+                    <td th:utext="${p.getAbonnement().price}+' DH'"></td>
+                    <td th:utext="${p.getStart_date()}"></td>
+                    <td th:utext="${p.getEnd_date()}"></td>
+                    <td th:utext="${p.payedBy}"></td>
+                    <td th:utext="${p.payedAt}"></td>
+                    <td class="text-center">
+                        <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                        <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                    </td>
+
+
+                </tr>
+            </table>
+
+        </div>
+
+
+
+
+        <div class="card mt-4">
+            <div class="card-header" style="background-color: #4c7abd;">
+                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
+            </div>
+            <table class="table table-centered table-hover table-responsive mt-3">
+                <tr style="background-color: #e0e7f46b!important;">
+<th>ID de seance</th>
+                    <th>Seance</th>
+                    <th>La date d'enregistrement</th>
+                    <th>Le temps d'enregistrement</th>
+                </tr>
+
+                <tr th:each="check:${checkins}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+<td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId()}"></td>
+                    <td style="font-weight: bold" th:utext="${check.getSession().getClassName()}"></td>
+
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
+
+                </tr>
+            </table>
+
+        </div>
+
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDateInput = document.getElementById("selectedDate");
+            function getQueryParamValue(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            // Function to fetch data and generate chart
+            function fetchDataAndGenerateChart(date,memberId) {
+                fetch('/checkInMember?selectedDate=' + date+ '&id=' + memberId)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+                        const checkInCount = labels.map(month => data[month.toLowerCase()] || 0);
+
+                        new Chart(document.getElementById("chartjs-bar"), {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Check-ins",
+                                    backgroundColor: window.theme.primary,
+                                    borderColor: window.theme.primary,
+                                    hoverBackgroundColor: window.theme.primary,
+                                    hoverBorderColor: window.theme.primary,
+                                    data: checkInCount,
+                                    barPercentage: .75,
+                                    categoryPercentage: .5
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        stacked: false,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: false,
+                                        gridLines: {
+                                            color: "transparent"
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to handle date change event
+            function handleDateChange() {
+                const selectedDate = selectedDateInput.value;
+                console.log("Selected date:", selectedDate);
+                const memberId = getQueryParamValue('id');
+                fetchDataAndGenerateChart(selectedDate, memberId);
+            }
+
+            // Attach event listener to date input
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            // Fetch data and generate chart on page load
+            const initialDate = selectedDateInput.value;
+            const initialMemberId = getQueryParamValue('id');
+            fetchDataAndGenerateChart(initialDate, initialMemberId);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDateInput = document.getElementById("dateSelected");
+            function getQueryParamValue(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            // Function to fetch data and generate chart
+            function fetchDataAndGenerateChart(date,coachId) {
+                fetch('/coachStatistic?dateSelected=' + date+ '&id=' + coachId)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+                        const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
+
+                        new Chart(document.getElementById("chartjs-bar-coach"), {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Enregistrement",
+                                    backgroundColor: window.theme.primary,
+                                    borderColor: window.theme.primary,
+                                    hoverBackgroundColor: window.theme.primary,
+                                    hoverBorderColor: window.theme.primary,
+                                    data: checkInCount,
+                                    barPercentage: .75,
+                                    categoryPercentage: .5
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        stacked: false,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: false,
+                                        gridLines: {
+                                            color: "transparent"
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to handle date change event
+            function handleDateChange() {
+                const dateSelected = selectedDateInput.value;
+                console.log("Selected date:", dateSelected);
+                const coachId = getQueryParamValue('id');
+                fetchDataAndGenerateChart(dateSelected, coachId);
+            }
+
+            // Attach event listener to date input
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            // Fetch data and generate chart on page load
+            const initialDate = selectedDateInput.value;
+            const initialCoachId = getQueryParamValue('id');
+            fetchDataAndGenerateChart(initialDate, initialCoachId);
+        });
+
+    </script>
+</div>
+</body>
+</html>

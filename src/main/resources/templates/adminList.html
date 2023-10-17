@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar:: header}">
+
+    <title>Coach List</title>
+
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="search-field d-none d-md-block">
+        <form th:action="@{adminList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend bg-transparent">
+                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+                </div>
+                <input type="text" class="form-control bg-transparent border-0" name="user"
+                       th:value="${keyword}" placeholder="Chercher">
+            </div>
+        </form>
+    </div>
+
+    <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
+    <form th:action="@{/deleteAdmins}" method="post">
+        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+
+        <table class="table table-centered table-hover table-responsive">
+            <tr>
+                <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+
+                <th>Id</th>
+                <th>Entaineur</th>
+
+                <th>Adresse</th>
+                <th>Cin</th>
+                <th>Date de naissance</th>
+                <th>Tele</th>
+                <th>Role</th>
+
+
+
+                <th colspan="2">Action</th>
+            </tr>
+            <tr th:each="m:${users}">
+                <td>
+                    <input type="checkbox" name="selectedCells" data-target="requests-all"
+                           th:value="${m.id}" />
+                </td>
+                <td th:utext="${m.getId()}"></td>
+                <td>
+                    <div class="user-info">
+                        <div class="user-info__img">
+                            <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                        </div>
+                        <div class="user-info__basic">
+                            <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                            <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                        </div>
+                    </div>
+                </td>
+                <td th:utext="${m.getAdress()}"></td>
+                <td th:utext="${m.getCin()}"></td>
+                <td th:utext="${m.getDob()}"></td>
+                <td th:utext="${m.getTele()}"></td>
+                <td>
+                    <p class="m-0" style="font-weight: bold;color: #16375d" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName == 'ADMIN'}"></p>
+                    <p class="m-0" style="font-weight: bold;color: #0d5d73" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName== 'SUBADMIN'}"></p>
+                    <span class="bold" ></span>
+                </td>
+
+                <td><a onclick="return confirm('Vous avez sure?')"
+                       th:href="@{/deleteAdmin(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash iconT"></i></a></td>
+                <td><a data-th-id="${m.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                        class="bi bi-pencil-square iconE"></i></a>
+                </td>
+
+
+            </tr>
+        </table></form>
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}">
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{/adminList(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
+
+<!---- Add admin modal----->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h3 class="modal-title" id="exampleModalLabel">Ajouter Admin</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card align-content-center">
+                        <div class="card-body">
+                            <form  th:action="@{/addAdmin}"
+                                   th:object="${userForm}" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Nom:</label>
+                                            <input class="form-control" type="text"th:field="*{name}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Prénom:</label>
+                                            <input class="form-control" type="text" th:field="*{lname}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Email:</label>
+                                            <input class="form-control" type="text" th:field="*{email}"/>
+                                        </div></div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Adresse:</label>
+                                            <input class="form-control" type="text" th:field="*{adress}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Cin:</label>
+                                            <input class="form-control" type="text" th:field="*{cin}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Date de naissance:</label>
+                                            <input class="form-control" type="date" th:field="*{dob}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Tele:</label>
+                                            <input class="form-control" type="tel" th:field="*{tele}"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Mot de passe:</label>
+                                            <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Confirm Mot de passe:</label>
+                                            <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <style>
+                                    .input-border {
+                                        border: 1px solid gray;
+                                    }
+
+                                    .matched-border {
+                                        border: 1px solid green;
+                                    }
+
+                                    .mismatched-border {
+                                        border: 1px solid red;
+                                    }
+                                </style>
+
+                                <div class="mb-3 mt-3">
+                                    <label class="form-label">Image</label>
+                                    <input type="file" class="form-control"
+                                           id="image" accept="image/png, image/jpeg" name="file"/>
+                                </div>
+                                <div class="checkbox-row" th:each="role:${roles}">
+                                    <label>
+                                        <input type="checkbox" name="roles" th:value="${role.role_id}" th:text="${role.roleName}" />
+                                    </label>
+                                    <style>
+                                        .checkbox-row {
+                                            display: flex;
+                                            flex-wrap: nowrap; /* Prevent wrapping to the next line */
+                                        }
+
+                                        .checkbox-row label {
+                                            margin-right: 20px;
+                                        }</style>
+                                </div>
+                                <!--<label class="form-label">Gender:</label>
+
+                                <div class="form-check">
+
+                                  <input class="form-check-input" type="radio" name="flexRadioDefault" value="female" id="flexRadioDefault1" th:field="*{gender}">
+                                  <label class="form-check-label" for="flexRadioDefault1"  >
+                                    Female
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="flexRadioDefault" value="male" id="flexRadioDefault2" th:field="*{gender}"checked>
+                                  <label class="form-check-label" for="flexRadioDefault2" >
+                                    Male
+                                  </label>
+                                </div>-->
+                                <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Admin Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="editModallabel">Edit Admin</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+
+        $('#editModal').on('show.bs.modal', function () {
+
+            $(".eBtn").click(function () {
+                var id = $(this).attr('id');
+                $.get("/editAdmin?id=" + id, function (data) {
+                    $('#editModal').find('.modal-body').html(data);
+                })
+            })
+        })
+    </script>
+    <script th:inline="javascript">
+        function validateInput() {
+            var input1 = document.getElementById('input1');
+            var input2 = document.getElementById('input2');
+
+            if (input1.value === input2.value) {
+                input1.classList.remove('mismatched-border');
+                input2.classList.remove('mismatched-border');
+                input1.classList.add('matched-border');
+                input2.classList.add('matched-border');
+            } else {
+                input1.classList.remove('matched-border');
+                input2.classList.remove('matched-border');
+                input1.classList.add('mismatched-border');
+                input2.classList.add('mismatched-border');
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

@@ -10,60 +10,78 @@
 
 <div layout:fragment="content">
         <div class="search-field d-none d-md-block">
-          <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group">
+          <form th:action="@{coachList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group mb-3">
               <div class="input-group-prepend bg-transparent">
                 <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
               </div>
-              <input type="text" class="form-control bg-transparent border-0" name="keyword"
+              <input type="text" class="form-control bg-transparent border-0" name="coach"
                      th:value="${keyword}" placeholder="Chercher">
             </div>
           </form>
         </div>
-    <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal" data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
-    <table class="table table-striped ">
+  <a th:href="@{/coachList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
+
+  <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+          data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
+  <form th:action="@{/deleteCoachs}" method="post">
+    <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+
+    <table class="table table-centered table-hover table-responsive">
       <tr>
+        <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+
         <th>Id</th>
-        <th>Image</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>email</th>
-        <th>adress</th>
-        <th>cin</th>
-        <th>dob</th>
-        <th>tele</th>
+        <th>Entaineur</th>
+
+        <th>Adresse</th>
+        <th>Cin</th>
+        <th>Date de naissance</th>
+        <th>Tele</th>
         <th>type de sport</th>
-        <th>password</th>
+
 
         <th colspan="2">Action</th>
       </tr>
       <tr th:each="m:${listCoach}">
+        <td>
+          <input type="checkbox" name="selectedCells" data-target="requests-all"
+                 th:value="${m.id}" />
+        </td>
         <td th:utext="${m.getId()}"></td>
-        <td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-        <td th:utext="${m.getName()}"></td>
-        <td th:utext="${m.getLname()}"></td>
-        <td th:utext="${m.getEmail()}"></td>
+        <td data-th-id="${m.id}"
+            onclick="getCoachProfile($(this).attr('id'))">
+          <div class="user-info">
+            <div class="user-info__img">
+              <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+            </div>
+            <div class="user-info__basic">
+              <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+              <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+            </div>
+          </div>
+        </td>
         <td th:utext="${m.getAdress()}"></td>
         <td th:utext="${m.getCin()}"></td>
         <td th:utext="${m.getDob()}"></td>
         <td th:utext="${m.getTele()}"></td>
-        <td th:utext="${m.getSport_type()}"></td>
-        <td th:utext="${m.getPassword()}"></td>
+        <td th:utext="${m.getSportType()}"></td>
 
-        <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
-               th:href="@{/deleteCoach(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash"></i></a></td>
-        <td><a th:href="@{/editCoach(id=${m.id})} " class="btn btn-info">
-          <i class="bi bi-pencil"></i></a></td>
+
+        <td><a onclick="return confirm('Vous avez sure?')"
+               th:href="@{/deleteCoach(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash iconT"></i></a></td>
+        <td><a data-th-id="${m.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                class="bi bi-pencil-square iconE"></i></a>
         </td>
 
 
       </tr>
-    </table>
+    </table></form>
     <ul class="nav nav-pills">
       <li th:each="page,status:${pages}">
         <a
-                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                th:href="@{/coachList(page=${status.index}, keyword=${keyword})}"
                 th:text="${status.index}">
         </a>
       </li>
@@ -73,9 +91,9 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ajouter coach</h5>
-        <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+      <div class="modal-header" >
+        <h3 class="modal-title" id="exampleModalLabel">Ajouter Entraineur</h3>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
@@ -83,30 +101,91 @@
           <div class="card-body">
             <form  th:action="@{/addCoach}"
                    th:object="${CoachForm}" method="POST" enctype="multipart/form-data">
-              <label class="form-label">Nom:</label>
-              <input class="form-control" type="text"th:field="*{name}" />
-              <label class="form-label">Prenom:</label>
-              <input class="form-control" type="text" th:field="*{lname}"/>
-              <label class="form-label">email:</label>
-              <input class="form-control" type="text" th:field="*{email}"/>
-              <label class="form-label">adress:</label>
-              <input class="form-control" type="text" th:field="*{adress}"/>
-              <label class="form-label">cin:</label>
-              <input class="form-control" type="text" th:field="*{cin}"/>
-              <label class="form-label">dob:</label>
-              <input class="form-control" type="date" th:field="*{dob}"/>
-              <label class="form-label">tele:</label>
-              <input class="form-control" type="number" th:field="*{tele}"/>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Nom:</label>
+                    <input class="form-control" type="text"th:field="*{name}" />
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                  <label class="form-label">Prénom:</label>
+                  <input class="form-control" type="text" th:field="*{lname}"/>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                <div class="form-outline">
+                  <label class="form-label">Email:</label>
+                  <input class="form-control" type="text" th:field="*{email}"/>
+                </div></div>
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Adresse:</label>
+                    <input class="form-control" type="text" th:field="*{adress}"/>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Cin:</label>
+                    <input class="form-control" type="text" th:field="*{cin}"/>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Date de naissance:</label>
+                    <input class="form-control" type="date" th:field="*{dob}"/>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Tele:</label>
+                    <input class="form-control" type="tel" th:field="*{tele}"/>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                <label class="form-label ">Type de sport :</label>
+                <select name="sportType" id="sportType" class="form-control ">
+                  <option th:each="sport : ${sports}" th:value="${sport.nom}"
+                          th:text="${sport.nom}"></option>
+                </select></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Mot de passe:</label>
+                    <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="form-outline">
+                    <label class="form-label">Confirm Mot de passe:</label>
+                    <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
+                  </div>
+                </div>
+              </div>
+              <style>
+                .input-border {
+                  border: 1px solid gray;
+                }
 
-              <label class="form-label">Password:</label>
-              <input class="form-control" type="password" th:field="*{password}"/>
-              <label class="form-label">Confirm password:</label>
-              <input class="form-control" type="password"/>
-              <label class="form-label" >type de sport:</label>
-              <input class="form-control" type="text" th:field="*{sport_type}"/>
+                .matched-border {
+                  border: 1px solid green;
+                }
+
+                .mismatched-border {
+                  border: 1px solid red;
+                }
+              </style>
               <div class="mb-3 mt-3">
                 <label class="form-label">Image</label>
-                <input type="file" class="form-control  "
+                <input type="file" class="form-control"
                        id="image" accept="image/png, image/jpeg" name="file"/>
               </div>
               <!--<label class="form-label">Gender:</label>
@@ -131,12 +210,69 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 
       </div>
     </div>
   </div>
 </div>
+  <!-- Edit coach Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="editModallabel">Edit Entraineur</h3>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery library -->
+  <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+  <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+  <script>
+
+    $('#editModal').on('show.bs.modal', function () {
+
+      $(".eBtn").click(function () {
+        var id = $(this).attr('id');
+        $.get("/editCoach?id=" + id, function (data) {
+          $('#editModal').find('.modal-body').html(data);
+        })
+      })
+    })
+    function getCoachProfile(id){
+
+      window.location.href = "/userProfile?id=" + id;
+    }
+  </script>
+  <script th:inline="javascript">
+    function validateInput() {
+      var input1 = document.getElementById('input1');
+      var input2 = document.getElementById('input2');
+
+      if (input1.value === input2.value) {
+        input1.classList.remove('mismatched-border');
+        input2.classList.remove('mismatched-border');
+        input1.classList.add('matched-border');
+        input2.classList.add('matched-border');
+      } else {
+        input1.classList.remove('matched-border');
+        input2.classList.remove('matched-border');
+        input1.classList.add('mismatched-border');
+        input2.classList.add('mismatched-border');
+      }
+    }
+  </script>
   </div>
 </body>
 </html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="partials/layout.html">
+<head th:insert="~{partials/sideBar :: header}">
+
+  <title>List des Sport</title>
+
+
+</head>
+<body>
+
+<div layout:fragment="content">
+  <div class="search-field d-none d-md-block">
+    <form th:action="@{sportList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend bg-transparent">
+          <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+        </div>
+        <input type="text" class="form-control bg-transparent border-0" name="sport"
+               th:value="${keyword}" placeholder="Chercher">
+      </div>
+    </form>
+  </div>
+  <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"
+          data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1" ></i>Ajouter</button>
+
+  <form th:action="@{/deleteSports}" method="post" enctype="multipart/form-data">
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+
+    <table class="table table-centered table-hover table-responsive ">
+      <tr>
+        <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+        <th>ID</th>
+        <th>Image</th>
+        <th>Nom de sport</th>
+        <th>Description</th>
+        <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">Action</th>
+      </tr>
+      <tr th:each="ab:${listSport}">
+        <td>
+          <input type="checkbox"  name="selectedS" data-target="requests-all"
+                 th:value="${ab.id}" />
+        </td>
+        <td th:utext="${ab.getId()}"></td>
+        <td>   <img th:if="${ab.pic}" alt="user icon" th:src="@{'/images/'+${ab.pic}}">
+        </td>
+
+        <td th:utext="${ab.getNom}"></td>
+        <td th:utext="${ab.getDescrption()}"></td>
+
+
+        <td><a onclick="return confirm('Vous avez sure')"
+               th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  th:href="@{/deletesport(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
+                class="bi bi-trash iconT me-1"></i></a>
+          <a th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                  class="bi bi-pencil-square iconE"></i></a>
+<!--          <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal" class="LBtn ms-1"-->
+<!--          ><i class="bi bi-eye eyecon"></i></a>-->
+
+        </td>
+      </tr>
+    </table></form>
+
+  <ul class="nav nav-pills">
+    <li th:each="page,status:${pages}">
+      <a
+              th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+              th:href="@{/sportList(page=${status.index}, keyword=${keyword})}"
+              th:text="${status.index}">
+      </a>
+    </li>
+  </ul>
+
+  <!-- Add sport modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalLabel">Ajouter sport</h3>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card align-content-center">
+            <div class="card-body">
+              <form th:action="@{/addSport}"
+                    th:object="${sport}" method="POST" enctype="multipart/form-data">
+                <label class="form-label">Nom de sport:</label>
+                <input class="form-control" type="text" th:field="*{nom}"/>
+                <label class="form-label mt-3">Description:</label>
+                <textarea cols="4" rows="3" class="form-control" type="text" th:field="*{descrption}"></textarea>
+                <div class="mb-3 mt-3">
+                  <label class="form-label">Image</label>
+                  <input type="file" class="form-control"
+                         id="image" accept="image/png, image/jpeg" name="file"/>
+                </div>
+                <input class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit sport Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="editModallabel">Edit sport</h3>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+          </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+<!--
+  <div class="modal fade" id="MListModal" tabindex="-1" role="dialog" aria-labelledby="MListModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="MListModallabel">List des Adhérents</h3>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="position: relative;
+height: 33rem;
+overflow: auto;">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <!-- jQuery library -->
+  <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+  <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+  <script>
+
+    $('#editModal').on('show.bs.modal', function () {
+
+      $(".eBtn").click(function () {
+        var id = $(this).attr('id');
+
+        $.get("/editSport?id=" + id, function (data) {
+          $('#editModal').find('.modal-body').html(data);
+        })
+      })
+    })
+   /* $('#MListModal').on('show.bs.modal', function () {
+
+      $(".LBtn").click(function (){
+        var id=$(this).attr('id');
+
+        $.get("/abonnementList/getMembers?id=" + id, function (data) {
+          $('#MListModal').find('.modal-body').html(data);
+        })
+      })
+
+
+    })*/
+  </script>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org" >
+<head th:insert="~{partials/sideBar:: header}">
+    <meta charset="UTF-8">
+    <title>Edit Admin</title>
+
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form  th:action="@{/editAdmin}"
+               method="POST" >
+            <div style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+
+                <img th:if="${pic}" alt="user icon" th:src="@{'/images/'+${pic}}" style="width: 160px;
+height: 160px;
+object-fit: cover;border-radius: 50%"></div>
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${id}">
+            </div>
+            <input type="hidden" name="pic" th:value="${userApp.pic}">
+            <input type="hidden" name="roles" th:value="${role}">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Nom:</label>
+                        <input class="form-control" type="text" th:field="*{userApp.name}" />
+                        <span class="text-danger" th:errors="${userApp.name}" th:value="${userApp.name}"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Prénom:</label>
+                        <input class="form-control" type="text" th:field="*{userApp.lname}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+                        <label class="form-label">Email:</label>
+                        <input class="form-control" type="text" th:field="*{userApp.email}"/>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Tele:</label>
+                        <input class="form-control" type="tel" th:field="*{userApp.tele}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Cin:</label>
+                        <input class="form-control" type="text" th:field="*{userApp.cin}"/>
+
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Adresse:</label>
+                        <input class="form-control" type="text" th:field="*{userApp.adress}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+
+                        <label class="form-label">Date de naissance:</label>
+                        <input class="form-control" type="date" th:field="*{userApp.dob}"/>
+                    </div>
+                </div>
+                <input class="form-control" type="hidden" th:field="*{userApp.password}"/>
+
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control "
+                       id="image" accept="image/png, image/jpeg" name="file"/>
+            </div>
+
+
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarder</button>
+        </form>
+
+    </div></div>
+</body>
+</html>

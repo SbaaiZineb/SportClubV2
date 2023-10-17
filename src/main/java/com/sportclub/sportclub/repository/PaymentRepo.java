@@ -9,5 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PaymentRepo extends JpaRepository<Paiement,Long> {
+Paiement findByMember(Member member);
+List<Paiement> findPaiementByMember(Member member);
+List<Paiement> findByMemberNameContains(String kw);
+Page<Paiement> findByMemberNameContains(String kw,Pageable pageable);
 
 }

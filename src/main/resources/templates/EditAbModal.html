@@ -1,0 +1,35 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit d'abonnement</title>
+</head>
+<body>
+<div class="card align-content-center">
+  <div class="card-body">
+    <form  th:action="@{/editAbonnement}"
+           method="POST">
+      <div class="mb-3 mt-3">
+        <label for="id" class="form-label">ID:</label>
+        <label th:text="${abonnement.id}"></label>
+        <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${abonnement.id}">
+      </div>
+      <label class="form-label ">Nom d'abonnement:</label>
+      <input class="form-control" id="name" type="text"th:field="*{abonnement.nameAb}" />
+      <span class="text-danger" th:errors="${abonnement.nameAb}" th:value="${abonnement.nameAb}"></span>
+      <label class="form-label mt-3">Prix:</label>
+      <input class="form-control" id="prix" type="text"th:field="*{abonnement.price}" />
+      <span class="text-danger" th:errors="${abonnement.price}" th:value="${abonnement.price}"></span>
+      <label class="form-label mt-3">Périod:</label>
+      <input class="form-control" id="per" type="text" th:field="*{abonnement.period}"/>
+      <label class="form-label mi-3">Nombres des seances par semaine:</label>
+      <input class="form-control" type="number" id="nbrS" th:field="*{abonnement.nbrSeance}"/>
+
+
+
+      <button class="btn btn-primary mt-2" type="submit">Sauvegarde</button>
+    </form>
+
+  </div></div>
+</body>
+</html>

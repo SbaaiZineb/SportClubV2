@@ -1,0 +1,42 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit sport</title>
+</head>
+<body>
+<div class="card align-content-center">
+    <div class="card-body">
+        <form th:action="@{/editSport}"
+              method="POST">
+            <div style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+                <input type="hidden" name="pic" th:value="*{sport.pic}">
+                <img th:if="${sport.pic}" alt="user icon" th:src="@{'/images/'+${sport.pic}}" style="width: 160px;
+height: 160px;
+object-fit: cover;border-radius: 50%"></div>
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${sport.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${sport.id}">
+            </div>
+            <label class="form-label ">Nom de sport:</label>
+            <input class="form-control" id="name" type="text" th:field="*{sport.nom}"/>
+            <span class="text-danger" th:errors="${sport.nom}" th:value="${sport.nom}"></span>
+            <label class="form-label mt-3">Description:</label>
+            <textarea cols="4" rows="3" class="form-control" type="text" name="descrption" th:field="*{sport.descrption}"></textarea>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control"
+                       id="image" accept="image/png, image/jpeg" name="file"/>
+            </div>
+
+
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarde</button>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

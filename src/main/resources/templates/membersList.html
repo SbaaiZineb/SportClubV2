@@ -6,156 +6,318 @@
 
 </head>
 <body>
- <div layout:fragment="content">
-                <div class="search-field d-none d-md-block">
-                    <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-                        <div class="input-group">
-                            <div class="input-group-prepend bg-transparent">
-                                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-                            </div>
-                            <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                                   th:value="${keyword}" placeholder="Chercher">
-                        </div>
-                    </form>
+<div layout:fragment="content">
+    <div class="search-field d-none d-md-block ">
+        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend bg-transparent">
+                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
-                <button class="text-bg-light float-end mb-3 btn btn-primary " data-toggle="modal"
-                        data-target="#exampleModal"><i class="bi bi-person-plus"></i></button>
+                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                       th:value="${keyword}" placeholder="Chercher">
+            </div>
+        </form>
+    </div>
+    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
+    <form th:action="@{/deleteCells}" method="post">
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
-                <table class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded">
-                    <tr>
-                        <th>Id</th>
-                        <th>User</th>
-                        <th>address</th>
-                        <th>cin</th>
-                        <th>dob</th>
-                        <th>tele</th>
-                        <th>Gender</th>
-                        <th>password</th>
-                        <th>Abonnement</th>
-                        <th colspan="2">Action</th>
-                    </tr>
-                    <tr th:each="m:${listMember}">
-                        <td th:utext="${m.getId()}"></td>
-                        <td>
-                        <div class="d-flex align-items-center">
-                            <img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}">
-                            <div class="d-block px-2">
-                                <span class="fw-bold" th:utext="${m.getName()}+''+${m.getLname()}" ></span>
-                                <div class="small text-gray" th:utext="${m.getEmail()}"></div>
-                            </div>
-                        </div>
-                        </td>
+    <table class="table table-centered table-hover table-responsive">
+        <tr>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
-                        <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-                        <td th:utext="${m.getName()}"></td>
-                        <td th:utext="${m.getLname()}"></td>
-                        <td th:utext="${m.getEmail()}"></td>-->
-                        <td th:utext="${m.getAdress()}"></td>
-                        <td th:utext="${m.getCin()}"></td>
-                        <td th:utext="${m.getDob()}"></td>
-                        <td th:utext="${m.getTele()}"></td>
-                        <td th:utext="${m.getGender()}"></td>
-                        <td th:utext="${m.getPassword()}"></td>
-                        <td th:utext="${m.abonnement}"></td>
-                        <td><a onclick="return confirm('Vous avez sure?')" class="btn btn-danger"
-                               th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
-                                class="bi bi-trash"></i></a></td>
-                        <td><a th:href="@{/editMember(id=${m.id})} " class="btn btn-info">
-                            <i class="bi bi-pencil"></i></a></td>
-                        </td>
+            <th>Id</th>
+            <th>Adhérent</th>
+            <th>Adresse</th>
+            <th>Cin</th>
+            <th>Date de naissance</th>
+            <th>Tele</th>
+            <th>Sexe</th>
+<th>Inscrie le</th>
+            <th>Abonnement</th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
+        </tr>
+        <tr th:each="m:${listMember}" >
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+            <input type="checkbox" name="selectedCells" data-target="requests-all"
+                   th:value="${m.id}" />
+            </td>
+            <td th:utext="${m.getId()}"></td>
+            <td data-th-id="${m.id}"
+                onclick="getProfile($(this).attr('id'))">
+                <div class="user-info">
+                    <div class="user-info__img">
+                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                </div>
+                    <div class="user-info__basic">
+                        <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                        <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                    </div>
+                </div>
+            </td>
 
+            <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+            <td th:utext="${m.getName()}"></td>
+            <td th:utext="${m.getLname()}"></td>
+            <td th:utext="${m.getEmail()}"></td>-->
 
-                    </tr>
-                </table>
-                <ul class="nav nav-pills">
-                    <li th:each="page,status:${pages}">
-                        <a
-                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                                th:href="@{/index(page=${status.index}, keyword=${keyword})}"
-                                th:text="${status.index}">
-                        </a>
-                    </li>
-                </ul>
+            <td th:utext="${m.getAdress()}"></td>
+            <td th:utext="${m.getCin()}"></td>
+            <td th:utext="${m.getDob()}"></td>
+            <td th:utext="${m.getTele()}"></td>
+            <td th:utext="${m.getGender()}"></td>
+            <td th:utext="${m.createdAt}"></td>
+            <td th:utext="${m.abonnement}"></td>
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
+                   th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
+                    class="bi bi-trash iconT"></i></a></td>
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+                <i class="bi bi-pencil-square iconE "></i></a></td>
 
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add member</h5>
-                            <button type="button" class="btn btn-close" data-dismiss="modal" aria-label="Close">
+        </tr>
+    </table></form>
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}" >
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{/membersList(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
 
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card align-content-center">
-                                <div class="card-body">
-                                    <form th:action="@{/addMember}"
-                                          th:object="${MemberForm}" method="POST" enctype="multipart/form-data">
-                                        <!--              <label class="form-label">Image:</label>-->
-                                        <!--              <input type="file" name="pic" accept="image/*"><br>-->
-                                        <label class="form-label">Nom:</label>
-                                        <input class="form-control" type="text" th:field="*{name}"/>
-                                        <label class="form-label">Prenom:</label>
-                                        <input class="form-control" type="text" th:field="*{lname}"/>
-                                        <label class="form-label">email:</label>
-                                        <input class="form-control" type="text" th:field="*{email}"/>
-                                        <label class="form-label">adress:</label>
-                                        <input class="form-control" type="text" th:field="*{adress}"/>
-                                        <label class="form-label">cin:</label>
-                                        <input class="form-control" type="text" th:field="*{cin}"/>
-                                        <label class="form-label">dob:</label>
-                                        <input class="form-control" type="date" th:field="*{dob}"/>
-                                        <label class="form-label">tele:</label>
-                                        <input class="form-control" type="number" th:field="*{tele}"/>
+<!--Add Member Modal-->
+    <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Ajouter adhérent</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
 
-                                        <label class="form-label">Password:</label>
-                                        <input class="form-control" type="password" th:field="*{password}"/>
-                                        <label class="form-label">Confirm password:</label>
-                                        <input class="form-control" type="password"/>
-                                        <label class="form-label">Abonnement</label>
-                                        <select name="abonnement" id="abonnement" class="form-control mb-3">
-                                            <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
-                                                    th:text="${abonnement.nameAb}"></option>
-                                        </select>
-
-                                        <div class="mb-3 mt-3">
-                                            <label class="form-label">Image</label>
-                                            <input type="file" class="form-control  "
-                                                   id="image" accept="image/png, image/jpeg" name="file"/>
-                                        </div>
-                                        <label class="form-label">Gender:</label>
-
-                                        <div class="form-check">
-
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                   value="female" id="flexRadioDefault1" th:field="*{gender}">
-                                            <label class="form-check-label" for="flexRadioDefault1">
-                                                Female
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                   value="male" id="flexRadioDefault2" th:field="*{gender}" checked>
-                                            <label class="form-check-label" for="flexRadioDefault2">
-                                                Male
-                                            </label>
-                                        </div>
-
-                                        <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
-                                    </form>
-
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card align-content-center">
+                        <div class="card-body">
+                            <form th:action="@{/addMember}"
+                                  th:object="${memberForm}" method="POST" enctype="multipart/form-data">
+                                <!-- Display error message if username already exists -->
+                                <div class="error" th:if="${usernameExistsError}">
+                                    <span th:text="${usernameExistsError}"></span>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Nom:</label>
+                                            <input class="form-control" type="text"th:field="*{name}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Prénom:</label>
+                                            <input class="form-control" type="text" th:field="*{lname}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Email:</label>
+                                            <input class="form-control" type="text" th:field="*{email}"/>
+                                        </div></div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Tele:</label>
+                                            <input class="form-control" type="tel" th:field="*{tele}"/>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Cin:</label>
+                                            <input class="form-control" type="text" th:field="*{cin}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Date de naissance:</label>
+                                            <input class="form-control" type="date" th:field="*{dob}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                        <div class="form-outline">
+                                            <label class="form-label">Adresse:</label>
+                                            <input class="form-control" type="text" th:field="*{adress}"/>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                                        <h6 class="form-label mb-0 me-4 mt-3">Sexe:</h6>
+
+                                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
+
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                   value="Femme" id="flexRadioDefault1" th:field="*{gender}">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                Femme
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                   value="Homme" id="flexRadioDefault2" th:field="*{gender}" checked>
+                                            <label class="form-check-label" for="flexRadioDefault2">
+                                                Homme
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Mot de passe:</label>
+                                            <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline">
+                                            <label class="form-label">Confirm Mot de passe:</label>
+                                            <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <style>
+                                    .input-border {
+                                        border: 1px solid gray;
+                                    }
+
+                                    .matched-border {
+                                        border: 1px solid green;
+                                    }
+
+                                    .mismatched-border {
+                                        border: 1px solid red;
+                                    }
+                                </style>
+
+                                <label class="form-label">Abonnement</label>
+                                <select name="abonnement" id="abonnement" class="form-control mb-3">
+                                    <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
+                                            th:text="${abonnement.nameAb}"></option>
+                                </select>
+
+                                <div class="mb-3 mt-3">
+                                    <label class="form-label">Image</label>
+                                    <input type="file" class="form-control  "
+                                           id="image" accept="image/png, image/jpeg" name="file"/>
+                                </div>
+
+
+                                <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
+                            </form>
+                            <button onclick="performFingerprintRegistration();" class="btn btn-primary mt-2">Emprint</button>
 
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+                </div>
             </div>
- </div>
+        </div>
+    </div>
+    <!-- Edit Member Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="editModallabel">Edit Adhérent</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+
+        $('#editModal').on('show.bs.modal', function () {
+
+            $(".eBtn").click(function () {
+                var id = $(this).attr('id');
+                $.get("/editMember?id=" + id, function (data) {
+                    $('#editModal').find('.modal-body').html(data);
+                })
+            })
+        })
+
+        function getSelectedCells() {
+            var selectedCells = [];
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    var cellId = checkbox.value;
+                    selectedCells.push(cellId);
+                }
+            });
+
+            console.log('Selected Cells:', selectedCells);
+        }
+        function getProfile(id){
+
+            window.location.href = "/userProfile?id=" + id;
+        }
+    </script>
+
+    <script th:inline="javascript">
+        function validateInput() {
+            var input1 = document.getElementById('input1');
+            var input2 = document.getElementById('input2');
+
+            if (input1.value === input2.value) {
+                input1.classList.remove('mismatched-border');
+                input2.classList.remove('mismatched-border');
+                input1.classList.add('matched-border');
+                input2.classList.add('matched-border');
+            } else {
+                input1.classList.remove('matched-border');
+                input2.classList.remove('matched-border');
+                input1.classList.add('mismatched-border');
+                input2.classList.add('mismatched-border');
+            }
+        }
+        function performFingerprintRegistration() {
+            // Perform an AJAX request to the /registre endpoint
+            $.get('/registre', function (response) {
+                // Handle the response here
+                console.log('Server response:', response);
+
+                // Add logic to display the response or perform any other actions within the modal.
+                // For example, you can display a message inside the modal.
+                $('#exampleModal .modal-body').html(response);
+            });
+        }
+    </script>
+</div>
 </body>
 </html>

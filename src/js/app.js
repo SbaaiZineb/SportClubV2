@@ -14,7 +14,5 @@ import "../../../SportClub/src/main/resources/static/js/Modules/chartjs";
 // Forms
 import "../../../SportClub/src/main/resources/static/js/Modules/flatpickr";
 
-// Maps
-import "./modules/vector-maps";
 
 

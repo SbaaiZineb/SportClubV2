@@ -1,15 +1,22 @@
 package com.sportclub.sportclub.controller;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Coach;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Role;
+import com.lowagie.text.DocumentException;
+import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.CoachCheckInRepo;
+import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.service.CoachService;
+import com.sportclub.sportclub.service.RoleService;
+import com.sportclub.sportclub.service.SeanceService;
+import com.sportclub.sportclub.service.SportService;
+import com.sportclub.sportclub.tools.CoachPdf;
 import com.sportclub.sportclub.tools.FileStorageService;
-import jdk.jfr.Category;
+import com.sportclub.sportclub.tools.MemberPdf;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,15 +24,32 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 public class CoachController {
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     CoachService coachService;
     @Autowired
+    SeanceService seanceService;
+    @Autowired
     FileStorageService fileStorageService;
+    @Autowired
+    CoachRepository coachRepository;
+    @Autowired
+    RoleService roleService;
+    @Autowired
+    SportService sportService;
+    @Autowired
+    CoachCheckInRepo coachCheckInRepo;
 
     @GetMapping("/coachList")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
@@ -39,21 +63,41 @@ public class CoachController {
         model.addAttribute("keyword",kw);
         Coach CoachForm = new Coach();
         model.addAttribute("CoachForm", CoachForm);
+        List<Sport> sports=sportService.getAllSports();
+        model.addAttribute("sports",sports);
         return "coachList";
 
     }
+    @PostMapping("/deleteCoachs")
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+        // Perform the delete operation using the selected cell IDs
 
-    /* @RequestMapping(path = {"/coachList","/search"})
-    public String search( Model model, String keyword) {
+        for (Long cellId : selectedCells) {
 
-        if(keyword!=null) {
-            List<Coach> list = service.getSeanceBynName(keyword);
-            model.addAttribute("listSeance", list);
+
+            List<Seance> seances=seanceService.getSeanceByCoach(cellId);
+            for (Seance seance:seances) {
+                seance.setCoach(null);
+            }
+            coachService.deleteCoach(cellId);
+        }
+
+        // Redirect to a success page or return a response as needed
+        return "redirect:/coachList";
+    }
+
+    @RequestMapping(path = {"/coachList/search"})
+    public String search( Model model, String coach) {
+        Coach coachForm = new Coach();
+        model.addAttribute("CoachForm", coachForm);
+        if(coach!=null) {
+            List<Coach> list = coachRepository.findByNameContains(coach);
+            model.addAttribute("listCoach", list);
         }else {
-            List<Coach> list = service.getAllSeance();
-            model.addAttribute("listSeance", list);}
-        return "seanceList";
-    }*/
+            List<Coach> list = coachService.getAllCoachs();
+            model.addAttribute("listCoach", list);}
+        return "coachList";
+    }
 
     @GetMapping("/addCoach")
     public String getAddCoachPage(Model model) {
@@ -66,6 +110,18 @@ public class CoachController {
     public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "coachList";
         c.setPic(file.getOriginalFilename());
+        c.setPic(file.getOriginalFilename());
+        String password= c.getPassword();
+        c.setPassword(passwordEncoder.encode(password));
+        List<Role> roles=roleService.findAllRoles();
+
+        for (Role role:roles
+        ) {
+            if (role.getRoleName().equals("COACH")){
+
+                c.setRoles(role);
+            }
+        }
         coachService.addCoach(c);
         fileStorageService.save(file);
 
@@ -95,6 +151,16 @@ public class CoachController {
     }*/
     @GetMapping("/deleteCoach")
     public String deleteCoach(@RequestParam(name = "id") Long id,String keyword, int page){
+        List<Seance> seances=seanceService.getSeanceByCoach(id);
+        List<CheckInCoach> checkInCoach= coachCheckInRepo.getCheckInByCoach(coachService.getCoachById(id));
+        for (Seance seance:seances) {
+            seance.setCoach(null);
+
+        }
+        for (CheckInCoach checkIn:checkInCoach
+             ) {
+            checkIn.setCoach(null);
+        }
         coachService.deleteCoach(id);
         return "redirect:/coachList?page="+page+"&keyword="+keyword;
     }
@@ -102,16 +168,36 @@ public class CoachController {
 
     public String editCoach(@RequestParam(name = "id") Long id, Model model){
         Coach coach=coachService.getCoachById(id);
+        List<Sport> sports=sportService.getAllSports();
+        model.addAttribute("sports",sports);
         model.addAttribute("coach",coach);
-        return "updateCoachForm";
+        return "updateCoachModal";
     }
 
     @PostMapping("/editCoach")
     public String editCoach(@Validated Coach c, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "updateCoachForm";
+        if(bindingResult.hasErrors()) return "updateCoachModal";
         coachService.updateCoach(c);
+
+
         return "redirect:/coachList";
     }
 
+    @GetMapping("coachList/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+
+
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=coach_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        List<Coach> listUsers = coachService.getAllCoachs();
+        CoachPdf exporter = new CoachPdf(listUsers);
+        exporter.export(response);
+    }
 
 }
