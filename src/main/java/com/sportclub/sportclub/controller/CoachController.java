@@ -2,6 +2,7 @@ package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.CoachCheckInRepo;
 import com.sportclub.sportclub.repository.CoachRepository;
 import com.sportclub.sportclub.service.CoachService;
 import com.sportclub.sportclub.service.RoleService;
@@ -47,6 +48,9 @@ public class CoachController {
     RoleService roleService;
     @Autowired
     SportService sportService;
+    @Autowired
+    CoachCheckInRepo coachCheckInRepo;
+
     @GetMapping("/coachList")
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -148,8 +152,14 @@ public class CoachController {
     @GetMapping("/deleteCoach")
     public String deleteCoach(@RequestParam(name = "id") Long id,String keyword, int page){
         List<Seance> seances=seanceService.getSeanceByCoach(id);
+        List<CheckInCoach> checkInCoach= coachCheckInRepo.getCheckInByCoach(coachService.getCoachById(id));
         for (Seance seance:seances) {
             seance.setCoach(null);
+
+        }
+        for (CheckInCoach checkIn:checkInCoach
+             ) {
+            checkIn.setCoach(null);
         }
         coachService.deleteCoach(id);
         return "redirect:/coachList?page="+page+"&keyword="+keyword;

@@ -1,3 +1,4 @@
+/*
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
@@ -80,3 +81,4 @@ public class ParametreController {
         return "redirect:/parametre?id=1";
     }
 }
+*/

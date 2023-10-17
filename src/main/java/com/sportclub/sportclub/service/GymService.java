@@ -1,3 +1,4 @@
+/*
 package com.sportclub.sportclub.service;
 
 import com.sportclub.sportclub.entities.Gym;
@@ -32,3 +33,4 @@ public class GymService {
         roleRepo.deleteById(id);
     }
 }
+*/

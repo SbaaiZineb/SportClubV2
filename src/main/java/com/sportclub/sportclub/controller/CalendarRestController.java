@@ -20,9 +20,11 @@ public class CalendarRestController {
     @GetMapping("/getSessions")
     public ResponseEntity<List<CalendarEvent> > getSession(Authentication authentication){
         String username=authentication.getName();
+        //Get the sessions of the authenticated coach
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("COACH"))){
             return ResponseEntity.ok(eventRepo.findByUsername(username));
         }else {
+            // Otherwise get All sessions
             return ResponseEntity.ok(eventRepo.findAll());
         }
 

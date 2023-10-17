@@ -10,14 +10,24 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CheckInService {
+    List<CheckIn> getByMemberCheck(Member member);
+
     List<CheckIn> getBySession(Long id);
-List<CheckIn> getCheckInOfCurrenteek(LocalDate selectedDate);
-List<CheckIn> getByMember(Member member,LocalDate selectedDAte);
+
+    List<CheckIn> getCheckInOfCurrenteek(LocalDate selectedDate);
+
+    List<CheckIn> getByMember(Member member, LocalDate selectedDAte);
+
     List<CheckIn> getCheckInOfWeek();
+
     void addCheck(CheckIn checkIn);
+
     List<CheckIn> getAllCheckIns();
-    List<CheckIn> findLatest(LocalDate date);
+
+
+
     List<CheckIn> getAllbyTime(LocalTime time);
 
+    List<CheckIn> getCheckInByDate(LocalDate date);
 }
 

@@ -1,3 +1,4 @@
+/*
 package com.sportclub.sportclub.service;
 
 import com.sportclub.sportclub.entities.Role;
@@ -15,3 +16,4 @@ public class RoleServiceImp implements RoleService{
         return roleRepo.findAll();
     }
 }
+*/

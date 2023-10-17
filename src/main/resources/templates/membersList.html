@@ -19,7 +19,7 @@
         </form>
     </div>
     <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
-    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
             data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
     <form th:action="@{/deleteCells}" method="post">
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
@@ -68,7 +68,7 @@
             <td th:utext="${m.getDob()}"></td>
             <td th:utext="${m.getTele()}"></td>
             <td th:utext="${m.getGender()}"></td>
-<td th:utext="${m.createdAt}"></td>
+            <td th:utext="${m.createdAt}"></td>
             <td th:utext="${m.abonnement}"></td>
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
@@ -222,6 +222,7 @@
 
                                 <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
                             </form>
+                            <button onclick="performFingerprintRegistration();" class="btn btn-primary mt-2">Emprint</button>
 
                         </div>
                     </div>
@@ -304,6 +305,17 @@
                 input1.classList.add('mismatched-border');
                 input2.classList.add('mismatched-border');
             }
+        }
+        function performFingerprintRegistration() {
+            // Perform an AJAX request to the /registre endpoint
+            $.get('/registre', function (response) {
+                // Handle the response here
+                console.log('Server response:', response);
+
+                // Add logic to display the response or perform any other actions within the modal.
+                // For example, you can display a message inside the modal.
+                $('#exampleModal .modal-body').html(response);
+            });
         }
     </script>
 </div>

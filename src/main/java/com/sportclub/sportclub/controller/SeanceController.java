@@ -122,9 +122,6 @@ public class SeanceController {
         return "seanceList";
     }
 
-    public Date convertToDateViaSqlDate(LocalDate dateToConvert) {
-        return java.sql.Date.valueOf(dateToConvert);
-    }
 
     @PostMapping("/addSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
@@ -153,9 +150,16 @@ public class SeanceController {
         calendarEvent.setEndTime(seance.getEndTime());
         calendarEvent.setUsername(seance.getCoach().getEmail());
         int nbrToAdd = seance.getNumWeeks();
-        LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
-        calendarEvent.setEndRecur(newEnd);
-        calendarEvent.setStartRecur(seance.getStartDate());
+
+        if (nbrToAdd == 0) {
+            calendarEvent.setEndRecur(null);
+            calendarEvent.setStartRecur(null);
+        } else {
+            LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+            calendarEvent.setEndRecur(newEnd);
+            calendarEvent.setStartRecur(seance.getStartDate());
+        }
+
         List<Integer> dayInt = new ArrayList<>();
         for (String day : seance.getDays()
         ) {
@@ -184,11 +188,11 @@ public class SeanceController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
         // Perform the delete operation using the selected cell IDs
-        Seance seance;
+        // Seance seance;
         for (Long cellId : seanceId) {
-            seance = service.getSeanceById(cellId);
+//            seance = service.getSeanceById(cellId);
             service.deletSeance(cellId);
-            CalendarEvent event=eventRepo.findById(cellId).get();
+            CalendarEvent event = eventRepo.findById(cellId).get();
             eventRepo.delete(event);
 
         }
@@ -196,11 +200,12 @@ public class SeanceController {
         // Redirect to a success page or return a response as needed
         return "redirect:/seanceList";
     }
-// serach by coach
+
+    // serach by coach
     @GetMapping("/sessions/search")
     public String searchSessionsByCoach(@RequestParam("coachId") Long coachId, Model model) {
         Coach coach = coachService.getCoachById(coachId);
-        model.addAttribute("coachId",coachId);
+        model.addAttribute("coachId", coachId);
         List<Seance> sessions = service.getSeanceByCoach(coachId);
         model.addAttribute("listSeance", sessions);
         List<Coach> coaches = coachService.getAllCoachs();
@@ -214,7 +219,8 @@ public class SeanceController {
     public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
         Seance seance = service.getSeanceById(id);
         service.deletSeance(id);
-        CalendarEvent event=eventRepo.findById(id).get();
+        CalendarEvent event = eventRepo.findById(id).get();
+
         eventRepo.delete(event);
         return "redirect:/seanceList?page=" + page + "&keyword=" + keyword;
     }
@@ -228,7 +234,7 @@ public class SeanceController {
         Seance seance = service.getSeanceById(id);
         seance.setStartDate(LocalDate.parse(seance.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
-                model.addAttribute("seance", seance);
+        model.addAttribute("seance", seance);
         return "updateSeanceModal";
     }
 
@@ -239,35 +245,35 @@ public class SeanceController {
         String[] selectedDays = request.getParameterValues("days");
         seance.setDays(Arrays.asList(selectedDays));
         service.updateSeance(seance);
-        CalendarEvent calendarEvent=eventRepo.findById(seance.getId()).get();
-                //Add new Event based on the updated  session
-                calendarEvent.setTitle(seance.getClassName());
-                calendarEvent.setStart(seance.getStartDate());
-                calendarEvent.setStartTime(seance.getStartTime());
-                calendarEvent.setEndTime(seance.getEndTime());
-                calendarEvent.setUsername(seance.getCoach().getEmail());
-                int nbrToAdd = seance.getNumWeeks();
-                LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
-                calendarEvent.setEndRecur(newEnd);
-                calendarEvent.setStartRecur(seance.getStartDate());
-                List<Integer> dayInt = new ArrayList<>();
-                for (String day : seance.getDays()
-                ) {
-                    if (day != null) {
-                        try {
+        CalendarEvent calendarEvent = eventRepo.findById(seance.getId()).get();
+        //Add new Event based on the updated  session
+        calendarEvent.setTitle(seance.getClassName());
+        calendarEvent.setStart(seance.getStartDate());
+        calendarEvent.setStartTime(seance.getStartTime());
+        calendarEvent.setEndTime(seance.getEndTime());
+        calendarEvent.setUsername(seance.getCoach().getEmail());
+        int nbrToAdd = seance.getNumWeeks();
+        LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+        calendarEvent.setEndRecur(newEnd);
+        calendarEvent.setStartRecur(seance.getStartDate());
+        List<Integer> dayInt = new ArrayList<>();
+        for (String day : seance.getDays()
+        ) {
+            if (day != null) {
+                try {
 
-                            DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
-                            Integer di = dayOfWeek.getValue();
-                            dayInt.add(di);
+                    DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                    Integer di = dayOfWeek.getValue();
+                    dayInt.add(di);
 
-                            calendarEvent.setDaysOfWeek(dayInt);
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Error " + e);
-                        }
-                    }
-
+                    calendarEvent.setDaysOfWeek(dayInt);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error " + e);
                 }
-                eventRepo.save(calendarEvent);
+            }
+
+        }
+        eventRepo.save(calendarEvent);
 
 
         return "redirect:/seanceList";

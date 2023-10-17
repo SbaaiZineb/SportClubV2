@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CheckInRepo extends JpaRepository<CheckIn, Long> {
     List<CheckIn> findBySession(Seance seance);
-
+List<CheckIn> findByMember(Member member);
     List<CheckIn> findByMemberRolesRoleName(String role);
     List<CheckIn> findByMemberAndCheckinDateBetween(Member member, LocalDate sDate, LocalDate eDate);
 

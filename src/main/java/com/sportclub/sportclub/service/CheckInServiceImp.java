@@ -22,6 +22,12 @@ public class CheckInServiceImp implements CheckInService{
     CheckInRepo checkInRepo;
     @Autowired
     SeanceRepo seanceRepo;
+
+    @Override
+    public List<CheckIn> getByMemberCheck(Member member) {
+        return checkInRepo.findByMember(member);
+    }
+
     @Override
     public List<CheckIn> getBySession(Long id) {
         Seance seance=seanceRepo.findById(id).get();
@@ -66,9 +72,12 @@ public class CheckInServiceImp implements CheckInService{
     public List<CheckIn> getAllbyTime(LocalTime time) {
         return null;
     }
+
     @Override
-    public List<CheckIn> findLatest(LocalDate date) {
+    public List<CheckIn> getCheckInByDate(LocalDate date) {
         Sort sortByDateDesc = Sort.by(Sort.Direction.DESC, "checkinTime");
         return checkInRepo.getCheckInByCheckinDate(date,sortByDateDesc);
     }
+
+
 }

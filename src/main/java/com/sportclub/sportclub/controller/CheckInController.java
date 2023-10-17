@@ -4,15 +4,13 @@ import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,24 +29,26 @@ public class CheckInController {
 
     CheckInRepo checkInRepo;
 
-    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService,CoachService coachService) {
+    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService, CoachService coachService) {
         this.seanceService = seanceService;
         this.checkInService = checkInService;
         this.memberService = memberService;
         this.checkInRepo = checkInRepo;
         this.coachCheckInService = coachCheckInService;
-        this.coachService=coachService;
+        this.coachService = coachService;
     }
-CoachService coachService;
+
+    CoachService coachService;
     CoachCheckInService coachCheckInService;
 
     LocalDate localDate = LocalDate.now();
     DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+
     @GetMapping("/enregistrement")
     public String getCheckinPage(Model model) {
-
-        List<Seance> seances= seanceService.getAllSeance();
-        List<Seance> seanceList = new ArrayList<>();
+        try {
+            List<Seance> seances = seanceService.getAllSeance();
+        /*List<Seance> seanceList = new ArrayList<>();
 
         for (Seance session : seances) {
             List<String> days = session.getDays();
@@ -59,21 +59,38 @@ CoachService coachService;
                 int nbrToAdd = session.getNumWeeks();
                 LocalDate newEnd = session.getStartDate().plusWeeks(nbrToAdd);
                 System.out.println(newEnd);
-                if (df == dayOfWeek && LocalDate.now().isBefore(newEnd)) {
+                if ((df == dayOfWeek && LocalDate.now().isBefore(newEnd)) || nbrToAdd == 0) {
 
                     seanceList.add(session);
+                    model.addAttribute("TodaySession", seanceList);
                     LocalTime currentTime = LocalTime.now();
                     model.addAttribute("currentTime", currentTime);
-                    model.addAttribute("TodaySession", seanceList);
 
-                }System.out.println(seanceList);
+                }
+                System.out.println(seanceList);
             }
 
+        } */
+            model.addAttribute("TodaySession", seances);
+            LocalTime currentTime = LocalTime.now();
+            model.addAttribute("currentTime", currentTime);
+
+            model.addAttribute("today", LocalDate.now());
+            List<CheckIn> checkIn = checkInService.getCheckInByDate(localDate);
+            model.addAttribute("checkin", checkIn);
+            return "checkIn";
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred while processing your request.");
+            return "notAuthorized";
         }
-        model.addAttribute("today",LocalDate.now());
-        List<CheckIn> checkIn = checkInService.findLatest(localDate);
-        model.addAttribute("checkin", checkIn);
-        return "checkIn";
+    }
+
+    @ResponseBody
+    @GetMapping("/checkInsByDate")
+    public List<CheckIn> checkInsByDate(@RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
+        List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
+
+        return checkIns;
     }
    /* @RequestMapping(path = { "membersToCheck/search"})
     public String search(Model model, String keyword) {
@@ -111,13 +128,14 @@ CoachService coachService;
     public String getCheckMembersIn(Model model, @RequestParam(name = "id") Long id) {
         List<Member> members = memberService.getAllMembers();
         List<Member> listFilter = new ArrayList<>();
-        Seance seance=seanceService.getSeanceById(id);
+        Seance seance = seanceService.getSeanceById(id);
         for (Member member : members
         ) {
             LocalDate startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
             LocalDate endDate = startDate.plusDays(6);
-            List<CheckIn> checkIns = checkInRepo.findByMemberAndSessionAndCheckinDateBetween(member,seance, startDate, endDate);
+            List<CheckIn> checkIns = checkInRepo.findByMemberAndSessionAndCheckinDateBetween(member, seance, startDate, endDate);
             int checkInCount = checkIns.size();
+            String period=member.getAbonnement().getPeriod();
             int nbr = member.getAbonnement().getNbrSeance();
             boolean hasCheckedInToday = checkIns.stream()
                     .anyMatch(checkIn -> checkIn.getCheckinDate().isEqual(LocalDate.now()));
@@ -182,7 +200,7 @@ CoachService coachService;
             }
 
         }
-        model.addAttribute("currentDate",LocalDate.now());
+        model.addAttribute("currentDate", LocalDate.now());
         List<CheckInCoach> checkIn = coachCheckInService.findLatest(localDate);
         model.addAttribute("checkin", checkIn);
         return "coachCheckIn";
@@ -190,17 +208,17 @@ CoachService coachService;
 
     @GetMapping("/coachcheckin")
     @PreAuthorize("hasAuthority('COACH')")
-    public String coachCheckin( @RequestParam(name = "id") Long id,Authentication authentication) {
+    public String coachCheckin(@RequestParam(name = "id") Long id, Authentication authentication) {
 
-        System.out.println("session id is ----> "+id);
-            CheckInCoach checkIn = new CheckInCoach();
-            String email=authentication.getName();
-            Coach coach=coachService.getCoachByEmail(email);
-            checkIn.setCoach(coach);
-            checkIn.setCheckinDate(LocalDate.now());
-            checkIn.setCheckinTime(LocalTime.now());
-            checkIn.setSession(seanceService.getSeanceById(id));
-            coachCheckInService.addCheck(checkIn);
+        System.out.println("session id is ----> " + id);
+        CheckInCoach checkIn = new CheckInCoach();
+        String email = authentication.getName();
+        Coach coach = coachService.getCoachByEmail(email);
+        checkIn.setCoach(coach);
+        checkIn.setCheckinDate(LocalDate.now());
+        checkIn.setCheckinTime(LocalTime.now());
+        checkIn.setSession(seanceService.getSeanceById(id));
+        coachCheckInService.addCheck(checkIn);
 
 
         return "redirect:/coach/enregistre";

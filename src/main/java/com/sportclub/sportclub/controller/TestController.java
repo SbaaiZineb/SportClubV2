@@ -1,10 +1,12 @@
 /*
+
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Finger;
 import com.sportclub.sportclub.repository.FingerPrintRepo;
-//import com.zkteco.biometric.FingerprintSensorErrorCode;
+import com.zkteco.biometric.FingerprintSensorErrorCode;
 //import com.zkteco.biometric.FingerprintSensorEx;
+import com.zkteco.biometric.FingerprintSensorEx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +16,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static org.apache.commons.lang3.Conversion.byteArrayToInt;
+
 @Controller
 public class TestController {
     @Autowired
@@ -50,6 +54,7 @@ public class TestController {
     private boolean mbStop = true;
     private long mhDevice = 0;
     private long mhDB = 0;
+
     public static int byteArrayToInt(byte[] bytes) {
         int number = bytes[0] & 0xFF;
         // "|="鎸変綅鎴栬祴鍊笺��
@@ -58,63 +63,60 @@ public class TestController {
         number |= ((bytes[3] << 24) & 0xFF000000);
         return number;
     }
-@GetMapping("/test")
-public String  init(){
 
-    if (0 != mhDevice)
-    {
-        //already inited
-        System.out.println("Please close device first!");
-    }
-    int ret = FingerprintSensorErrorCode.ZKFP_ERR_OK;
-    //Initialize
-    cbRegTemp = 0;
-    bRegister = false;
-    bIdentify = false;
-    iFid = 1;
-    enroll_idx = 0;
-    if (FingerprintSensorErrorCode.ZKFP_ERR_OK != FingerprintSensorEx.Init())
-    {
-        System.out.println("Init failed!");
-    }
-    ret = FingerprintSensorEx.GetDeviceCount();
-    if (ret < 0)
-    {
-        System.out.println("no device connected");
+    @GetMapping("/test")
+    public String init() {
 
-    }
-    if (0 == (mhDevice = FingerprintSensorEx.OpenDevice(0)))
-    {
-        System.out.println("Open device fail, ret = " + ret + "!");
-        FreeSensor();
-    }
-    if (0 == (mhDB = FingerprintSensorEx.DBInit()))
-    {
-        System.out.println("Init DB fail, ret = " + ret + "!");
-        FreeSensor();
-    }
-    byte[] paramValue = new byte[4];
-    int[] size = new int[1];
-    //GetFakeOn
-    //size[0] = 4;
-    //FingerprintSensorEx.GetParameters(mhDevice, 2002, paramValue, size);
-    //nFakeFunOn = byteArrayToInt(paramValue);
+        if (0 != mhDevice) {
+            //already inited
+            System.out.println("Please close device first!");
+        }
+        int ret = FingerprintSensorErrorCode.ZKFP_ERR_OK;
+        //Initialize
+        cbRegTemp = 0;
+        bRegister = false;
+        bIdentify = false;
+        iFid = 1;
+        enroll_idx = 0;
+        if (FingerprintSensorErrorCode.ZKFP_ERR_OK != FingerprintSensorEx.Init()) {
+            System.out.println("Init failed!");
+        }
+        ret = FingerprintSensorEx.GetDeviceCount();
+        if (ret < 0) {
+            System.out.println("no device connected");
 
-    size[0] = 4;
-    FingerprintSensorEx.GetParameters(mhDevice, 1, paramValue, size);
-    fpWidth = byteArrayToInt(paramValue);
-    size[0] = 4;
-    FingerprintSensorEx.GetParameters(mhDevice, 2, paramValue, size);
-    fpHeight = byteArrayToInt(paramValue);
-    //width = fingerprintSensor.getImageWidth();
-    //height = fingerprintSensor.getImageHeight();
-    imgbuf = new byte[fpWidth*fpHeight];
-    mbStop = false;
-    workThread = new WorkThread();
-    workThread.start();// 绾跨▼鍚姩
-    System.out.println("Open succ!");
-    return "test";
-}
+        }
+        if (0 == (mhDevice = FingerprintSensorEx.OpenDevice(0))) {
+            System.out.println("Open device fail, ret = " + ret + "!");
+            FreeSensor();
+        }
+        if (0 == (mhDB = FingerprintSensorEx.DBInit())) {
+            System.out.println("Init DB fail, ret = " + ret + "!");
+            FreeSensor();
+        }
+        byte[] paramValue = new byte[4];
+        int[] size = new int[1];
+        //GetFakeOn
+        //size[0] = 4;
+        //FingerprintSensorEx.GetParameters(mhDevice, 2002, paramValue, size);
+        //nFakeFunOn = byteArrayToInt(paramValue);
+
+        size[0] = 4;
+        FingerprintSensorEx.GetParameters(mhDevice, 1, paramValue, size);
+        fpWidth = byteArrayToInt(paramValue);
+        size[0] = 4;
+        FingerprintSensorEx.GetParameters(mhDevice, 2, paramValue, size);
+        fpHeight = byteArrayToInt(paramValue);
+        //width = fingerprintSensor.getImageWidth();
+        //height = fingerprintSensor.getImageHeight();
+        imgbuf = new byte[fpWidth * fpHeight];
+        mbStop = false;
+        workThread = new WorkThread();
+        workThread.start();// 绾跨▼鍚姩
+        System.out.println("Open succ!");
+        return "test";
+    }
+
     private class WorkThread extends Thread {
         @Override
         public void run() {
@@ -122,10 +124,8 @@ public String  init(){
             int ret = 0;
             while (!mbStop) {
                 templateLen[0] = 2048;
-                if (0 == (ret = FingerprintSensorEx.AcquireFingerprint(mhDevice, imgbuf, template, templateLen)))
-                {
-                    if (nFakeFunOn == 1)
-                    {
+                if (0 == (ret = FingerprintSensorEx.AcquireFingerprint(mhDevice, imgbuf, template, templateLen))) {
+                    if (nFakeFunOn == 1) {
                         byte[] paramValue = new byte[4];
                         int[] size = new int[1];
                         size[0] = 4;
@@ -133,10 +133,9 @@ public String  init(){
                         //GetFakeStatus
                         ret = FingerprintSensorEx.GetParameters(mhDevice, 2004, paramValue, size);
                         nFakeStatus = byteArrayToInt(paramValue);
-                        System.out.println("ret = "+ ret +",nFakeStatus=" + nFakeStatus);
-                        if (0 == ret && (byte)(nFakeStatus & 31) != 31)
-                        {
-                            System.out.println("Is a fake-finer?");
+                        System.out.println("ret = " + ret + ",nFakeStatus=" + nFakeStatus);
+                        if (0 == ret && (byte) (nFakeStatus & 31) != 31) {
+                            System.out.println("Is a fake-finger?");
                             return;
                         }
                     }
@@ -156,136 +155,129 @@ public String  init(){
                 }
 
             }
-        }}
-        private void OnCatpureOK(byte[] imgBuf) throws IOException {
+        }
+    }
+
+    private void OnCatpureOK(byte[] imgBuf) throws IOException {
+        try {
             writeBitmap(imgBuf, fpWidth, fpHeight, "fingerprint.bmp");
-            */
-/*Finger finger=new Finger();
-            finger.setId(1L);
-            finger.setFPrint(imgBuf);
-            fingerPrintRepo.save(finger);*//*
 
-            System.out.println("ok");
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        private void OnExtractOK(byte[] template, int len)
-        {
-            if(bRegister)
-            {
-                int[] fid = new int[1];
-                int[] score = new int [1];
-                int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
-                if (ret == 0)
-                {
-                    System.out.println("the finger already enroll by " + fid[0] + ",cancel enroll");
-                    bRegister = false;
-                    enroll_idx = 0;
-                    return;
-                }
-                if (enroll_idx > 0 && FingerprintSensorEx.DBMatch(mhDB, regtemparray[enroll_idx-1], template) <= 0)
-                {
-                    System.out.println("please press the same finger 3 times for the enrollment");
-                    return;
-                }
-                System.arraycopy(template, 0, regtemparray[enroll_idx], 0, 2048);
-                enroll_idx++;
-                if (enroll_idx == 3) {
-                    int[] _retLen = new int[1];
-                    _retLen[0] = 2048;
-                    byte[] regTemp = new byte[_retLen[0]];
+    }
+private boolean isFingerRegistered(byte[] template){
+        List<Finger> matchingFingers=fingerPrintRepo.findByfPrint(template);
+        return !matchingFingers.isEmpty();
+}
+    private void OnExtractOK(byte[] template, int len) {
+        if (bRegister) {
+            int[] fid = new int[1];
+            int[] score = new int[1];
+            int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
+            boolean isFingerRegister=isFingerRegistered(template);
 
-                    if (0 == (ret = FingerprintSensorEx.DBMerge(mhDB, regtemparray[0], regtemparray[1], regtemparray[2], regTemp, _retLen)) &&
-                            0 == (ret = FingerprintSensorEx.DBAdd(mhDB, iFid, regTemp))) {
-                        iFid++;
-                        cbRegTemp = _retLen[0];
-                        System.arraycopy(regTemp, 0, lastRegTemp, 0, cbRegTemp);
-                        String strBase64 = FingerprintSensorEx.BlobToBase64(regTemp, cbRegTemp);
-                        //Base64 Template
-                        System.out.println("enroll succ");
-                    } else {
-                        System.out.println("enroll fail, error code=" + ret);                    }
-                    bRegister = false;
+            if (isFingerRegister) {
+                System.out.println("the finger already enroll ,cancel enroll");
+                bRegister = false;
+                enroll_idx = 0;
+                return;
+            }
+            if (enroll_idx > 0 && FingerprintSensorEx.DBMatch(mhDB, regtemparray[enroll_idx - 1], template) <= 0) {
+                System.out.println("please press the same finger 3 times for the enrollment");
+                return;
+            }
+            System.arraycopy(template, 0, regtemparray[enroll_idx], 0, 2048);
+            enroll_idx++;
+            if (enroll_idx == 3) {
+                int[] _retLen = new int[1];
+                _retLen[0] = 2048;
+                byte[] regTemp = new byte[_retLen[0]];
+
+                if (0 == (ret = FingerprintSensorEx.DBMerge(mhDB, regtemparray[0], regtemparray[1], regtemparray[2], regTemp, _retLen))) {
+                    iFid++;
+                    cbRegTemp = _retLen[0];
+                    System.arraycopy(regTemp, 0, lastRegTemp, 0, cbRegTemp);
+                    String strBase64 = FingerprintSensorEx.BlobToBase64(regTemp, cbRegTemp);
+                    //Base64 Template
+                    System.out.println("enroll succ");
+                    Finger finger = new Finger();
+                    finger.setFPrint(regTemp);
+                    fingerPrintRepo.save(finger);
                 } else {
-                    System.out.println("You need to press the " + (3 - enroll_idx) + " times fingerprint");                }
-            }
-            else
-            {
-                if (bIdentify)
-                {
-                    int[] fid = new int[1];
-                    int[] score = new int [1];
-                    int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
-                    if (ret == 0)
-                    {
-                        System.out.println("Identify succ, fid=" + fid[0] + ",score=" + score[0]);                    }
-                    else
-                    {
-                        System.out.println("Identify fail, errcode=" + ret);
-                    }
-
+                    System.out.println("enroll fail, error code=" + ret);
                 }
-                else
-                {
-                    if(cbRegTemp <= 0)
-                    {
-                        System.out.println("Please register first!");                    }
-                    else
-                    {
-                        int ret = FingerprintSensorEx.DBMatch(mhDB, lastRegTemp, template);
-                        if(ret > 0)
-                        {
-                            System.out.println("Verify succ, score=" + ret);                        }
-                        else
-                        {
-                            System.out.println("Verify fail, ret=" + ret);                        }
+                bRegister = false;
+            } else {
+                System.out.println("You need to press the " + (3 - enroll_idx) + " times fingerprint");
+            }
+        } else {
+            if (bIdentify) {
+                int[] fid = new int[1];
+                int[] score = new int[1];
+                int ret = FingerprintSensorEx.DBIdentify(mhDB, template, fid, score);
+                if (ret == 0) {
+                    System.out.println("Identify succ, fid=" + fid[0] + ",score=" + score[0]);
+                } else {
+                    System.out.println("Identify fail, errcode=" + ret);
+                }
+
+            } else {
+                if (cbRegTemp <= 0) {
+                    System.out.println("Please register first!");
+                } else {
+                    int ret = FingerprintSensorEx.DBMatch(mhDB, lastRegTemp, template);
+                    if (ret > 0) {
+                        System.out.println("Verify succ, score=" + ret);
+                    } else {
+                        System.out.println("Verify fail, ret=" + ret);
                     }
                 }
             }
         }
-    private void FreeSensor()
-    {
+    }
+
+    private void FreeSensor() {
         mbStop = true;
-        try {		//wait for thread stopping
+        try {        //wait for thread stopping
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if (0 != mhDB)
-        {
+        if (0 != mhDB) {
             FingerprintSensorEx.DBFree(mhDB);
             mhDB = 0;
         }
-        if (0 != mhDevice)
-        {
+        if (0 != mhDevice) {
             FingerprintSensorEx.CloseDevice(mhDevice);
             mhDevice = 0;
         }
         FingerprintSensorEx.Terminate();
     }
-@GetMapping("/registre")
-    public String regi(){
-    if(0 == mhDevice)
-    {
-        System.out.println("open device first");
-    }
-    if(!bRegister)
-    {
-        enroll_idx = 0;
-        bRegister = true;
-        System.out.println("Please your finger 3 times!");
 
-    }
+    @GetMapping("/registre")
+    public String registre() {
+        if (0 == mhDevice) {
+            System.out.println("open device first");
+        }
+        if (!bRegister) {
+            enroll_idx = 0;
+            bRegister = true;
+            System.out.println("Please your finger 3 times!");
+
+        }
 
         return "test";
-}
+    }
 
     public static void writeBitmap(byte[] imageBuf, int nWidth, int nHeight,
                                    String path) throws IOException {
         java.io.FileOutputStream fos = new java.io.FileOutputStream(path);
         java.io.DataOutputStream dos = new java.io.DataOutputStream(fos);
 
-        int w = (((nWidth+3)/4)*4);
+        int w = (((nWidth + 3) / 4) * 4);
         int bfType = 0x424d; // 浣嶅浘鏂囦欢绫诲瀷锛�0鈥�1瀛楄妭锛�
         int bfSize = 54 + 1024 + w * nHeight;// bmp鏂囦欢鐨勫ぇ灏忥紙2鈥�5瀛楄妭锛�
         int bfReserved1 = 0;// 浣嶅浘鏂囦欢淇濈暀瀛楋紝蹇呴』涓�0锛�6-7瀛楄妭锛�
@@ -330,16 +322,14 @@ public String  init(){
         }
 
         byte[] filter = null;
-        if (w > nWidth)
-        {
-            filter = new byte[w-nWidth];
+        if (w > nWidth) {
+            filter = new byte[w - nWidth];
         }
 
-        for(int i=0;i<nHeight;i++)
-        {
-            dos.write(imageBuf, (nHeight-1-i)*nWidth, nWidth);
+        for (int i = 0; i < nHeight; i++) {
+            dos.write(imageBuf, (nHeight - 1 - i) * nWidth, nWidth);
             if (w > nWidth)
-                dos.write(filter, 0, w-nWidth);
+                dos.write(filter, 0, w - nWidth);
         }
         dos.flush();
         dos.close();
@@ -350,7 +340,7 @@ public String  init(){
         return intToByteArray(data);
     }
 
-    public static byte[] intToByteArray (final int number) {
+    public static byte[] intToByteArray(final int number) {
         byte[] abyte = new byte[4];
         // "&" 涓庯紙AND锛夛紝瀵逛袱涓暣鍨嬫搷浣滄暟涓搴斾綅鎵ц甯冨皵浠ｆ暟锛屼袱涓綅閮戒负1鏃惰緭鍑�1锛屽惁鍒�0銆�
         abyte[0] = (byte) (0xff & number);
@@ -363,4 +353,5 @@ public String  init(){
 
 
 }
+
 */
