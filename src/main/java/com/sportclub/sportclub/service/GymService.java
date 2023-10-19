@@ -1,8 +1,6 @@
-/*
 package com.sportclub.sportclub.service;
 
 import com.sportclub.sportclub.entities.Gym;
-import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.repository.GymRepo;
 import com.sportclub.sportclub.repository.RoleRepo;
@@ -17,6 +15,9 @@ public class GymService {
     GymRepo gymRepo;
  @Autowired
     RoleRepo roleRepo;
+ public void addGymInfo(Gym gym){
+     gymRepo.save(gym);
+ }
     public Gym getById(Long id) {
         return gymRepo.findById(id).get();
     }
@@ -33,4 +34,3 @@ public class GymService {
         roleRepo.deleteById(id);
     }
 }
-*/

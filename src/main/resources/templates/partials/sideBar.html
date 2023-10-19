@@ -139,7 +139,7 @@
                 </li>
 
                 <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/parametre(id=${1})}">
+                    <a class="sidebar-link" th:href="@{/parametre}">
                         <i class="bi bi-gear-fill"></i> <span class="align-middle">Parametre</span>
                     </a>
                 </li>

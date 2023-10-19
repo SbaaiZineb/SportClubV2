@@ -15,13 +15,13 @@
     color: #233247;font-weight: bold;">Les informations de la salle</h2>
                 <div class="card h-80" style="margin-top: 22px;">
 
-                    <form class="form-card" th:action="@{/parametre(id=${1})}"  method="POST" enctype="multipart/form-data">
+                    <form class="form-card" th:action="@{/parametre}"  method="POST" enctype="multipart/form-data">
                         <img th:if="${gym.logo}" th:src="@{'/images/'+${gym.logo}}" alt="logo" style="height: 2rem;
 width: 11rem;
 margin-bottom: 23px;
 margin-top: -17px;"></img>
 
-                        <input type="hidden" th:id="1">
+                        <input type="hidden" name="id" id="id" th:value="${gym.id}">
                         <div class="row justify-content-between text-left">
                             <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Nom de gym<span class="text-danger"> *</span></label> <input style="" type="text" id="name" name="name" placeholder="Enter your first name" th:field="*{gym.name}" > </div>
                             <div class="form-group col-sm-6 flex-column d-flex"> <label class="form-control-label px-3">Adresse<span class="text-danger"> *</span></label> <input type="text" id="adress" name="adress" placeholder="Enter your last name" th:field="*{gym.address}"> </div>
