@@ -75,8 +75,16 @@ public class ParametreController {
     @PostMapping("/parametre")
     public String para(@Validated Gym gym, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "parametre";
-        gym.setLogo(file.getOriginalFilename());
-        fileStorageService.save(file);
+
+        if (file != null && !file.isEmpty()) {
+
+            gym.setLogo(file.getOriginalFilename());
+            fileStorageService.save(file);
+        } else {
+
+            gymRepo.findById(gym.getId()).ifPresent(existingGym -> gym.setLogo(existingGym.getLogo()));
+        }
+
         gymRepo.save(gym);
         return "redirect:/parametre";
     }

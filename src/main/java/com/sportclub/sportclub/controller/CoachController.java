@@ -175,8 +175,19 @@ public class CoachController {
     }
 
     @PostMapping("/editCoach")
-    public String editCoach(@Validated Coach c, BindingResult bindingResult){
+    public String editCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "updateCoachModal";
+        Coach existingCoach = coachService.getCoachById(c.getId());
+        if (file != null && !file.isEmpty()) {
+
+            c.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        } else {
+
+            if (existingCoach != null) {
+                c.setPic(existingCoach.getPic());
+            }
+        }
         coachService.updateCoach(c);
 
 

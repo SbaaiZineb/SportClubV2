@@ -253,9 +253,14 @@ public class SeanceController {
         calendarEvent.setEndTime(seance.getEndTime());
         calendarEvent.setUsername(seance.getCoach().getEmail());
         int nbrToAdd = seance.getNumWeeks();
-        LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
-        calendarEvent.setEndRecur(newEnd);
-        calendarEvent.setStartRecur(seance.getStartDate());
+        if (nbrToAdd == 0) {
+            calendarEvent.setEndRecur(null);
+            calendarEvent.setStartRecur(null);
+        } else {
+            LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+            calendarEvent.setEndRecur(newEnd);
+            calendarEvent.setStartRecur(seance.getStartDate());
+        }
         List<Integer> dayInt = new ArrayList<>();
         for (String day : seance.getDays()
         ) {
