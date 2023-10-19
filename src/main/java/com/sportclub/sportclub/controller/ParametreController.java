@@ -1,4 +1,3 @@
-/*
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
@@ -35,7 +34,8 @@ public class ParametreController {
 
     @GetMapping("/parametre")
 
-    public String getPara(@RequestParam(name = "id") Long id, Model model) {
+    public String getPara( Long id, Model model) {
+        id=1L;
         List<Role> roles=gymService.getRoles();
         model.addAttribute("roles",roles);
         Gym gym=gymService.getById(id);
@@ -57,7 +57,7 @@ public class ParametreController {
         if(bindingResult.hasErrors()) return "parametre";
         gymService.addRole(roleForm);
         model.addAttribute("added",true);
-        return "redirect:/parametre?id=1";
+        return "redirect:/parametre";
 
     }
     @PostMapping("/deleteRoles")
@@ -70,7 +70,7 @@ public class ParametreController {
         }
 
         // Redirect to a success page or return a response as needed
-        return "redirect:/parametre?id=1";
+        return "redirect:/parametre";
     }
     @PostMapping("/parametre")
     public String para(@Validated Gym gym, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
@@ -78,7 +78,6 @@ public class ParametreController {
         gym.setLogo(file.getOriginalFilename());
         fileStorageService.save(file);
         gymRepo.save(gym);
-        return "redirect:/parametre?id=1";
+        return "redirect:/parametre";
     }
 }
-*/

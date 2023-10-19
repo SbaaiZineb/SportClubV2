@@ -72,7 +72,7 @@ public class MemberController {
     AdminRepo adminRepo;
     NotificationService notificationService;
     //Fingerprint variables
-    @Autowired
+   /* @Autowired
     FingerPrintRepo fingerPrintRepo;
     int fpWidth = 0;
     //the height of fingerprint image
@@ -112,7 +112,7 @@ public class MemberController {
         number |= ((bytes[2] << 16) & 0xFF0000);
         number |= ((bytes[3] << 24) & 0xFF000000);
         return number;
-    }
+    }*/
     @RequestMapping(value = "/membersList",method = RequestMethod.GET)
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int siz,
@@ -123,8 +123,6 @@ public class MemberController {
         model.addAttribute("abos", abos);
         model.addAttribute("abonnement", new Abonnement());
 
-
-
         Page<Member> pageMember = memberService.findByMemberName(kw, PageRequest.of(page, siz));
         model.addAttribute("listMember", pageMember.getContent());
         model.addAttribute("pages", new int[pageMember.getTotalPages()]);
@@ -132,10 +130,12 @@ public class MemberController {
         model.addAttribute("keyword", kw);
         Member memberForm = new Member();
         model.addAttribute("memberForm", memberForm);
+        return "membersList";
 
+    }
         //initialize the device
 
-        if (0 != mhDevice) {
+      /*  if (0 != mhDevice) {
             //already inited
             System.out.println("Please close device first!");
         }
@@ -181,12 +181,10 @@ public class MemberController {
         mbStop = false;
         workThread = new WorkThread();
         workThread.start();// 绾跨▼鍚姩
-        System.out.println("Open succ!");
-        return "membersList";
+        System.out.println("Open succ!");*/
 
-    }
     // FingerPrint methods
-    private class WorkThread extends Thread {
+  /*  private class WorkThread extends Thread {
         @Override
         public void run() {
             super.run();
@@ -419,7 +417,7 @@ public class MemberController {
         abyte[2] = (byte) ((0xff0000 & number) >> 16);
         abyte[3] = (byte) ((0xff000000 & number) >> 24);
         return abyte;
-    }
+    }*/
 
     @GetMapping("/log")
     public String getSide() {

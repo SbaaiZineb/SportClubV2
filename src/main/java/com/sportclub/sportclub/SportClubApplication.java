@@ -1,5 +1,6 @@
 package com.sportclub.sportclub;
 
+import com.sportclub.sportclub.entities.Gym;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.service.*;
@@ -14,12 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class SportClubApplication  implements CommandLineRunner {
 
+    GymService gymService;
     SeanceService seanceService;
     AdminService adminService;
     @Autowired
-    public SportClubApplication(SeanceService seanceService, AdminService adminService) {
+    public SportClubApplication(SeanceService seanceService, AdminService adminService, GymService gymService) {
         this.seanceService = seanceService;
         this.adminService = adminService;
+        this.gymService= gymService;
     }
 
 
@@ -41,6 +44,17 @@ public class SportClubApplication  implements CommandLineRunner {
             adminService.addAdmin(newUser);
         } else {
             System.out.println("Already exists !!");
+        }
+
+        Gym gym = gymService.getById(1L);
+        if (gym == null){
+
+            //ADD default informations for the gym
+
+            Gym newGym = new Gym(1L,"sport club","address","Email"," ","Terms and conditions","About Us",00000,"WebSite","Code Postal","Morocco");
+            gymService.addGymInfo(newGym);
+        }else {
+            System.out.println("No need to Add !!!");
         }
     }
 
