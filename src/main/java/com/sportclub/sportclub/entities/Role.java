@@ -16,4 +16,8 @@ public class Role {
     private String roleName;
     @OneToMany(mappedBy = "roles",fetch = FetchType.EAGER)
     private List<UserApp> user;
+    public Role(Long role_id, String roleName) {
+        this.role_id = role_id;
+        this.roleName = roleName;
+    }
 }
