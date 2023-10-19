@@ -43,6 +43,8 @@ public class MemberController {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
+    FileStorageService fileStorageService;
+    @Autowired
     MemberService memberService;
     AbonnementService abonnementService;
     FileStorageService storageService;
@@ -488,35 +490,37 @@ public class MemberController {
 //       int period=Integer.parseInt(per);
 //        LocalDate end=paiement.getStart_date().plusMonths(period);
 //        paiement.setEnd_date(end);
-        switch (per) {
-            case "12" -> {
-                LocalDate end = paiement.getStart_date().plusYears(1);
-                paiement.setEnd_date(end);
-            }
-            case "3" -> {
-                LocalDate end = paiement.getStart_date().plusMonths(3);
-                paiement.setEnd_date(end);
-            }
-            case "1" -> {
-                LocalDate end = paiement.getStart_date().plusMonths(1);
-                paiement.setEnd_date(end);
-            }
-            case "6" -> {
-                LocalDate end = paiement.getStart_date().plusMonths(6);
-                paiement.setEnd_date(end);
-            }
-            case "2" -> {
-                LocalDate end = paiement.getStart_date().plusMonths(2);
-                paiement.setEnd_date(end);
-            }
-        }
+        setPayEndDate(per,paiement);
         paiement.setMember(memberForm);
         storageService.save(file);
         paymentService.addPayement(paiement);
 
         return "redirect:/membersList";
     }
-
+public void setPayEndDate(String per, Paiement paiement){
+    switch (per) {
+        case "12" -> {
+            LocalDate end = paiement.getStart_date().plusYears(1);
+            paiement.setEnd_date(end);
+        }
+        case "3" -> {
+            LocalDate end = paiement.getStart_date().plusMonths(3);
+            paiement.setEnd_date(end);
+        }
+        case "1" -> {
+            LocalDate end = paiement.getStart_date().plusMonths(1);
+            paiement.setEnd_date(end);
+        }
+        case "6" -> {
+            LocalDate end = paiement.getStart_date().plusMonths(6);
+            paiement.setEnd_date(end);
+        }
+        case "2" -> {
+            LocalDate end = paiement.getStart_date().plusMonths(2);
+            paiement.setEnd_date(end);
+        }
+    }
+}
     @GetMapping("/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         Resource file = storageService.load(filename);
@@ -550,9 +554,19 @@ public class MemberController {
 
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
-    public String editMember(@Validated Member member, BindingResult bindingResult) {
+    public String editMember(@Validated Member member, BindingResult bindingResult,@RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "updateMemberModal";
+        Member existingMember = memberService.getMemberById(member.getId());
+        if (file != null && !file.isEmpty()) {
 
+            member.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        } else {
+
+            if (existingMember != null) {
+                member.setPic(existingMember.getPic());
+            }
+        }
         memberService.updateMember(member);
         return "redirect:/membersList";
     }
