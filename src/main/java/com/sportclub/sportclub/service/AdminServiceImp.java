@@ -20,8 +20,8 @@ import java.util.List;
 @Service
 @Transactional
 public class AdminServiceImp implements AdminService {
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
     @Autowired
     AdminRepo adminRepo;
     @Autowired

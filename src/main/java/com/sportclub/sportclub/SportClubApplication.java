@@ -1,5 +1,7 @@
 package com.sportclub.sportclub;
 
+import com.sportclub.sportclub.entities.Role;
+import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,8 +14,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class SportClubApplication  implements CommandLineRunner {
 
-@Autowired
-SeanceService seanceService;
+    SeanceService seanceService;
+    AdminService adminService;
+    @Autowired
+    public SportClubApplication(SeanceService seanceService, AdminService adminService) {
+        this.seanceService = seanceService;
+        this.adminService = adminService;
+    }
+
+
 
 
     public static void main(String[] args) {
@@ -23,11 +32,21 @@ SeanceService seanceService;
     @Override
     public void run(String... args) throws Exception {
 
-            }
+        // Check if the user with the username "admin3" already exists
+        UserApp existingUser = adminService.loadUserByUsername("admin");
 
-            
+        if (existingUser == null) {
+            // User doesn't exist, so add it
+            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"), new Role(1L,"ADMIN"));
+            adminService.addAdmin(newUser);
+        } else {
+            System.out.println("Already exists !!");
+        }
+    }
 
-//   @Bean
+
+
+    //   @Bean
   /* CommandLineRunner commandLineRunnerUserDetails(AdminService adminService){
         return args -> {
 
