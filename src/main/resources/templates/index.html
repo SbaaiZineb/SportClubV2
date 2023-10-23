@@ -110,11 +110,64 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-12 col-xxl-12">
+        <div class="col-md-7 " style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+
+            <table class="table table-centered table-hover table-responsive">
+                <tr>
+                    <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+
+                    <th>Id</th>
+                    <th>Adhérent</th>
+
+                    <th>Cin</th>
+
+                    <th>Inscrie le</th>
+                    <th>Abonnement</th>
+                    <th>Statue</th>
+                </tr>
+                <tr th:each="m:${members}" data-th-id="${m.id}"
+                    onclick="getProfile($(this).attr('id'))">
+                    <a ></a>
+                    <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+                        <input type="checkbox" name="selectedCells" data-target="requests-all"
+                               th:value="${m.id}" />
+                    </td>
+                    <td th:utext="${m.getId()}"></td>
+                    <td >
+                        <div class="user-info">
+                            <div class="user-info__img">
+                                <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                            </div>
+                            <div class="user-info__basic">
+                                <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                                <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+                    <td th:utext="${m.getName()}"></td>
+                    <td th:utext="${m.getLname()}"></td>
+                    <td th:utext="${m.getEmail()}"></td>-->
+
+
+                    <td th:utext="${m.getCin()}"></td>
+                    <td th:utext="${m.createdAt}"></td>
+                    <td th:utext="${m.abonnement}"></td>
+                    <td>
+                        <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                        <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-5" style="margin-top: 13px">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">Graphique à barres</h5>
-                    <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrments
+                    <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrements
                         effectués chaque jour de cette semaine.</h6>  <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
 padding: 5px;
 color: #3b7ddd;
@@ -132,6 +185,7 @@ background: transparent;margin-top: -17px">
         </div>
 
     </div>
+
 
 
     <script>
@@ -213,8 +267,8 @@ background: transparent;margin-top: -17px">
                                 labels: labels,
                                 datasets: [{
                                     label: "Check-ins",
-                                    backgroundColor: window.theme.primary,
-                                    borderColor: window.theme.primary,
+                                    backgroundColor: "#30639f",
+                                    borderColor: "#30639f",
                                     hoverBackgroundColor: window.theme.primary,
                                     hoverBorderColor: window.theme.primary,                                    data: checkInCount,
                                     barPercentage: .75,

@@ -37,16 +37,18 @@
             <th>Sexe</th>
 <th>Inscrie le</th>
             <th>Abonnement</th>
+            <th>Statue</th>
             <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
         </tr>
-        <tr th:each="m:${listMember}" >
+        <tr th:each="m:${listMember}" data-th-id="${m.id}"
+            onclick="getProfile($(this).attr('id'))">
+            <a ></a>
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
             <input type="checkbox" name="selectedCells" data-target="requests-all"
                    th:value="${m.id}" />
             </td>
             <td th:utext="${m.getId()}"></td>
-            <td data-th-id="${m.id}"
-                onclick="getProfile($(this).attr('id'))">
+            <td >
                 <div class="user-info">
                     <div class="user-info__img">
                     <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
@@ -70,10 +72,15 @@
             <td th:utext="${m.getGender()}"></td>
             <td th:utext="${m.createdAt}"></td>
             <td th:utext="${m.abonnement}"></td>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="return confirm('Vous avez sure?')"
+            <td>
+                <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+
+            </td>
+            <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
                     class="bi bi-trash iconT"></i></a></td>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
                 <i class="bi bi-pencil-square iconE "></i></a></td>
 
 
