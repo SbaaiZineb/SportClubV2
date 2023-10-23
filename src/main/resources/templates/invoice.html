@@ -14,7 +14,8 @@
     </style>
 </head>
 <body>
-<img src="uploads/gym.png" alt="img"></img>
+<img th:if="${gym.logo}" th:src="@{'images/' + ${gym.logo}}" alt="img"></img>
+
 <h1 style="text-align: center">Reçu</h1>
 <div class="row" >
     <div class="col-md-6" style="flex: 0 0 auto;

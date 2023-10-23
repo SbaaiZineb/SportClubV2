@@ -3,7 +3,6 @@ package com.sportclub.sportclub.controller;
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,7 +17,6 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class CheckInController {
@@ -81,7 +79,7 @@ public class CheckInController {
             return "checkIn";
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred while processing your request.");
-            return "notAuthorized";
+            return "error";
         }
     }
 
@@ -135,7 +133,7 @@ public class CheckInController {
             LocalDate endDate = startDate.plusDays(6);
             List<CheckIn> checkIns = checkInRepo.findByMemberAndSessionAndCheckinDateBetween(member, seance, startDate, endDate);
             int checkInCount = checkIns.size();
-            String period=member.getAbonnement().getPeriod();
+
             int nbr = member.getAbonnement().getNbrSeance();
             boolean hasCheckedInToday = checkIns.stream()
                     .anyMatch(checkIn -> checkIn.getCheckinDate().isEqual(LocalDate.now()));
@@ -153,7 +151,7 @@ public class CheckInController {
 
     @PostMapping("/checkin")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
-    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells, Model model) {
+    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells) {
 
         for (Long cellId : selectedCells) {
             CheckIn checkIn = new CheckIn();
