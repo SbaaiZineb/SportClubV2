@@ -106,6 +106,9 @@ public class PaymentController {
         if (bindingResult.hasErrors()) return "paymentModal";
         paiement.setPayedAt(LocalDate.now());
         paiement.setStatue("Payé");
+        Member member= paiement.getMember();
+        member.setStatue("Active");
+        memberService.updateMember(member);
         paymentService.updatePayment(paiement);
         return "redirect:/paymentList";
     }

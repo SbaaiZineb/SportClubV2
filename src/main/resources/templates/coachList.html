@@ -16,7 +16,7 @@
                 <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
               </div>
               <input type="text" class="form-control bg-transparent border-0" name="coach"
-                     th:value="${keyword}" placeholder="Chercher">
+                     th:value="${keyword}" placeholder="Chercher par nom">
             </div>
           </form>
         </div>
@@ -152,6 +152,7 @@
                 <div class="col-md-6 mb-4">
                 <label class="form-label ">Type de sport :</label>
                 <select name="sportType" id="sportType" class="form-control ">
+                  <option value="">None</option>
                   <option th:each="sport : ${sports}" th:value="${sport.nom}"
                           th:text="${sport.nom}"></option>
                 </select></div>

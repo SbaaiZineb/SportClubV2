@@ -15,19 +15,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableScheduling
-public class SportClubApplication  implements CommandLineRunner {
+public class SportClubApplication implements CommandLineRunner {
 
     GymService gymService;
     SeanceService seanceService;
     AdminService adminService;
+    RoleService roleService;
+
     @Autowired
-    public SportClubApplication(SeanceService seanceService, AdminService adminService, GymService gymService) {
+    public SportClubApplication(SeanceService seanceService, AdminService adminService, GymService gymService, RoleService roleService) {
         this.seanceService = seanceService;
         this.adminService = adminService;
-        this.gymService= gymService;
+        this.gymService = gymService;
+        this.roleService = roleService;
     }
-
-
 
 
     public static void main(String[] args) {
@@ -37,29 +38,48 @@ public class SportClubApplication  implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // Check if the user with the username "admin3" already exists
+//Add Roles if don't exist
+
+        Role admin = roleService.getRoleByName("ADMIN");
+        Role coach = roleService.getRoleByName("COACH");
+        Role user = roleService.getRoleByName("ADHERENT");
+
+        if (admin == null) {
+            roleService.addRole(new Role(1L, "ADMIN"));
+        }
+
+        if (coach == null) {
+            roleService.addRole(new Role(2L, "COACH"));
+        }
+
+        if (user == null) {
+            roleService.addRole(new Role(3L, "ADHERENT"));
+        }
+
+
+        // Check if the user with the username "admin" already exists
         UserApp existingUser = adminService.loadUserByUsername("admin");
+
 
         if (existingUser == null) {
             // User doesn't exist, so add it
-            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"), new Role(1L,"ADMIN"));
+            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"), admin);
             adminService.addAdmin(newUser);
         } else {
             System.out.println("Already exists !!");
         }
 
         Gym gym = gymService.getById(1L);
-        if (gym == null){
+        if (gym == null) {
 
-            //ADD default informations for the gym
+            //ADD default information for the gym
 
-            Gym newGym = new Gym(1L,"sport club","address","Email"," ","Terms and conditions","About Us",00000,"WebSite","Code Postal","Morocco");
+            Gym newGym = new Gym(1L, "sport club", "address", "Email", " ", "Terms and conditions", "About Us", 00000, "WebSite", "Code Postal", "Morocco");
             gymService.addGymInfo(newGym);
-        }else {
+        } else {
             System.out.println("No need to Add !!!");
         }
     }
-
 
 
     //   @Bean
@@ -71,7 +91,7 @@ public class SportClubApplication  implements CommandLineRunner {
         };
    }*/
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

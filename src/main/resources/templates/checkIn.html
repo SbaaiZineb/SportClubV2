@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content" class="container">
     <div class="row">
-        <div class="col-md-6" style="height: 33rem;">
+        <div class="col-md-6" style="height: 33rem;scrollbar-width: none;">
             <div class="card h-100" style="overflow-y: auto">
                 <div class="card-body">
                     <div class="row">
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6" style="height: 33rem;">
+        <div class="col-md-6" style="height: 33rem;scrollbar-width: none;">
             <div class="card h-100" style=" overflow-y: auto;">
                 <div class="card-body">
                     <div class="card-content" id="cardContent" style="overflow: auto;
@@ -152,9 +152,28 @@ margin: 0 auto;" alt="icon">
 
                     </button>
                 </div>
-                <div class="modal-body" style="position: relative;
-height: 33rem;
-overflow: auto;">
+
+                <input type="text" id="myInput" onkeyup="search()" placeholder="CIN">
+                <style>
+                    #myInput {
+                        padding: 10px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 13px;
+                        width: 410px;
+                        margin-right: auto;
+                        margin-left: auto;
+                        margin-top: 8px;
+                    }
+
+
+                    #myInput:focus {
+                        outline: none;
+                        border-color: #007bff;
+                        box-shadow: 0 0 5px #007bff;
+                    }
+                </style>
+                <div  class="modal-body" style="position: relative;height: 33rem;overflow: auto;scrollbar-width: none;">
 
                 </div>
                 <div class="modal-footer">
@@ -162,6 +181,7 @@ overflow: auto;">
 
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -252,7 +272,7 @@ overflow: auto;">
             $('#empty-message').hide();
 
         }
-        const selectedDateInput = document.getElementById("selectedDate");
+       /* const selectedDateInput = document.getElementById("selectedDate");
         function getCheckIns(date){
             fetch('/checkInsByDate?selectedDate='+date)
 
@@ -270,6 +290,33 @@ overflow: auto;">
         // Fetch data and generate chart on page load
         const initialDate = selectedDateInput.value; // Get the initial date value
         getCheckIns(initialDate);
+*/
+
+
+        function search() {
+            var input, filter, table, tr, td, i, nameColumn;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dTable");
+            tr = table.getElementsByTagName("tr");
+            nameColumn = 4; // Index of the column where cin are
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[nameColumn];
+                if (td) {
+                    var name = td.textContent || td.innerText;
+                    if (name.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+
+                }
+            }
+        }
+
+
+
     </script>
 
 </div>

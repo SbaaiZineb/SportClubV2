@@ -15,11 +15,11 @@ import java.util.Date;
 public class Person {
     private String pic;
     private String name;
-    private String Lname;
+    private String lname;
 
     public Person(String name, String lname, String adress, String cin, LocalDate dob, int tele) {
         this.name = name;
-        Lname = lname;
+        lname = lname;
         this.adress = adress;
         this.cin = cin;
         this.dob = dob;

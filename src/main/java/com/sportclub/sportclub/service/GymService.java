@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GymService {
@@ -19,7 +20,9 @@ public class GymService {
      gymRepo.save(gym);
  }
     public Gym getById(Long id) {
-        return gymRepo.findById(id).get();
+        Optional<Gym> optionalGym = gymRepo.findById(id);
+        //if not present return null
+        return optionalGym.orElse(null);
     }
     public Role getRoleById(Long id) {
         return roleRepo.findById(id).get();

@@ -182,6 +182,7 @@ color: #64686b;"><i class="bi bi-search"></i></button>
                     <label class="form-label mt-2">Entraineur :</label>
 
                     <select name="coach" id="coach" class="form-control mb-4">
+                        <option value="">None</option>
                       <option th:each="coach : ${coaches}" th:value="${coach.id}"
                               th:text="${coach.name}+' '+${coach.lname}"></option>
                     </select>

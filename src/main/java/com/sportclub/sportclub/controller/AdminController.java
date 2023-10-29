@@ -145,21 +145,26 @@ model.addAttribute("user",userForm);
     }
 
     @PostMapping("/editAdmin")
-    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult){
+    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "updateAdminModal";
-//        user.setPic(file.getOriginalFilename());
-        adminService.updateAdmin(user);
-//        if (file==null){
-//            System.out.println("no file to add");
-//        }
-//        fileStorageService.save(file);
+        UserApp existingAdmin = adminService.getAdminById(user.getId());
+        if (file != null && !file.isEmpty()) {
 
+            user.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        } else {
+
+            if (existingAdmin != null) {
+                user.setPic(existingAdmin.getPic());
+            }
+        }
+        adminService.updateAdmin(user);
         return "redirect:/adminList";
     }
     @PostMapping("/editAdminProfile")
-    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
+    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "profile";
-        UserApp existingAdmin = adminService.getAdminById(c.getId());
+        /*UserApp existingAdmin = adminService.getAdminById(c.getId());
         if (file != null && !file.isEmpty()) {
 
             c.setPic(file.getOriginalFilename());
@@ -169,7 +174,7 @@ model.addAttribute("user",userForm);
             if (existingAdmin != null) {
                 c.setPic(existingAdmin.getPic());
             }
-        }
+        }*/
         adminService.updateAdmin(c);
 
         return "redirect:/profil";

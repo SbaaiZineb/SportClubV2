@@ -111,10 +111,28 @@
     </div>
     <div class="row">
         <div class="col-md-7 " style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+            <input type="text" id="cin" onkeyup="searchMember()" placeholder="CIN">
+            <style>
+                #cin {
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    width: 18.5cm;
+                    margin-right: auto;
+                    margin-left: auto;
+                    margin-top: 11px;
+                }
 
-            <table class="table table-centered table-hover table-responsive">
+
+                #cin:focus {
+                    outline: none;
+                    border-color: #007bff;
+                    box-shadow: 0 0 5px #007bff;
+                }
+            </style>
+            <table id="IndexTable" class="table table-centered table-hover table-responsive">
                 <tr>
-                    <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
                     <th>Id</th>
                     <th>Adhérent</th>
@@ -128,9 +146,7 @@
                 <tr th:each="m:${members}" data-th-id="${m.id}"
                     onclick="getProfile($(this).attr('id'))">
                     <a ></a>
-                    <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
-                        <input type="checkbox" name="selectedCells" data-target="requests-all"
-                               th:value="${m.id}" />
+
                     </td>
                     <td th:utext="${m.getId()}"></td>
                     <td >
@@ -188,67 +204,6 @@ background: transparent;margin-top: -17px">
 
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Line chart
-            new Chart(document.getElementById("chartjs-line"), {
-                type: "line",
-                data: {
-                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                    datasets: [{
-                        label: "Sales ($)",
-                        fill: true,
-                        backgroundColor: "transparent",
-                        borderColor: window.theme.primary,
-                        data: [2115, 1562, 1584, 1892, 1487, 2223, 2966, 2448, 2905, 3838, 2917, 3327]
-                    }, {
-                        label: "Orders",
-                        fill: true,
-                        backgroundColor: "transparent",
-                        borderColor: "#adb5bd",
-                        borderDash: [4, 4],
-                        data: [958, 724, 629, 883, 915, 1214, 1476, 1212, 1554, 2128, 1466, 1827]
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        intersect: false
-                    },
-                    hover: {
-                        intersect: true
-                    },
-                    plugins: {
-                        filler: {
-                            propagate: false
-                        }
-                    },
-                    scales: {
-                        xAxes: [{
-                            reverse: true,
-                            gridLines: {
-                                color: "rgba(0,0,0,0.05)"
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                stepSize: 500
-                            },
-                            display: true,
-                            borderDash: [5, 5],
-                            gridLines: {
-                                color: "rgba(0,0,0,0)",
-                                fontColor: "#fff"
-                            }
-                        }]
-                    }
-                }
-            });
-        });
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const selectedDateInput = document.getElementById("selectedDate");
@@ -368,6 +323,28 @@ background: transparent;margin-top: -17px">
         function filterData() {
             const dates = [...labels];
             console.log(dates);
+        }
+
+        function searchMember() {
+            var input, filter, table, tr, td, i, nameColumn;
+            input = document.getElementById("cin");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("IndexTable");
+            tr = table.getElementsByTagName("tr");
+            nameColumn = 2; // Index of the column where cin are
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[nameColumn];
+                if (td) {
+                    var name = td.textContent || td.innerText;
+                    if (name.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+
+                }
+            }
         }
     </script>
 

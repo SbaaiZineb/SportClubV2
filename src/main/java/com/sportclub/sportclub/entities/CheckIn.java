@@ -19,7 +19,6 @@ public class CheckIn {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne

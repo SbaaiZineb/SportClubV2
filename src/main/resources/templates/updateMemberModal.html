@@ -11,6 +11,7 @@
                method="POST" enctype="multipart/form-data">
             <input type="hidden" name="pic" th:value="${member.pic}">
             <input type="hidden" name="createdAt" th:value="${member.createdAt}">
+            <input type="hidden" name="statue" th:value="${member.statue}">
             <div style=" display: flex;
         justify-content: center;
         align-items: center;">
@@ -98,11 +99,14 @@ object-fit: cover;border-radius: 50%"></div>
                     </div>
                 </div>
 
-            <label class="form-label">Abonnement</label>
-            <select name="abonnement" id="abonnement" class="form-control mb-3" >
-                <option th:each="abonnement :${abos}" th:value="${abonnement.id}" th:field="*{member.abonnement}"
-                        th:text="${abonnement.nameAb}"></option>
-            </select>
+            <label class="form-label">Abonnement : </label>
+            <label class="font-weight-bold" th:text="${member.abonnement}"></label>
+            <input type="hidden" class="form-control" id="abonnement" placeholder="ID" name="abonnement" th:value="${member.abonnement}">
+
+<!--            <select name="abonnement" id="abonnement" class="form-control mb-3" >-->
+<!--                <option th:each="abonnement :${abos}" th:value="${abonnement.id}" th:field="*{member.abonnement}"-->
+<!--                        th:text="${abonnement.nameAb}"></option>-->
+<!--            </select>-->
 
             <div class="mb-3 mt-3">
                 <label class="form-label">Image</label>

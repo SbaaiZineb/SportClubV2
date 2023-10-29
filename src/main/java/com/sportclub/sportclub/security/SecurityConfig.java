@@ -40,11 +40,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.formLogin().loginPage("/login").defaultSuccessUrl("/").permitAll();
-
-        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll();
-        httpSecurity.authorizeHttpRequests().requestMatchers("/membersList").hasAuthority("COACH");
-        /*  httpSecurity.authorizeHttpRequests().requestMatchers("/coach/*").hasAuthority("READ_USER").anyRequest().authenticated()
+   /*  httpSecurity.authorizeHttpRequests().requestMatchers("/coach/*").hasAuthority("READ_USER").anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .and()
@@ -54,6 +50,12 @@ public class SecurityConfig {
                 .formLogin()
                 .and()
                 .logout();*/
+
+        httpSecurity.formLogin().loginPage("/login").defaultSuccessUrl("/").permitAll();
+
+        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll();
+        httpSecurity.authorizeHttpRequests().requestMatchers("/membersList").hasAuthority("COACH");
+
 
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
         httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");

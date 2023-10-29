@@ -4,6 +4,7 @@ import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,7 @@ public class CheckInController {
     DayOfWeek dayOfWeek = localDate.getDayOfWeek();
 
     @GetMapping("/enregistrement")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String getCheckinPage(Model model) {
         try {
             List<Seance> seances = seanceService.getAllSeance();
@@ -78,18 +80,17 @@ public class CheckInController {
             model.addAttribute("checkin", checkIn);
             return "checkIn";
         } catch (Exception e) {
-            model.addAttribute("error", "An error occurred while processing your request.");
             return "error";
         }
     }
 
-    @ResponseBody
+   /* @ResponseBody
     @GetMapping("/checkInsByDate")
     public List<CheckIn> checkInsByDate(@RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
         List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
 
         return checkIns;
-    }
+    }*/
    /* @RequestMapping(path = { "membersToCheck/search"})
     public String search(Model model, String keyword) {
 
@@ -132,14 +133,14 @@ public class CheckInController {
             LocalDate startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
             LocalDate endDate = startDate.plusDays(6);
             List<CheckIn> checkIns = checkInRepo.findByMemberAndSessionAndCheckinDateBetween(member, seance, startDate, endDate);
-            int checkInCount = checkIns.size();
-
-            int nbr = member.getAbonnement().getNbrSeance();
+//            int checkInCount = checkIns.size();
+//
+//            int nbr = member.getAbonnement().getNbrSeance();
             boolean hasCheckedInToday = checkIns.stream()
                     .anyMatch(checkIn -> checkIn.getCheckinDate().isEqual(LocalDate.now()));
 
 
-            if (checkInCount < nbr && !hasCheckedInToday) {
+            if (!hasCheckedInToday) {
                 listFilter.add(member);
             }
         }
@@ -154,6 +155,7 @@ public class CheckInController {
     public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells) {
 
         for (Long cellId : selectedCells) {
+
             CheckIn checkIn = new CheckIn();
             Member member = memberService.getMemberById(cellId);
             checkIn.setMember(member);
@@ -165,6 +167,8 @@ public class CheckInController {
         }
         return "redirect:/enregistrement";
     }
+
+
 
     // Manage coach check in
     @GetMapping("coach/enregistre")

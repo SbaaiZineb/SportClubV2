@@ -78,7 +78,7 @@
 
                     <ul id="usersCollapse" class="nav-group-items collapse show">
                         <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-                            <a class="sidebar-link" th:href="@{adminList}">Admin</a>
+                            <a class="sidebar-link" th:href="@{/adminList}">Admin</a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" th:href="@{/coachList}">Entraineur</a>
