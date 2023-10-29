@@ -17,4 +17,5 @@ Paiement findByMember(Long id);
     Paiement getPaymentById(Long id);
     void updatePayment(Paiement m);
     List<Paiement> getAllPayment();
+    List<Paiement> getPaymentsByMember(Member member);
 }

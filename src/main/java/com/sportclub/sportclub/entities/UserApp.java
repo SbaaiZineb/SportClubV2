@@ -22,7 +22,15 @@ public class UserApp extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
-    public UserApp(String email, String password,Role roles) {
+
+    public UserApp(Long id, String email, String password, Role roles) {
+        this.id = id;
+        this.roles = roles;
+        this.email = email;
+        this.password = password;
+    }
+
+    public UserApp(String email, String password, Role roles) {
         this.roles = roles;
         this.email = email;
         this.password = password;
@@ -50,15 +58,15 @@ public class UserApp extends Person {
     @Column(unique = true)
     private String email;
 
-    public UserApp(String pic, String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
-        super(pic, name, Lname, adress, cin, dob, tele);
+    public UserApp(String pic, String name, String lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
+        super(pic, name, lname, adress, cin, dob, tele);
         this.email = email;
         this.password = password;
     }
 
     private String password;
-    public UserApp( String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
-        super(name, Lname, adress, cin, dob, tele);
+    public UserApp( String name, String lname, String adress, String cin, LocalDate dob, int tele, String email, String password) {
+        super(name, lname, adress, cin, dob, tele);
 //        this.id = id;
 
         this.email = email;

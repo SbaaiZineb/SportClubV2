@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
+
 public class userProfileController {
 
 
@@ -39,7 +40,7 @@ public class userProfileController {
     @Autowired
     AbonnementService abonnementService;
 
-    @GetMapping("/userProfile")
+    @GetMapping("/membersList/userProfile")
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
 
         Member member = memberService.getMemberById(id);
@@ -71,7 +72,7 @@ public class userProfileController {
 
     }
 
-    @GetMapping("/userProfile/updateAbo")
+    @GetMapping("/membersList/userProfile/updateAbo")
     public String updateMembership(@RequestParam(name = "userId") Long userId, @RequestParam(name = "abId") Long id) {
         try {
             Member member = memberService.getMemberById(userId);
@@ -95,7 +96,7 @@ public class userProfileController {
         }
 
 
-        return "redirect:/userProfile?id=" + userId;
+        return "redirect:/membersList/userProfile?id=" + userId;
     }
 
 }

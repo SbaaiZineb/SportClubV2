@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.service;
 
+import com.sportclub.sportclub.entities.Gym;
 import com.sportclub.sportclub.entities.Role;
 import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.repository.AdminRepo;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -94,7 +96,9 @@ public class AdminServiceImp implements AdminService {
 
     @Override
     public UserApp getAdminById(Long id) {
-        return adminRepo.findById(id).get();
+        Optional<UserApp> adminOp = adminRepo.findById(id);
+        //if not present return null
+        return adminOp.orElse(null);
     }
 
     @Override

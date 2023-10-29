@@ -13,5 +13,6 @@ Paiement findByMember(Member member);
 List<Paiement> findPaiementByMember(Member member);
 List<Paiement> findByMemberNameContains(String kw);
 Page<Paiement> findByMemberNameContains(String kw,Pageable pageable);
+List<Paiement> getPaiementByMember(Member member);
 
 }

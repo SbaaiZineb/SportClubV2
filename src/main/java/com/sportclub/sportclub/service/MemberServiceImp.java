@@ -41,6 +41,11 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
+    public List<Member> getByCin(String cin) {
+        return memberRepository.findByCinContains(cin);
+    }
+
+    @Override
     public List<Member> getMemberByMembership(Long abId) {
         Abonnement membership = abonnementRepo.findById(abId).get();
         return memberRepository.findByAbonnement(membership);
@@ -49,7 +54,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public List<Member> getMemberBynName(String name) {
-        return memberRepository.findByNameContains(name);
+        return memberRepository.findByLnameContains(name);
     }
 
 

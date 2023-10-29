@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor@NoArgsConstructor
 public class CalendarEvent {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private String title;
     @JsonFormat(pattern = "YYYY-MM-dd")

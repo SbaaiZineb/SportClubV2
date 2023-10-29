@@ -8,6 +8,7 @@ import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +34,11 @@ public class DashController {
     @Autowired
     CheckInService checkInService;
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+
     public String getDash(Model model){
 
+        updateMemberStatues();
         List<Paiement> paiementList=paymentService.getAllPayment();
         double totalPrice = 0.0;
         for (Paiement payment:paiementList
@@ -61,7 +65,7 @@ public class DashController {
 
         return "index";
     }
-    @Scheduled(fixedRate = 2000)
+
     //Update the member's statue
     public void updateMemberStatues() {
         List<Paiement> allPayments = paymentService.getAllPayment();
@@ -72,9 +76,9 @@ public class DashController {
             Member member = payment.getMember();
             boolean hasActivePayment = memberHasActivePay(member, allPayments);
 
-            if (!hasActivePayment && currentDate.isAfter(payEndDate)) {
+            if (!hasActivePayment ) {
                 member.setStatue("Inactive");
-            } else if (hasActivePayment && currentDate.isBefore(payEndDate)) {
+            } else {
                 member.setStatue("Active");
             }
             memberService.updateMember(member);
@@ -82,9 +86,10 @@ public class DashController {
     }
     public boolean memberHasActivePay(Member member, List<Paiement> payments) {
         LocalDate currentDate = LocalDate.now();
+        payments=paymentService.getPaymentsByMember(member);
         for (Paiement payment : payments) {
 
-            if (payment.getMember().equals(member) && currentDate.isBefore(payment.getEnd_date())) {
+            if (currentDate.isBefore(payment.getEnd_date()) && payment.getStatue().equals("Payé")) {
                 //If there is an active payment for the member return true
                 return true;
             }

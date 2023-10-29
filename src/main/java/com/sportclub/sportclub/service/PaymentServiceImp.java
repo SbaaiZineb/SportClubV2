@@ -62,4 +62,9 @@ paymentRepo.save(m);
     public List<Paiement> getAllPayment() {
         return paymentRepo.findAll();
     }
+
+    @Override
+    public List<Paiement> getPaymentsByMember(Member member) {
+        return paymentRepo.getPaiementByMember(member);
+    }
 }

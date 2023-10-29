@@ -17,19 +17,19 @@ public class Member extends UserApp {
     private String gender;
     private String statue;
 
-    public Member(String pic, String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
-        super(pic, name, Lname, adress, cin, dob, tele, email, password);
+    public Member(String pic, String name, String lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
+        super(pic, name, lname, adress, cin, dob, tele, email, password);
         this.gender = gender;
     }
 
-    public Member(String pic, String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender, LocalDate createdAt) {
-        super(pic, name, Lname, adress, cin, dob, tele, email, password);
+    public Member(String pic, String name, String lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender, LocalDate createdAt) {
+        super(pic, name, lname, adress, cin, dob, tele, email, password);
         this.gender = gender;
         this.createdAt = createdAt;
     }
 
-    public Member(String name, String Lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
-        super(name, Lname, adress, cin, dob, tele, email, password);
+    public Member(String name, String lname, String adress, String cin, LocalDate dob, int tele, String email, String password, String gender) {
+        super(name, lname, adress, cin, dob, tele, email, password);
         this.gender = gender;
 
     }

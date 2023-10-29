@@ -8,13 +8,13 @@
 <body>
 <div layout:fragment="content">
     <div class="search-field d-none d-md-block ">
-        <form th:action="@{/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group mb-3">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
                 <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                       th:value="${keyword}" placeholder="Chercher">
+                       th:value="${keyword}" placeholder="Chercher par prenom">
             </div>
         </form>
     </div>
@@ -42,6 +42,12 @@
         </tr>
         <tr th:each="m:${listMember}" data-th-id="${m.id}"
             onclick="getProfile($(this).attr('id'))">
+            <script>
+                function getProfile(id) {
+
+                    window.location.href = "/membersList/userProfile?id=" + id;
+                }
+            </script>
             <a ></a>
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
             <input type="checkbox" name="selectedCells" data-target="requests-all"
@@ -290,10 +296,7 @@
 
             console.log('Selected Cells:', selectedCells);
         }
-        function getProfile(id){
 
-            window.location.href = "/userProfile?id=" + id;
-        }
     </script>
 
     <script th:inline="javascript">

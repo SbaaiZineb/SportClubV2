@@ -22,4 +22,5 @@ List<Member> getMemberByMembership(Long abid);
      List<Member> getAllMembers();
      long count();
      Boolean getByEmail(String email);
+     List<Member> getByCin(String cin);
 }

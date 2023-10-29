@@ -161,6 +161,7 @@ public class SeanceController {
         }
 
         List<Integer> dayInt = new ArrayList<>();
+        if (seance.getDays() != null){
         for (String day : seance.getDays()
         ) {
             if (day != null) {
@@ -169,15 +170,19 @@ public class SeanceController {
                     DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
                     Integer di = dayOfWeek.getValue();
                     dayInt.add(di);
-                    System.out.println(dayOfWeek);
-                    System.out.println(di);
-                    System.out.println(dayInt);
-                    calendarEvent.setDaysOfWeek(dayInt);
+
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error " + e);
                 }
+            } else if (dayInt.isEmpty()) {
+                // Add all days of the week to the dayInt list
+                for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                    dayInt.add(dayOfWeek.getValue());
+                }
             }
+            calendarEvent.setDaysOfWeek(dayInt);
 
+        }
         }
         eventRepo.save(calendarEvent);
 
@@ -243,7 +248,12 @@ public class SeanceController {
     public String editSeance(@Validated Seance seance, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) return "updateSeanceModal";
         String[] selectedDays = request.getParameterValues("days");
-        seance.setDays(Arrays.asList(selectedDays));
+        if (selectedDays == null){
+            seance.setDays(null);
+        }else {
+            seance.setDays(Arrays.asList(selectedDays));
+        }
+
         service.updateSeance(seance);
         CalendarEvent calendarEvent = eventRepo.findById(seance.getId()).get();
         //Add new Event based on the updated  session
@@ -253,6 +263,7 @@ public class SeanceController {
         calendarEvent.setEndTime(seance.getEndTime());
         calendarEvent.setUsername(seance.getCoach().getEmail());
         int nbrToAdd = seance.getNumWeeks();
+
         if (nbrToAdd == 0) {
             calendarEvent.setEndRecur(null);
             calendarEvent.setStartRecur(null);
@@ -262,22 +273,31 @@ public class SeanceController {
             calendarEvent.setStartRecur(seance.getStartDate());
         }
         List<Integer> dayInt = new ArrayList<>();
-        for (String day : seance.getDays()
-        ) {
-            if (day != null) {
-                try {
+        if (seance.getDays() != null){
+            for (String day : seance.getDays()
+            ) {
+                if (day != null) {
+                    try {
 
-                    DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
-                    Integer di = dayOfWeek.getValue();
-                    dayInt.add(di);
+                        DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                        Integer di = dayOfWeek.getValue();
+                        dayInt.add(di);
 
-                    calendarEvent.setDaysOfWeek(dayInt);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error " + e);
+                        calendarEvent.setDaysOfWeek(dayInt);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error " + e);
+                    }
+                }else if (dayInt.isEmpty()) {
+                    // Add all days of the week to the dayInt list
+                    for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                        dayInt.add(dayOfWeek.getValue());
+                    }
                 }
-            }
+                calendarEvent.setDaysOfWeek(dayInt);
 
+            }
         }
+
         eventRepo.save(calendarEvent);
 
 

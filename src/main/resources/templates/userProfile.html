@@ -10,7 +10,6 @@
     <div class="main-body">
 
 
-        <!-- /Breadcrumb -->
 
         <div class="row gutters-sm">
             <div class="col-md-4">
@@ -20,7 +19,7 @@
                             <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
 height: 200px;
 object-fit: cover;"
-                                 th:src="@{'images/'+${user.pic}}">
+                                 th:src="@{'/images/'+${user.pic}}">
                             <div class="mt-3">
                                 <h4 class="fw-bold"
                                     th:utext="${#strings.capitalize(user.getName())}+' '+${#strings.capitalize(user.getLname())}"></h4>
@@ -165,7 +164,7 @@ object-fit: cover;"
             <div class="ag-format-container" th:each="ab : ${abos}">
                 <div class="ag-courses_box">
                     <div class="ag-courses_item">
-                        <a th:href="@{/userProfile/updateAbo(userId=${user.id},abId=${ab.id})}" class="ag-courses-item_link" th:id="${ab.id}">
+                        <a th:href="@{/membersList/userProfile/updateAbo(userId=${user.id},abId=${ab.id})}" class="ag-courses-item_link" th:id="${ab.id}">
                             <div class="ag-courses-item_bg"></div>
 
                             <div class="ag-courses-item_title">
