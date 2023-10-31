@@ -63,6 +63,9 @@ public class AbonnementController {
      @RequestMapping(path = {"/abonnementList/search"})
     public String search( Model model, String ab) {
 
+         Abonnement abonnement = new Abonnement();
+         model.addAttribute("abonnement", abonnement);
+
         if(ab!=null) {
             List<Abonnement> list = abonnementRepo.findByNameAbContains(ab);
             model.addAttribute("listAb", list);
@@ -111,7 +114,7 @@ public class AbonnementController {
 
     @PostMapping("/editAbonnement")
     public String editAb(@Validated Abonnement ab, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "EditAbModal";
+        if(bindingResult.hasErrors()) return "error";
         abonnementService.updateAbonnement(ab);
         return "redirect:/abonnementList";
     }

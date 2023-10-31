@@ -19,5 +19,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByAbonnement(Abonnement membership);
     @Query("select count(p) = 1 from Member p where p.email= ?1")
     Boolean findExistByEmail(String email);
+
+    @Query("select count(p) = 1 from Member p where p.cin= ?1")
+    Boolean findExistByCin(String cin);
     List<Member> findByCinContains(String cin);
 }

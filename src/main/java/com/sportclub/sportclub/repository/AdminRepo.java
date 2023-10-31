@@ -18,6 +18,8 @@ public interface AdminRepo extends JpaRepository<UserApp,Long> {
     UserApp findByEmail(String email);
     @Query("select count(p) = 1 from UserApp p where p.email= ?1")
     Boolean findExistByEmail(String email);
+    @Query("select count(p) = 1 from UserApp p where p.cin= ?1")
+    Boolean findExistByCin(String cin);
     Page<UserApp> findByRolesRoleNameContains(String role, Pageable pageable);
 
 }

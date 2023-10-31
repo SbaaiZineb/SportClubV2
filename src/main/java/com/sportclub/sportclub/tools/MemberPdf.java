@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.tools;
 
 import com.lowagie.text.Font;
+import com.sportclub.sportclub.entities.Gym;
 import com.sportclub.sportclub.entities.Member;
 
 import java.awt.*;
@@ -8,13 +9,18 @@ import java.io.IOException;
 import java.util.List;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
+import com.sportclub.sportclub.service.GymService;
 import jakarta.servlet.http.HttpServletResponse;
 public class MemberPdf {
     private List<Member> listUsers;
 
     public MemberPdf(List<Member> listUsers) {
         this.listUsers = listUsers;
+
     }
+
+
+
 
     private void writeTableHeader(PdfPTable table) {
         PdfPCell cell = new PdfPCell();

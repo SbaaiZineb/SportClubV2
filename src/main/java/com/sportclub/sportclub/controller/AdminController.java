@@ -95,7 +95,10 @@ model.addAttribute("user",userForm);
         Role role=admin.getRoles();
         UserApp admin=new UserApp(,name,lname,email,adress,cin,dob,tele,password,role);*/
         adminService.addAdmin(admin);
-        fileStorageService.save(file);
+        if (!file.isEmpty()){
+            fileStorageService.save(file);
+        }
+
 
         return "redirect:/adminList";
     }
@@ -146,7 +149,7 @@ model.addAttribute("user",userForm);
 
     @PostMapping("/editAdmin")
     public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "updateAdminModal";
+        if(bindingResult.hasErrors()) return "error";
         UserApp existingAdmin = adminService.getAdminById(user.getId());
         if (file != null && !file.isEmpty()) {
 

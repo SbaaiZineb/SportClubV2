@@ -19,7 +19,7 @@ public class Person {
 
     public Person(String name, String lname, String adress, String cin, LocalDate dob, int tele) {
         this.name = name;
-        lname = lname;
+        this.lname = lname;
         this.adress = adress;
         this.cin = cin;
         this.dob = dob;

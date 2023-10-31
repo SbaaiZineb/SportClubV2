@@ -54,6 +54,8 @@ public class SeanceController {
     }
 
     @GetMapping("/seanceList")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+
     public String getSeances(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int size,
                              @RequestParam(name = "keyword", defaultValue = "") String kw, Authentication authentication
@@ -100,7 +102,8 @@ public class SeanceController {
 
     @RequestMapping(path = {"/seanceList/search"})
     public String search(Model model, String seance) {
-
+        Seance session = new Seance();
+        model.addAttribute("seance", session);
         if (seance != null) {
             List<Seance> list = service.getSeanceBynName(seance);
             model.addAttribute("listSeance", list);
@@ -209,6 +212,8 @@ public class SeanceController {
     // serach by coach
     @GetMapping("/sessions/search")
     public String searchSessionsByCoach(@RequestParam("coachId") Long coachId, Model model) {
+        Seance seance = new Seance();
+        model.addAttribute("seance", seance);
         Coach coach = coachService.getCoachById(coachId);
         model.addAttribute("coachId", coachId);
         List<Seance> sessions = service.getSeanceByCoach(coachId);
@@ -246,7 +251,7 @@ public class SeanceController {
     @PostMapping("/editSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editSeance(@Validated Seance seance, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) return "updateSeanceModal";
+        if (bindingResult.hasErrors()) return "error";
         String[] selectedDays = request.getParameterValues("days");
         if (selectedDays == null){
             seance.setDays(null);
@@ -256,7 +261,7 @@ public class SeanceController {
 
         service.updateSeance(seance);
         CalendarEvent calendarEvent = eventRepo.findById(seance.getId()).get();
-        //Add new Event based on the updated  session
+        //Update the Event based on the updated  session
         calendarEvent.setTitle(seance.getClassName());
         calendarEvent.setStart(seance.getStartDate());
         calendarEvent.setStartTime(seance.getStartTime());

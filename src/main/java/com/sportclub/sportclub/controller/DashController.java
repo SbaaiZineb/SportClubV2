@@ -1,9 +1,6 @@
 package com.sportclub.sportclub.controller;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.CheckIn;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Paiement;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,6 +29,8 @@ public class DashController {
     PaymentService paymentService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    GymService gymService;
     @Autowired
     CheckInService checkInService;
     @GetMapping("/")
@@ -62,7 +62,7 @@ public class DashController {
 
         List<Member> members = memberService.getAllMembers();
         model.addAttribute("members",members);
-
+model.addAttribute("gymName",gymService.getById(1L).getName());
         return "index";
     }
 
@@ -117,4 +117,7 @@ public class DashController {
     model.addAttribute("userCounts", userCounts);
         return "index";
     }*/
+
+
+
 }

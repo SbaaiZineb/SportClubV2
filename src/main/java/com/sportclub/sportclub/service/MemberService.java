@@ -21,6 +21,8 @@ List<Member> getMemberByMembership(Long abid);
      void updateMember(Member m);
      List<Member> getAllMembers();
      long count();
-     Boolean getByEmail(String email);
+     Boolean checkEmail(String email);
+
+     Boolean checkCinExist(String cin);
      List<Member> getByCin(String cin);
 }

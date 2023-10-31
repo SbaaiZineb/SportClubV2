@@ -83,14 +83,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="card align-content-center">
+                        <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
                             <form th:action="@{/addAbonnement}"
                                   th:object="${abonnement}" method="POST">
-                                <label class="form-label">Nom d'abonnement:</label>
-                                <input class="form-control" type="text" th:field="*{nameAb}"/>
-                                <label class="form-label mt-3">prix:</label>
-                                <input class="form-control" type="text" th:field="*{price}"/>
-                                <label class="form-label mt-3">period:</label>
+                                <label class="form-label">Nom d'abonnement:<span class="text-danger"> *</span></label>
+                                <input class="form-control" type="text" th:field="*{nameAb}" required/>
+                                <label class="form-label mt-3">prix:<span class="text-danger"> *</span></label>
+                                <input class="form-control" type="text" th:field="*{price}" required/>
+                                <label class="form-label mt-3">period:<span class="text-danger"> *</span></label>
                                 <select th:field="*{period}" class="form-control mb-1">
 
                                     <option value="1">1 mois</option>
