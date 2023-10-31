@@ -120,8 +120,11 @@ public class PaymentController {
     public void invoice(HttpServletResponse response, @RequestParam(name = "id") Long id, Model model) throws DocumentException, IOException {
         Paiement paiement = paymentService.getPaymentById(id);
         Context context = new Context();
+
         Gym gym = gymService.getById(1L);
+
         context.setVariable("gym",gym);
+
         context.setVariable("payment", paiement);
         System.out.println(gym.getLogo());
 
@@ -147,6 +150,7 @@ public class PaymentController {
         outputStream.close();
 
     }
+
 
     @Autowired
     InvoiceService invoiceService;

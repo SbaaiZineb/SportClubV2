@@ -7,6 +7,7 @@ import com.sportclub.sportclub.repository.CoachCheckInRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,8 @@ public class userProfileController {
     AbonnementService abonnementService;
 
     @GetMapping("/membersList/userProfile")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
 
         Member member = memberService.getMemberById(id);

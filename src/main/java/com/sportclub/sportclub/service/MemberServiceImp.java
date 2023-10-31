@@ -5,6 +5,7 @@ import com.sportclub.sportclub.entities.CheckIn;
 import com.sportclub.sportclub.entities.Member;
 
 import com.sportclub.sportclub.repository.AbonnementRepo;
+import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,8 @@ public class MemberServiceImp implements MemberService {
 
     @Autowired
     AbonnementRepo abonnementRepo;
+    @Autowired
+    AdminRepo adminRepo;
 
     @Override
     public void addMember(Member member) {
@@ -36,8 +39,13 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public Boolean getByEmail(String email) {
-        return memberRepository.findExistByEmail(email);
+    public Boolean checkEmail(String email) {
+        return adminRepo.findExistByEmail(email);
+    }
+
+    @Override
+    public Boolean checkCinExist(String cin) {
+        return adminRepo.findExistByCin(cin);
     }
 
     @Override
@@ -56,7 +64,6 @@ public class MemberServiceImp implements MemberService {
     public List<Member> getMemberBynName(String name) {
         return memberRepository.findByLnameContains(name);
     }
-
 
 
     @Override

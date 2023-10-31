@@ -52,6 +52,8 @@ public class CoachController {
     CoachCheckInRepo coachCheckInRepo;
 
     @GetMapping("/coachList")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
                              @RequestParam(name = "keyword",defaultValue = "") String kw
@@ -69,6 +71,8 @@ public class CoachController {
 
     }
     @PostMapping("/deleteCoachs")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') ")
+
     public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
         // Perform the delete operation using the selected cell IDs
 
@@ -100,6 +104,8 @@ public class CoachController {
     }
 
     @GetMapping("/addCoach")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+
     public String getAddCoachPage(Model model) {
         Coach coachForm = new Coach();
         model.addAttribute("CoachForm", coachForm);
@@ -123,7 +129,9 @@ public class CoachController {
             }
         }
         coachService.addCoach(c);
-        fileStorageService.save(file);
+        if (!file.isEmpty()){
+            fileStorageService.save(file);
+        }
 
         return "redirect:/coachList";
     }
@@ -165,6 +173,7 @@ public class CoachController {
         return "redirect:/coachList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editCoach")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
 
     public String editCoach(@RequestParam(name = "id") Long id, Model model){
         Coach coach=coachService.getCoachById(id);
@@ -176,7 +185,7 @@ public class CoachController {
 
     @PostMapping("/editCoach")
     public String editCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "updateCoachModal";
+        if(bindingResult.hasErrors()) return "error";
         Coach existingCoach = coachService.getCoachById(c.getId());
         if (file != null && !file.isEmpty()) {
 

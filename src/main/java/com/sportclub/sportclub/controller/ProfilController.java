@@ -8,6 +8,7 @@ import com.sportclub.sportclub.service.AdminService;
 import com.sportclub.sportclub.service.CoachCheckInService;
 import com.sportclub.sportclub.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,8 @@ public class ProfilController {
     CoachCheckInRepo coachCheckInRepo;
     AdminService adminService;
 @GetMapping("/profil")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+
     public String getProfile(Model model, Authentication authentication){
     String username = authentication.getName();
 

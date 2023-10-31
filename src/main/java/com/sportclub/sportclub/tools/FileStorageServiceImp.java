@@ -26,6 +26,7 @@ public class FileStorageServiceImp implements FileStorageService{
 
     @Override
     public void save(MultipartFile file) {
+        if (file != null){
         try {
             Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
@@ -35,6 +36,7 @@ public class FileStorageServiceImp implements FileStorageService{
 
             throw new RuntimeException(e.getMessage());
         }
+    }
     }
 
     @Override

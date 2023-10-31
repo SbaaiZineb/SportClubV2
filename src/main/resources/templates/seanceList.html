@@ -116,25 +116,26 @@ color: #64686b;"><i class="bi bi-search"></i></button>
             </div>
             <div class="modal-body">
               <div class="card align-content-center">
+                  <span class="text-danger"> * Il faut le remplir</span>
                 <div class="card-body">
                   <form  th:action="@{/addSeance}"
                          th:object="${seance}" method="POST" >
-                    <label class="form-label ">Seance :</label>
-                    <input class="form-control" type="text" th:field="*{className}" />
-                    <label class="form-label mt-2">Date de debut :</label>
-                    <input class="form-control " type="date" th:field="*{startDate}"/>
+                    <label class="form-label ">Seance :<span class="text-danger"> *</span></label>
+                    <input class="form-control" type="text" th:field="*{className}" required/>
+                    <label class="form-label mt-2">Date de debut :<span class="text-danger"> *</span></label>
+                    <input class="form-control " type="date" th:field="*{startDate}" required/>
 
                     <div class="row mt-2">
                       <div class="col-md-6 mb-2">
                         <div class="form-outline">
-                          <label class="form-label mt-2">Temps de debut :</label>
-                          <input class="form-control" type="time" th:field="*{startTime}"/>
+                          <label class="form-label mt-2">Temps de debut :<span class="text-danger"> *</span></label>
+                          <input class="form-control" type="time" th:field="*{startTime}" required/>
                         </div>
                       </div>
                       <div class="col-md-6 mb-2">
                         <div class="form-outline">
-                          <label class="form-label mt-2">Temps de fin :</label>
-                          <input class="form-control" type="time" th:field="*{endTime}"/>
+                          <label class="form-label mt-2">Temps de fin :<span class="text-danger"> *</span></label>
+                          <input class="form-control" type="time" th:field="*{endTime}" required/>
                         </div>
                       </div>
                     </div>
@@ -176,7 +177,7 @@ color: #64686b;"><i class="bi bi-search"></i></button>
                         margin-right: 10px;
                       }
                     </style>
-                    <label class="form-label mt-2">Nombre des semains : (garder 0 si la session a lieu toute l'année</label>
+                    <label class="form-label mt-2">Nombre des semains :(garder 0 si la session a lieu toute l'année)</label>
                     <input class="form-control" type="number" th:field="*{numWeeks}"/>
 
                     <label class="form-label mt-2">Entraineur :</label>

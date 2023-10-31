@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class Gym {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

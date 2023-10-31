@@ -5,6 +5,7 @@ import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.NotificationRepo;
 import com.sportclub.sportclub.service.AdminService;
+import com.sportclub.sportclub.service.GymService;
 import com.sportclub.sportclub.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,15 @@ public class NotificationController {
     private final NotificationService notificationService;
     private AdminService adminService;
     private AdminRepo adminRepo;
+    private GymService gymService;
     @Autowired
     NotificationRepo notificationRepo;
 
-    public NotificationController(NotificationService notificationService,AdminService adminService,AdminRepo adminRepo) {
+    public NotificationController(NotificationService notificationService,AdminService adminService,AdminRepo adminRepo,GymService gymService) {
         this.notificationService = notificationService;
         this.adminService=adminService;
         this.adminRepo=adminRepo;
+        this.gymService=gymService;
     }
 
    /* @GetMapping("/notifications")
@@ -46,6 +49,7 @@ public class NotificationController {
       /*List<UserApp> userAppList=new ArrayList<>();
       List<UserApp> userApps=adminRepo.findByRolesRoleNameContains("ADMIN");
       userAppList.add(user);*/
+
       List<Notification> notificationList=notificationRepo.findAll();
       for (Notification not:notificationList
            ) {

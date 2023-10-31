@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar:: header}">
-
   <title>Coach List</title>
 
 </head>
@@ -98,28 +97,30 @@
       </div>
       <div class="modal-body">
         <div class="card align-content-center">
+          <span class="text-danger"> * Il faut le remplir</span>
           <div class="card-body">
-            <form  th:action="@{/addCoach}"
+            <form id="coachForm" th:action="@{/addCoach}"
                    th:object="${CoachForm}" method="POST" enctype="multipart/form-data">
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Nom:</label>
-                    <input class="form-control" type="text"th:field="*{name}" />
+                    <label class="form-label">Nom:<span class="text-danger"> *</span></label>
+                    <input class="form-control required-field" type="text"th:field="*{name}" required/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                  <label class="form-label">Prénom:</label>
-                  <input class="form-control" type="text" th:field="*{lname}"/>
+                  <label class="form-label">Prénom:<span class="text-danger"> *</span></label>
+                  <input class="form-control required-field" type="text" th:field="*{lname}" required/>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6 mb-4">
                 <div class="form-outline">
-                  <label class="form-label">Email:</label>
-                  <input class="form-control" type="text" th:field="*{email}"/>
+                  <label class="form-label">Email:<span class="text-danger"> *</span></label>
+                  <input class="form-control required-field" type="text" name="coachEmail" th:field="*{email}" id="Email" required />
+                  <div id="coachEmailExistsMessage" class="error-message"></div>
                 </div></div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
@@ -131,8 +132,24 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Cin:</label>
-                    <input class="form-control" type="text" th:field="*{cin}"/>
+                    <label class="form-label">Cin:<span class="text-danger"> *</span></label>
+                    <input class="form-control required-field" type="text" name="coachCin" th:field="*{cin}" id="Cin" required/>
+                    <div id="coachCinExistsMessage" class="error-message"></div>
+
+                    <style>
+
+                      .error-message {
+                        color: red;
+                      }
+
+                      .email-exists {
+                        border: 1px solid #ff0000;
+                      }
+                      .input-error {
+                        border: 1px solid red;
+                      }
+
+                    </style>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
@@ -145,7 +162,7 @@
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
-                    <label class="form-label">Tele:</label>
+                    <label class="form-label">Tele:<span class="text-danger"> *</span></label>
                     <input class="form-control" type="tel" th:field="*{tele}"/>
                   </div>
                 </div>
@@ -161,13 +178,13 @@
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
                     <label class="form-label">Mot de passe:</label>
-                    <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}"/>
+                    <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}" required/>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-outline">
                     <label class="form-label">Confirm Mot de passe:</label>
-                    <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" />
+                    <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" required/>
                   </div>
                 </div>
               </div>
@@ -204,7 +221,7 @@
                   Male
                 </label>
               </div>-->
-              <input type="submit" class="btn btn-primary mt-2" value="Ajouter"/>
+              <input type="submit" id="submitBtn" class="btn btn-primary mt-2" value="Ajouter"/>
             </form>
 
           </div>
@@ -274,6 +291,14 @@
       }
     }
   </script>
+  <script>
+  // Call the handleInputValidation function
+  document.addEventListener('DOMContentLoaded', function() {
+    handleInputValidation('Email', 'coachEmailExistsMessage', '/checkEmailExists?email=', 'coachForm', 'submitBtn');
+    handleInputValidation('Cin', 'coachCinExistsMessage', '/checkCinExists?cin=', 'coachForm', 'submitBtn');
+  });
+</script>
   </div>
+
 </body>
 </html>

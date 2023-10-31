@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,11 +29,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Controller
 public class MemberController {
@@ -55,7 +53,8 @@ public class MemberController {
     RoleService roleService;
     FileStorageService fileService;
 
-    public MemberController(PasswordEncoder passwordEncoder, MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService) {
+    GymService gymService;
+    public MemberController(PasswordEncoder passwordEncoder, MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService,GymService gymService) {
         this.passwordEncoder = passwordEncoder;
         this.memberService = memberService;
         this.abonnementService = abonnementService;
@@ -65,12 +64,14 @@ public class MemberController {
         this.adminRepo = adminRepo;
         this.notificationService = notificationService;
         this.fileService = fileService;
+        this.gymService = gymService;
     }
 
     AdminRepo adminRepo;
     NotificationService notificationService;
 
     @RequestMapping(value = "/membersList", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int siz,
                              @RequestParam(name = "keyword", defaultValue = "") String kw
@@ -128,12 +129,7 @@ public class MemberController {
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
     public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
         if (bindingResult.hasErrors()) return "membersList";
-        if (memberService.getByEmail(memberForm.getEmail())) {
-            System.out.println("Username already exist");
-            bindingResult.rejectValue("email", "error.memberForm", "Username already exists");
-            model.addAttribute("usernameExistsError", "Username already exists");
-            return "redirect:/addMember";
-        }
+
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
         memberForm.setPic(file.getOriginalFilename());
@@ -151,7 +147,10 @@ public class MemberController {
             }
         }
         memberService.addMember(memberForm);
-        storageService.save(file);
+        if (!file.isEmpty()){
+            storageService.save(file);
+        }
+
         Notification notification = new Notification();
         String username = authentication.getName();
         notification.setTimestamp(LocalDateTime.now());
@@ -215,7 +214,7 @@ public class MemberController {
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
     public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
-        if (bindingResult.hasErrors()) return "updateMemberModal";
+        if (bindingResult.hasErrors()) return "error";
         Member existingMember = memberService.getMemberById(member.getId());
         if (file != null && !file.isEmpty()) {
 
@@ -243,6 +242,7 @@ public class MemberController {
         String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
+
         List<Member> listUsers = memberService.getAllMembers();
         MemberPdf exporter = new MemberPdf(listUsers);
         exporter.export(response);
@@ -260,6 +260,28 @@ public class MemberController {
 
         // Redirect to a success page or return a response as needed
         return "redirect:/membersList";
+    }
+
+    //Check Email Existence
+    @GetMapping("/checkEmailExists")
+    public ResponseEntity<Map<String, Boolean>> checkEmailExists(@RequestParam String email) {
+        boolean emailExists = memberService.checkEmail(email);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", emailExists);
+        System.out.println(memberService.checkEmail("ahmad@ahmed.com"));
+        System.out.println(memberService.checkEmail("karim"));
+        return ResponseEntity.ok(response);
+    }
+
+    //Check Cin existence
+    @GetMapping("/checkCinExists")
+    public ResponseEntity<Map<String, Boolean>> checkCinExists(@RequestParam String cin) {
+        boolean cinExists = memberService.checkCinExist(cin);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", cinExists);
+        return ResponseEntity.ok(response);
     }
 
 

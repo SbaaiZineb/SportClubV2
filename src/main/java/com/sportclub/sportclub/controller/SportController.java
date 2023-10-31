@@ -7,6 +7,7 @@ import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ public class SportController {
     @Autowired
     FileStorageService fileStorageService;
     @GetMapping("/sportList")
+    @PreAuthorize("hasAuthority('ADMIN')")
 
     public String getSport(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                          @RequestParam(name = "size",defaultValue = "7") int size,
@@ -58,6 +60,8 @@ public class SportController {
     }
     @RequestMapping(path = {"/sportList/search"})
     public String search( Model model, String sport) {
+        Sport newSport = new Sport();
+        model.addAttribute("sport", newSport);
 
         if(sport!=null) {
             List<Sport> list = service.findByNameCon(sport);
@@ -83,7 +87,10 @@ public class SportController {
     public String addAb(@Validated Sport sport, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "sportList";
         sport.setPic(file.getOriginalFilename());
-        fileStorageService.save(file);
+        if (!file.isEmpty()){
+            fileStorageService.save(file);
+        }
+
         service.addSport(sport);
         return "redirect:/sportList";
     }
@@ -107,16 +114,16 @@ public class SportController {
 
     @PostMapping("/editSport")
     public String editSport(@Validated Sport sport, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "EditSportModal";
-        Sport sport1 = service.getSportById(sport.getId());
+        if(bindingResult.hasErrors()) return "error";
+        Sport existSport = service.getSportById(sport.getId());
         if (file != null && !file.isEmpty()) {
 
-            sport1.setPic(file.getOriginalFilename());
+            sport.setPic(file.getOriginalFilename());
             fileStorageService.save(file);
         } else {
 
-            if (sport1 != null) {
-                sport.setPic(sport1.getPic());
+            if (existSport != null) {
+                sport.setPic(existSport.getPic());
             }
         }
         service.updateSport(sport);

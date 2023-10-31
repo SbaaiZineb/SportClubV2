@@ -100,8 +100,8 @@ object-fit: cover;border-radius: 50%"></div>
                 </div>
 
             <label class="form-label">Abonnement : </label>
-            <label class="font-weight-bold" th:text="${member.abonnement}"></label>
-            <input type="hidden" class="form-control" id="abonnement" placeholder="ID" name="abonnement" th:value="${member.abonnement}">
+            <label class="fw-bold" th:text="${member.abonnement.nameAb}"></label>
+            <input type="hidden" class="form-control" id="abonnement"  name="abonnement" th:value="${member.abonnement.id}">
 
 <!--            <select name="abonnement" id="abonnement" class="form-control mb-3" >-->
 <!--                <option th:each="abonnement :${abos}" th:value="${abonnement.id}" th:field="*{member.abonnement}"-->
