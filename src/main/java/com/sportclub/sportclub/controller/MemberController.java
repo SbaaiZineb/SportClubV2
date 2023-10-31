@@ -242,6 +242,7 @@ public class MemberController {
         String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
+        Gym gym = gymService.getById(1L);
 
         List<Member> listUsers = memberService.getAllMembers();
         MemberPdf exporter = new MemberPdf(listUsers);

@@ -4,59 +4,77 @@
     <title>Invoice</title>
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
         img {
+            display: block;
+            margin: 0 auto;
             width: 30%;
             height: auto;
         }
-        .para{
-            float: end;
+        h1 {
+            text-align: center;
+            font-size: 24px;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #8e99a4;
+        }
+        th {
+            background-color: #4a6075;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        p.signature {
+            text-align: right;
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
-<img th:if="${gym.logo}" th:src="@{'images/' + ${gym.logo}}" alt="img"></img>
-
+<img th:if="${gym.logo}" th:src="'data:image/png;base64,' + ${base64Image}" alt="Image"></img>
 <h1 style="text-align: center">Reçu</h1>
-<div class="row" >
-    <div class="col-md-6" style="flex: 0 0 auto;
-      width: 50%; ">
-        <p th:text="'N° de paiment : '+${payment.getId()}"></p>
+<div style="display: flex; justify-content: space-between">
+    <div >
+        <p style="font-weight: bold" th:text="'N° de paiment : '+${payment.getId()}"></p>
         <p th:text="'Adherent : Mr/Me '+${#strings.capitalize(payment.getMember().getName())}+' '+${#strings.capitalize(payment.getMember().getLname())}"></p>
     </div>
-    <div class="col-md-6" style="flex: 0 0 auto;
-      width: 50%; ">
+    <div >
         <p th:text="'La date de paiment : '+${payment.getPayedAt()}"></p>
-        <p th:text="'La address : '+${payment.getMember().getAdress()}"></p></div>
+        <p th:text="'La address : '+${payment.getMember().getAdress()}"></p>
+    </div>
 </div>
-
-<table class="table-bordered " style="margin-left: auto;
-    margin-right: auto; border: 1px solid #dee2e6;width: 100%;
-max-width: 100%;
-margin-bottom: 1rem;
-background-color: transparent;border-collapse: collapse;">
+<table class="table-bordered">
     <thead>
-    <tr style="background-color: #0d98f5">
-        <th style=" padding: 8px;">Numero d'abonnment</th>
-        <th style=" padding: 8px;">Nom d'abonnment</th>
-        <th style=" padding: 8px;">Period d'abonnment</th>
-        <th style=" padding: 8px;">Montant</th>
-        <th style="padding: 8px;">Payer par</th>
+    <tr>
+        <th>Numéro d'abonnement</th>
+        <th>Nom d'abonnement</th>
+        <th>Période d'abonnement</th>
+        <th>Montant</th>
+        <th>Payé par</th>
     </tr>
     </thead>
     <tbody>
-
-
     <tr>
-        <td style="padding: 5px;" th:text="${payment.getAbonnement().getId()}"></td>
-        <td style="padding: 5px;" th:text="${payment.getAbonnement().getNameAb()}"></td>
-        <td style="padding: 5px;" th:text="'De '+${payment.getStart_date()}+' A '+${payment.getEnd_date()}"></td>
-        <td style="padding: 5px;" th:text="${payment.getAbonnement().getPrice()}"></td>
-        <td style="padding: 6px;" th:text="${payment.payedBy}"></td>
+        <td th:text="${payment.getAbonnement().getId()}"></td>
+        <td th:text="${payment.getAbonnement().getNameAb()}"></td>
+        <td style="padding: 7px" th:text="'De ' + ${payment.getStart_date()} + ' A ' + ${payment.getEnd_date()}"></td>
+        <td th:text="${payment.getAbonnement().getPrice()}"></td>
+        <td th:text="${payment.payedBy}"></td>
     </tr>
-
     </tbody>
-
 </table>
-<p style="float: right">Signature</p>
+<p class="signature">Signature</p>
 </body>
 </html>

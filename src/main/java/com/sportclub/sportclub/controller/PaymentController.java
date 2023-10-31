@@ -39,8 +39,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -117,14 +121,19 @@ public class PaymentController {
     TemplateEngine templateEngine;
 
     @GetMapping("/invoice")
-    public void invoice(HttpServletResponse response, @RequestParam(name = "id") Long id, Model model) throws DocumentException, IOException {
+    public void invoice(HttpServletResponse response, @RequestParam(name = "id") Long id) throws DocumentException, IOException {
         Paiement paiement = paymentService.getPaymentById(id);
         Context context = new Context();
 
         Gym gym = gymService.getById(1L);
 
         context.setVariable("gym",gym);
-
+        String imageFilename = gym.getLogo();
+        imageFilename = imageFilename.trim();
+        // Convert the image to base64 and add it to the context
+        Path imagePath = Paths.get( "uploads", imageFilename);
+        String base64Image = convertToBase64(imagePath);
+        context.setVariable("base64Image", base64Image);
         context.setVariable("payment", paiement);
         System.out.println(gym.getLogo());
 
@@ -151,7 +160,10 @@ public class PaymentController {
 
     }
 
-
+    public String convertToBase64(Path imagePath) throws IOException {
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        return Base64.getEncoder().encodeToString(imageBytes);
+    }
     @Autowired
     InvoiceService invoiceService;
   /*  @PostMapping("/invoice")
