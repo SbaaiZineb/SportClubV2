@@ -165,9 +165,9 @@ model.addAttribute("user",userForm);
         return "redirect:/adminList";
     }
     @PostMapping("/editAdminProfile")
-    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult){
+    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult,@RequestParam(name = "file") MultipartFile file){
         if(bindingResult.hasErrors()) return "profile";
-        /*UserApp existingAdmin = adminService.getAdminById(c.getId());
+        UserApp existingAdmin = adminService.getAdminById(c.getId());
         if (file != null && !file.isEmpty()) {
 
             c.setPic(file.getOriginalFilename());
@@ -177,7 +177,7 @@ model.addAttribute("user",userForm);
             if (existingAdmin != null) {
                 c.setPic(existingAdmin.getPic());
             }
-        }*/
+        }
         adminService.updateAdmin(c);
 
         return "redirect:/profil";

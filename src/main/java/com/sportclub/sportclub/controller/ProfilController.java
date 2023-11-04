@@ -7,9 +7,11 @@ import com.sportclub.sportclub.repository.CoachCheckInRepo;
 import com.sportclub.sportclub.service.AdminService;
 import com.sportclub.sportclub.service.CoachCheckInService;
 import com.sportclub.sportclub.service.CoachService;
+import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,14 +19,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 public class ProfilController {
+    @Autowired
+    PasswordEncoder passwordEncoder;
     CoachService coachService;
-
+@Autowired
+    FileStorageService fileStorageService;
     public ProfilController(CoachService coachService, CoachCheckInRepo coachCheckInRepo, AdminService adminService) {
         this.coachService = coachService;
         this.coachCheckInRepo = coachCheckInRepo;
@@ -71,9 +77,44 @@ public class ProfilController {
 }
 
     @PostMapping("/editCoachProfile")
-    public String editCoachProfil(@Validated Coach c, BindingResult bindingResult){
+    public String editCoachProfil(@Validated Coach c, BindingResult bindingResult, @RequestParam(name = "file")MultipartFile file){
         if(bindingResult.hasErrors()) return "profile";
+        Coach existingCoach = coachService.getCoachById(c.getId());
+        if (file != null && !file.isEmpty()) {
+
+            c.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        } else {
+
+            if (existingCoach != null) {
+                c.setPic(existingCoach.getPic());
+            }
+        }
         coachService.updateCoach(c);
 
         return "redirect:/profil";
-    }}
+    }
+
+    @GetMapping("/passwordUpdate")
+    public String getUpdatePass(Authentication authentication,Model model){
+        String username = authentication.getName();
+
+        UserApp userApp=adminService.loadUserByUsername(username);
+        model.addAttribute("user",userApp);
+
+    return "profile";
+    }
+    @PostMapping("/passwordUpdate")
+    public String unpdatePassword(@RequestParam(name = "id") Long id,@RequestParam(name = "password") String password){
+    UserApp user=adminService.getAdminById(id);
+    try {
+        user.setPassword(passwordEncoder.encode(password));
+        adminService.updateAdmin(user);
+        System.out.println("OK!!!!!!!!!!!!!!");
+    }catch (Exception e){
+        System.out.println("somthing wrong !!!!!!!!!!!");
+    }
+    return "redirect:/profil";
+    }
+
+}

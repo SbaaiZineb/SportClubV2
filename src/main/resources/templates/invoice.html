@@ -48,11 +48,11 @@
 <div style="display: flex; justify-content: space-between">
     <div >
         <p style="font-weight: bold" th:text="'N° de paiment : '+${payment.getId()}"></p>
-        <p th:text="'Adherent : Mr/Me '+${#strings.capitalize(payment.getMember().getName())}+' '+${#strings.capitalize(payment.getMember().getLname())}"></p>
+        <p style="font-weight: bold"  th:text="'Adherent : Mr/Me '+${#strings.capitalize(payment.getMember().getName())}+' '+${#strings.capitalize(payment.getMember().getLname())}"></p>
     </div>
     <div >
-        <p th:text="'La date de paiment : '+${payment.getPayedAt()}"></p>
-        <p th:text="'La address : '+${payment.getMember().getAdress()}"></p>
+        <p style="font-weight: bold"  th:text="'La date de paiment : '+${payment.getPayedAt()}"></p>
+        <p style="font-weight: bold"  th:text="'La address : '+${payment.getMember().getAdress()}"></p>
     </div>
 </div>
 <table class="table-bordered">
