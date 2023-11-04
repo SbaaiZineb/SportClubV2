@@ -25,6 +25,7 @@
             <th>Id</th>
             <th>Type d'abonnement</th>
             <th>Adherent</th>
+            <th>CIN</th>
             <th>Montant a paye</th>
             <th>Date de debut</th>
             <th>Date de fin</th>
@@ -37,6 +38,7 @@
             <td th:utext="${p.getId()}"></td>
             <td th:utext="${p.abonnement}"></td>
             <td th:utext="${p.getMember()}"></td>
+            <td th:utext="${p.getMember().getCin()}"></td>
             <td th:utext="${p.getAbonnement().price}+' DH'"></td>
             <td th:utext="${p.getStart_date()}"></td>
             <td th:utext="${p.getEnd_date()}"></td>

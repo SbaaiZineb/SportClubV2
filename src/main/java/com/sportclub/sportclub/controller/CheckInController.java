@@ -3,6 +3,7 @@ package com.sportclub.sportclub.controller;
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -77,6 +78,7 @@ public class CheckInController {
 
             model.addAttribute("today", LocalDate.now());
             List<CheckIn> checkIn = checkInService.getCheckInByDate(localDate);
+//            List<CheckIn> checkIn = checkInService.getAllCheckIns();
             model.addAttribute("checkin", checkIn);
             return "checkIn";
         } catch (Exception e) {
@@ -84,13 +86,6 @@ public class CheckInController {
         }
     }
 
-   /* @ResponseBody
-    @GetMapping("/checkInsByDate")
-    public List<CheckIn> checkInsByDate(@RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
-        List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
-
-        return checkIns;
-    }*/
    /* @RequestMapping(path = { "membersToCheck/search"})
     public String search(Model model, String keyword) {
 

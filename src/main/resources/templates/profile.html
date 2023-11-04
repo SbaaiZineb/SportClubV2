@@ -12,9 +12,9 @@
 
         <!-- /Breadcrumb -->
 
-        <div class="row gutters-sm">
+        <div class="row">
             <div class="col-md-4 mb-3">
-                <div class="card h-100">
+                <div class="card h-100 " style="margin-bottom: 16px;">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
                             <img th:if="${userPic}" alt="user icon" class="rounded-circle" style="width: 212px;
@@ -25,7 +25,15 @@ object-fit: cover;"
                                 <h4 class="fw-bold mt-3" style="color: #30639f;"
                                     th:utext="${#strings.capitalize(userName)}+' '+${#strings.capitalize(userLname)}"></h4>
                                 <p class="text-secondary fw-bold mb-1" th:utext="${email}"></p>
-
+                                <a id="changeBtn" class="changeBtn"> Changer le mot de pass</a>
+                                <style>
+                                    .changeBtn:hover{
+                                        color: #4da8d5;
+                                    }
+                                    .changeBtn{
+                                        color: #627b97;
+                                    }
+                                </style>
 
                             </div>
                         </div>
@@ -33,7 +41,7 @@ object-fit: cover;"
                 </div>
             </div>
             <div class="col-md-8">
-                <form th:action="@{/editAdminProfile}" method="post"
+                <form th:action="@{/editAdminProfile}" method="post" enctype="multipart/form-data"
                       th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
                     <input type="hidden" name="id" th:value="${user.id}" >
                     <input type="hidden" name="pic" th:value="${userPic}">
@@ -119,7 +127,7 @@ object-fit: cover;"
                                 <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}"
                                        th:value="${user.sportType}">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-sm-3 d-flex align-items-center">
                                                 <h6 class="mb-0">Adresse</h6>
@@ -128,6 +136,16 @@ object-fit: cover;"
                                             </input>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">image</h6>
+                                        </div>
+                                        <input type="file" class=" col-sm-9 text-secondary input"
+                                               id="image" accept="image/png, image/jpeg" name="file"/>
+                                    </div>
+                                    <style>
+
+                                    </style>
                                 </div>
 
 
@@ -140,34 +158,7 @@ margin-right: 8px;">Sauvegarder
 
                     </div>
                 </form>
-                <style>
-                    .col-sm-5.text-secondary.input,
-                    .col-sm-9.text-secondary.input {
-                        box-sizing: border-box;
-                        -webkit-box-sizing: border-box;
-                        -moz-box-sizing: border-box;
-                        outline: none;
-                        display: block;
-                        width: 100%;
-                        padding: 7px;
-                        border: none;
-                        border-bottom: 1px solid #9997ba;
-                        background: transparent;
-                        margin-bottom: 10px;
-                        font: 16px Arial, Helvetica, sans-serif;
-                        height: 45px;
-                        margin-left: 4px;
-                    }
 
-                    .mb-0 {
-                        font-weight: bold;
-                        color: #30639f;
-                    }
-
-                    .col-sm-9.text-secondary.input:focus {
-                        border-bottom: 2px solid #16a7d3;
-                    }
-                </style>
                 <form th:action="@{/editCoachProfile}" method="POST" enctype="multipart/form-data"
                       th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
                     <input type="hidden" id="id" name="id" th:value="${coach.id}" >
@@ -184,6 +175,7 @@ margin-right: 8px;">Sauvegarder
                     <div class="card h-100" style="background-color: #598edb26;">
                         <div class="card-body">
                             <div class="row">
+
                                 <div class="col-md-6">
                                     <div class="row me-1">
                                         <div class="col-sm-3 d-flex align-items-center">
@@ -254,7 +246,7 @@ margin-right: 8px;">Sauvegarder
                                 <input type="hidden" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}"
                                        name="sport_type" th:value="${coach.sportType}">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-sm-3 d-flex align-items-center">
                                                 <h6 class="mb-0">Adresse</h6>
@@ -262,6 +254,13 @@ margin-right: 8px;">Sauvegarder
                                             <input class="col-sm-9 text-secondary input" th:field="*{coach.adress}">
                                             </input>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-sm-3 d-flex align-items-center">
+                                            <h6 class="mb-0">image</h6>
+                                        </div>
+                                        <input type="file" class=" col-sm-9 text-secondary input"
+                                                accept="image/png, image/jpeg" name="file"/>
                                     </div>
                                 </div>
 
@@ -277,6 +276,61 @@ margin-right: 8px;">Sauvegarder
                 </form>
             </div>
         </div>
+        <div class=" justify-content-center mt-2 hide" id="passDiv">
+            <div class="card login-form" style="  width: 62%;">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Change password</h3>
+                    <div class="card-text">
+                        <form th:action="@{/passwordUpdate}" method="post" style="font-size: 13px">
+                            <input type="hidden" name="id"  th:value="${user.id}">
+                            <div class="form-group">
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <label>Nouveau mot de passe</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input style="border-radius: 5px !important;"  name="password" th:field="*{user.password}" class="form-control form-control-sm input-border" id="input1" type="password" onkeyup="validateInput()" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <label>Répéter le mot de passe</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input style="border-radius: 5px !important;" class="form-control form-control-sm input-border" id="input2" type="password" onkeyup="validateInput()" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-block mt-4">Confirmer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+
+
+
+
+
+            .card-title{ font-weight:300; }
+
+            .btn{
+                font-size: 13px;
+            }
+
+
+
+            span{
+                font-size:14px;
+            }
+
+
+
+        </style>
 
         <div class="card mt-4" th:if="${#authorization.expression('hasAuthority(''COACH'')')}">
             <div class="card-header" style="background-color: #4c7abd;">
@@ -304,6 +358,80 @@ margin-right: 8px;">Sauvegarder
         </div>
     </div>
 
+    <style>
+        .col-sm-5.text-secondary.input,
+        .col-sm-9.text-secondary.input {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            outline: none;
+            display: block;
+            width: 100%;
+            padding: 7px;
+            border: none;
+            border-bottom: 1px solid #9997ba;
+            background: transparent;
+            margin-bottom: 10px;
+            font: 16px Arial, Helvetica, sans-serif;
+            height: 45px;
+            margin-left: 4px;
+        }
+
+        .mb-0 {
+            font-weight: bold;
+            color: #30639f;
+        }
+
+        .col-sm-9.text-secondary.input:focus {
+            border-bottom: 2px solid #16a7d3;
+        }
+        .input-border {
+            border: 1px solid gray;
+        }
+
+        .matched-border {
+            border: 1px solid green;
+        }
+
+        .mismatched-border {
+            border: 1px solid red;
+        }
+        .hide{
+            display: none;
+        }
+    </style>
+    <script>
+        document.getElementById('changeBtn').addEventListener('click', function() {
+            var div = document.getElementById('passDiv');
+            if (div.style.display === 'none' || div.style.display === '') {
+                div.style.display = 'block';
+            } else {
+                div.style.display = 'none';
+            }
+        });
+    </script>
+    <script th:inline="javascript">
+        function validateInput() {
+            var input1 = document.getElementById('input1');
+            var input2 = document.getElementById('input2');
+            var submitButton = document.getElementById('submitBtn');
+
+            if (input1.value === input2.value) {
+                input1.classList.remove('mismatched-border');
+                input2.classList.remove('mismatched-border');
+                input1.classList.add('matched-border');
+                input2.classList.add('matched-border');
+                submitButton.removeAttribute('disabled'); // Enable the button
+            } else {
+                input1.classList.remove('matched-border');
+                input2.classList.remove('matched-border');
+                input1.classList.add('mismatched-border');
+                input2.classList.add('mismatched-border');
+                submitButton.setAttribute('disabled', 'disabled'); // Disable the button
+            }
+        }
+
+    </script>
 </div>
 <style>
 

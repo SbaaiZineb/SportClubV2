@@ -48,6 +48,8 @@ public class SeanceController {
 
 
     @GetMapping("/calendar")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+
     public String getCalendar(Model model) {
         System.out.println(eventRepo.findAll());
         return "calendar";

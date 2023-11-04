@@ -30,7 +30,6 @@
 
             <th>Id</th>
             <th>Adhérent</th>
-            <th>Adresse</th>
             <th>Cin</th>
             <th>Date de naissance</th>
             <th>Tele</th>
@@ -71,13 +70,13 @@
             <td th:utext="${m.getLname()}"></td>
             <td th:utext="${m.getEmail()}"></td>-->
 
-            <td th:utext="${m.getAdress()}"></td>
             <td th:utext="${m.getCin()}"></td>
             <td th:utext="${m.getDob()}"></td>
             <td th:utext="${m.getTele()}"></td>
             <td th:utext="${m.getGender()}"></td>
             <td th:utext="${m.createdAt}"></td>
-            <td th:utext="${m.abonnement}"></td>
+            <td style="color: #4b6c91;
+  font-weight: bold;" th:utext="${m.abonnement}"></td>
             <td>
                 <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
                 <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
