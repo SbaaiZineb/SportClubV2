@@ -13,11 +13,26 @@
 <body>
 
 
-<div layout:fragment="content">
+<div layout:fragment="content" >
+
+    <input type="date" id="theDate" name="selectedDate" th:value="${today}" title="Choisir un jour pour obtenir ses revenus " style="
+  color: #3b7ddd;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom: 1px solid #134793;
+  border-left-style: none;
+  background: transparent;
+  flex: auto;
+  margin-left: 22rem;
+  margin-right: 48rem;
+  margin-bottom: 5px;">
+
     <div class="row">
         <div class="col-xl-6 col-xxl-5 d-flex">
+
             <div class="w-100">
-                <div class="row">
+
+                <div class="row" style="margin-top: 18px;">
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
@@ -54,7 +69,9 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-sm-6">
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
@@ -68,7 +85,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h1 class="mt-1 mb-3" style="color: #284d82;" th:utext="${price+' '+'DH'}"></h1>
+                                <h1 id="totalPrice" class="mt-1 mb-3" style="color: #284d82;" th:utext="${price+' '+'DH'}"></h1>
 
                             </div>
                         </div>
@@ -346,6 +363,36 @@ background: transparent;margin-top: -17px">
                 }
             }
         }
+        $(document).ready(function () {
+            const selectedDateInput = document.getElementById("theDate");
+
+            function handleDateChange() {
+                const selectedDate = selectedDateInput.value;
+                console.log("Selected date:", selectedDate);
+                updateTotalPrice(selectedDate);
+            }
+
+            selectedDateInput.addEventListener("change", handleDateChange);
+
+            function updateTotalPrice(date) {
+                $.ajax({
+                    url: `/totalPrice?selectedDate=${date}`,
+                    type: "GET",
+                    success: function (data) {
+                        $("#totalPrice").text(data);
+
+                    },
+                    error: function () {
+                        console.log("Error fetching total price.");
+                    }
+                });
+            }
+
+            // Fetch and display total price on page load
+            const initialDate = selectedDateInput.value;
+            updateTotalPrice(initialDate);
+        });
+
     </script>
 
 
