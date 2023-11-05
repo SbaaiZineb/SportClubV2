@@ -84,6 +84,7 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
 
             <groupId>org.springframework.boot</groupId>
@@ -166,6 +167,7 @@
             <artifactId>JPA-to-ERD-reporting-plugin</artifactId>
             <version>0.0.9.12</version>
         </dependency>
+      
     </dependencies>
 
     <build>
