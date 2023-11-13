@@ -134,6 +134,7 @@ public class SeanceController {
         if (bindingResult.hasErrors()) return "seanceList";
         CalendarEvent calendarEvent = new CalendarEvent();
 
+
         String username = authentication.getName();
         service.addSeance(seance);
         //Add Session Notification
@@ -145,6 +146,8 @@ public class SeanceController {
         notification.setRecipient(userApps);
         notification.setTitle("Nouvelle seance");
         notificationService.addNotification(notification);
+try {
+
 
         //Add new Event based on the added session
 
@@ -153,7 +156,13 @@ public class SeanceController {
         calendarEvent.setStart(seance.getStartDate());
         calendarEvent.setStartTime(seance.getStartTime());
         calendarEvent.setEndTime(seance.getEndTime());
-        calendarEvent.setUsername(seance.getCoach().getEmail());
+        if (seance.getCoach()!=null){
+            calendarEvent.setUsername(seance.getCoach().getEmail());
+
+        }else {
+            calendarEvent.setUsername(null);
+
+        }
         int nbrToAdd = seance.getNumWeeks();
 
         if (nbrToAdd == 0) {
@@ -190,7 +199,9 @@ public class SeanceController {
         }
         }
         eventRepo.save(calendarEvent);
-
+}catch (Exception e){
+    System.out.println("Somthing Wrong!!!! "+e);
+}
         return "redirect:/seanceList";
     }
 

@@ -83,7 +83,10 @@ public class CoachController {
             for (Seance seance:seances) {
                 seance.setCoach(null);
             }
+
+            Coach coach = coachService.getCoachById(cellId);
             coachService.deleteCoach(cellId);
+            fileStorageService.deleteFile(coach.getPic());
         }
 
         // Redirect to a success page or return a response as needed
@@ -169,7 +172,9 @@ public class CoachController {
              ) {
             checkIn.setCoach(null);
         }
+        Coach coach = coachService.getCoachById(id);
         coachService.deleteCoach(id);
+        fileStorageService.deleteFile(coach.getPic());
         return "redirect:/coachList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editCoach")

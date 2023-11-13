@@ -23,7 +23,7 @@ public class SportServiceImp implements SportService {
 
     @Override
     public void deleteSport(Long id) {
-        deleteSport(id);
+        sportRepo.deleteById(id);
     }
 
     @Override

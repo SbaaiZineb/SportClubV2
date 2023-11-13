@@ -49,7 +49,7 @@
             </script>
             <a ></a>
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
-            <input type="checkbox" name="selectedCells" data-target="requests-all"
+            <input  onclick="event.stopPropagation()" type="checkbox" name="selectedCells" data-target="requests-all"
                    th:value="${m.id}" />
             </td>
             <td th:utext="${m.getId()}"></td>

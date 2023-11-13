@@ -189,11 +189,21 @@ public class MemberController {
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Model model) {
         try {
             Member member = memberService.getMemberById(id);
-            List<CheckIn> checks = checkInService.getByMemberCheck(member);
-            checkInRepo.deleteAll(checks);
-            memberService.deletMember(id);
+
+            if (member != null) {
+                List<CheckIn> checks = checkInService.getByMemberCheck(member);
+                System.out.println("Number of checks : " + checks.size());
+
+                if (!checks.isEmpty()) {
+                    checkInRepo.deleteAll(checks);
+                    System.out.println("Checks Deleted");
+                }
+
+                memberService.deletMember(id);
+                fileStorageService.deleteFile(member.getPic());
+            }
         } catch (Exception e) {
-            model.addAttribute("error", "An error occurred while processing your request.");
+            System.out.println("Somthing Wrong!!!!! "+e);
             return "error";
         }
 
@@ -256,7 +266,9 @@ public class MemberController {
 
         for (Long cellId : selectedCells) {
 
+            Member memberById =memberService.getMemberById(cellId);
             memberService.deletMember(cellId);
+            fileStorageService.deleteFile(memberById.getPic());
         }
 
         // Redirect to a success page or return a response as needed

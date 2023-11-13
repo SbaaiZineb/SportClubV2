@@ -25,7 +25,6 @@ public interface CheckInService {
     List<CheckIn> getAllCheckIns();
 
 
-
     List<CheckIn> getAllbyTime(LocalTime time);
 
     List<CheckIn> getCheckInByDate(LocalDate date);

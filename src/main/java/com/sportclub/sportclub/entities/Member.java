@@ -49,11 +49,11 @@ public class Member extends UserApp {
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Paiement> paiement;
 
-    @ManyToMany(mappedBy = "members", cascade = CascadeType.ALL)
-    private List<Seance> seanceList;
+   /* @ManyToMany(mappedBy = "members", cascade = CascadeType.ALL)
+    private List<Seance> seanceList;*/
     @ManyToOne
     @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member",cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<CheckIn> checkIn;
 }

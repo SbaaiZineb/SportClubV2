@@ -55,6 +55,7 @@ public class AbonnementController {
         for (Long cellId : selectedab) {
 
             abonnementService.deleteAbonnement(cellId);
+
         }
 
         // Redirect to a success page or return a response as needed

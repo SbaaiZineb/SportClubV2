@@ -22,7 +22,6 @@ public class CheckIn {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "session_id")
     private Seance session;
 
     private LocalDate checkinDate;
