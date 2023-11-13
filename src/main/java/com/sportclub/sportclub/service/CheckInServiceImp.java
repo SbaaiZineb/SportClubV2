@@ -68,6 +68,8 @@ public class CheckInServiceImp implements CheckInService{
     public List<CheckIn> getAllCheckIns() {
         return checkInRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
+
+
     @Override
     public List<CheckIn> getAllbyTime(LocalTime time) {
         return null;

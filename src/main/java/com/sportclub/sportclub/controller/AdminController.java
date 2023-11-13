@@ -108,7 +108,10 @@ model.addAttribute("user",userForm);
         // Perform the delete operation using the selected cell IDs
 
         for (Long cellId : selectedCells) {
+            UserApp admin = adminService.getAdminById(cellId);
             adminService.deleteAdmin(cellId);
+
+            fileStorageService.deleteFile(admin.getPic());
 
         }
             // Redirect to a success page or return a response as needed
@@ -134,7 +137,10 @@ model.addAttribute("user",userForm);
     @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteAdmin(@RequestParam(name = "id") Long id,String keyword, int page){
 
+        UserApp admin = adminService.getAdminById(id);
         adminService.deleteAdmin(id);
+        fileStorageService.deleteFile(admin.getPic());
+
         return "redirect:/adminList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editAdmin")

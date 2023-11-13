@@ -32,8 +32,8 @@ public class Seance {
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
-    @ManyToMany
-    private List<Member> members;
+//    @ManyToMany
+//    private List<Member> members;
     @ManyToOne
     @JoinColumn(name = "coach_id")
     private Coach coach;

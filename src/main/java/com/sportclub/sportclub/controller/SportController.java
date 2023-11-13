@@ -51,8 +51,11 @@ public class SportController {
         // Perform the delete operation using the selected cell IDs
 
         for (Long cellId : selectedS) {
+            Sport sport=service.getSportById(cellId);
 
             service.deleteSport(cellId);
+
+            fileStorageService.deleteFile(sport.getPic());
         }
 
         // Redirect to a success page or return a response as needed
@@ -101,7 +104,10 @@ public class SportController {
     @GetMapping("/deleteSport")
     public String deleteSp(@RequestParam(name = "id") Long id,String keyword, int page){
 
+        Sport sport=service.getSportById(id);
         service.deleteSport(id);
+
+        fileStorageService.deleteFile(sport.getPic());
         return "redirect:/sportList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editSport")

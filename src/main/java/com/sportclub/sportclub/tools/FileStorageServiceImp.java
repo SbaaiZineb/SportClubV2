@@ -61,6 +61,16 @@ public class FileStorageServiceImp implements FileStorageService{
     }
 
     @Override
+    public void deleteFile(String fileName) {
+        try {
+            Path filePath = root.resolve(fileName);
+            Files.delete(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Stream<Path> loadAll() {
         try {
             return Files.walk(this.root, 1).filter(path -> !path.equals(this.root)).map(this.root::relativize);
