@@ -24,7 +24,7 @@
   <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"
           data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1" ></i>Ajouter</button>
 
-  <form th:action="@{/deleteSports}" method="post" enctype="multipart/form-data">
+  <form th:action="@{/deleteSports}" method="post" >
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
     <table class="table table-centered table-hover table-responsive ">
@@ -50,7 +50,7 @@
 
 
         <td><a onclick="return confirm('Vous avez sure')"
-               th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  th:href="@{/deletesport(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
+               th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  th:href="@{/deleteSport(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
                 class="bi bi-trash iconT me-1"></i></a>
           <a th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
                   class="bi bi-pencil-square iconE"></i></a>

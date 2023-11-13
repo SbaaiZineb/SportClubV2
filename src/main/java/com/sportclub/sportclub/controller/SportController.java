@@ -84,14 +84,14 @@ public class SportController {
         return "sportList";
     }
     @PostMapping("/addSport")
-    public String addAb(@Validated Sport sport, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
+    public String addSport(@Validated Sport sport, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "sportList";
         sport.setPic(file.getOriginalFilename());
         if (!file.isEmpty()){
             fileStorageService.save(file);
         }
 
-        service.addSport(sport);
+        service.updateSport(sport);
         return "redirect:/sportList";
     }
 
