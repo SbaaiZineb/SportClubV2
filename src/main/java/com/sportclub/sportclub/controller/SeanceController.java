@@ -146,62 +146,62 @@ public class SeanceController {
         notification.setRecipient(userApps);
         notification.setTitle("Nouvelle seance");
         notificationService.addNotification(notification);
-try {
+        try {
 
 
-        //Add new Event based on the added session
+            //Add new Event based on the added session
 
-        calendarEvent.setId(seance.getId());
-        calendarEvent.setTitle(seance.getClassName());
-        calendarEvent.setStart(seance.getStartDate());
-        calendarEvent.setStartTime(seance.getStartTime());
-        calendarEvent.setEndTime(seance.getEndTime());
-        if (seance.getCoach()!=null){
-            calendarEvent.setUsername(seance.getCoach().getEmail());
+            calendarEvent.setId(seance.getId());
+            calendarEvent.setTitle(seance.getClassName());
+            calendarEvent.setStart(seance.getStartDate());
+            calendarEvent.setStartTime(seance.getStartTime());
+            calendarEvent.setEndTime(seance.getEndTime());
+            if (seance.getCoach() != null) {
+                calendarEvent.setUsername(seance.getCoach().getEmail());
 
-        }else {
-            calendarEvent.setUsername(null);
+            } else {
+                calendarEvent.setUsername(null);
 
-        }
-        int nbrToAdd = seance.getNumWeeks();
+            }
+            int nbrToAdd = seance.getNumWeeks();
 
-        if (nbrToAdd == 0) {
-            calendarEvent.setEndRecur(null);
-            calendarEvent.setStartRecur(null);
-        } else {
-            LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
-            calendarEvent.setEndRecur(newEnd);
-            calendarEvent.setStartRecur(seance.getStartDate());
-        }
+            if (nbrToAdd == 0) {
+                calendarEvent.setEndRecur(null);
+                calendarEvent.setStartRecur(null);
+            } else {
+                LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+                calendarEvent.setEndRecur(newEnd);
+                calendarEvent.setStartRecur(seance.getStartDate());
+            }
 
-        List<Integer> dayInt = new ArrayList<>();
-        if (seance.getDays() != null){
-        for (String day : seance.getDays()
-        ) {
-            if (day != null) {
-                try {
-                    System.out.println(day);
-                    DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
-                    Integer di = dayOfWeek.getValue();
-                    dayInt.add(di);
+            List<Integer> dayInt = new ArrayList<>();
+            if (seance.getDays() != null) {
+                for (String day : seance.getDays()
+                ) {
+                    if (day != null) {
+                        try {
+                            System.out.println(day);
+                            DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                            Integer di = dayOfWeek.getValue();
+                            dayInt.add(di);
 
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error " + e);
-                }
-            } else if (dayInt.isEmpty()) {
-                // Add all days of the week to the dayInt list
-                for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-                    dayInt.add(dayOfWeek.getValue());
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Error " + e);
+                        }
+                    } else if (dayInt.isEmpty()) {
+                        // Add all days of the week to the dayInt list
+                        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                            dayInt.add(dayOfWeek.getValue());
+                        }
+                    }
+                    calendarEvent.setDaysOfWeek(dayInt);
+
                 }
             }
-            calendarEvent.setDaysOfWeek(dayInt);
-
+            eventRepo.save(calendarEvent);
+        } catch (Exception e) {
+            System.out.println("Something Wrong!!!! " + e);
         }
-        }
-        eventRepo.save(calendarEvent);
-}catch (Exception e){
-    System.out.println("Somthing Wrong!!!! "+e);
-}
         return "redirect:/seanceList";
     }
 
@@ -210,8 +210,11 @@ try {
     public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
         // Perform the delete operation using the selected cell IDs
         // Seance seance;
+
         for (Long cellId : seanceId) {
-//            seance = service.getSeanceById(cellId);
+
+            Seance seance = service.getSeanceById(cellId);
+            System.out.println(seance);
             service.deletSeance(cellId);
             CalendarEvent event = eventRepo.findById(cellId).get();
             eventRepo.delete(event);
@@ -266,9 +269,9 @@ try {
     public String editSeance(@Validated Seance seance, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) return "error";
         String[] selectedDays = request.getParameterValues("days");
-        if (selectedDays == null){
+        if (selectedDays == null) {
             seance.setDays(null);
-        }else {
+        } else {
             seance.setDays(Arrays.asList(selectedDays));
         }
 
@@ -291,7 +294,7 @@ try {
             calendarEvent.setStartRecur(seance.getStartDate());
         }
         List<Integer> dayInt = new ArrayList<>();
-        if (seance.getDays() != null){
+        if (seance.getDays() != null) {
             for (String day : seance.getDays()
             ) {
                 if (day != null) {
@@ -305,7 +308,7 @@ try {
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error " + e);
                     }
-                }else if (dayInt.isEmpty()) {
+                } else if (dayInt.isEmpty()) {
                     // Add all days of the week to the dayInt list
                     for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
                         dayInt.add(dayOfWeek.getValue());

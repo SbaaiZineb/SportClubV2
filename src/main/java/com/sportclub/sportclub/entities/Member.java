@@ -54,6 +54,6 @@ public class Member extends UserApp {
     @ManyToOne
     @JoinColumn(name = "ab_id")
     private Abonnement abonnement;
-    @OneToMany(mappedBy = "member",cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "member",cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     private List<CheckIn> checkIn;
 }
