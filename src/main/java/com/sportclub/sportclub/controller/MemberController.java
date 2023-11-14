@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -188,14 +189,15 @@ public class MemberController {
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Model model) {
         try {
+            //Delete checkins associated to the member
+
             Member member = memberService.getMemberById(id);
-
+            System.out.println(member);
             if (member != null) {
-                List<CheckIn> checks = checkInService.getByMemberCheck(member);
-                System.out.println("Number of checks : " + checks.size());
+                List<CheckIn> checkIns = checkInService.getByMemberCheck(member);
 
-                if (!checks.isEmpty()) {
-                    checkInRepo.deleteAll(checks);
+                if (!checkIns.isEmpty()) {
+                    checkInRepo.deleteAllCheck(checkIns);
                     System.out.println("Checks Deleted");
                 }
 
@@ -203,7 +205,7 @@ public class MemberController {
                 fileStorageService.deleteFile(member.getPic());
             }
         } catch (Exception e) {
-            System.out.println("Somthing Wrong!!!!! "+e);
+            System.out.println("Something Wrong!!!!! "+e);
             return "error";
         }
 
@@ -267,8 +269,24 @@ public class MemberController {
         for (Long cellId : selectedCells) {
 
             Member memberById =memberService.getMemberById(cellId);
-            memberService.deletMember(cellId);
-            fileStorageService.deleteFile(memberById.getPic());
+//Delete checkins associated to the member
+            try {
+                if (memberById != null) {
+                    List<CheckIn> checkIns = checkInService.getByMemberCheck(memberById);
+
+                    if (!checkIns.isEmpty()) {
+                        checkInRepo.deleteAllCheck(checkIns);
+                        System.out.println("Checks Deleted");
+                    }
+
+                    memberService.deletMember(cellId);
+                    fileStorageService.deleteFile(memberById.getPic());
+
+                }
+            } catch (Exception e) {
+                System.out.println("Something Wrong!!!!! "+e);
+                return "error";
+            }
         }
 
         // Redirect to a success page or return a response as needed
