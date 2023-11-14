@@ -63,8 +63,9 @@ public class SportClubApplication implements CommandLineRunner {
 
         if (existingUser == null) {
             // User doesn't exist, so add it
-            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"), admin);
+            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"),roleService.getRoleByName("ADMIN"));
             adminService.addAdmin(newUser);
+
         } else {
             System.out.println("Already exists !!");
         }
