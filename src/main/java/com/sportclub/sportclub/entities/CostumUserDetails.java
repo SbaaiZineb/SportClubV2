@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.entities;
 
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,10 +12,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 @Builder
-
 public class CostumUserDetails implements UserDetails {
  private final UserApp userApp;
+  @Getter
   String pic;
+@Getter
 String userName;
     public CostumUserDetails(UserApp userApp, String pic,String userName) {
         this.userApp = userApp;
@@ -22,16 +24,8 @@ String userName;
         this.userName=userName;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPic() {
-        return pic;
     }
 
     public CostumUserDetails(UserApp userApp) {

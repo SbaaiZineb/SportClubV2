@@ -56,7 +56,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll();
         httpSecurity.authorizeHttpRequests().requestMatchers("/membersList").hasAuthority("COACH");
 
-
+    httpSecurity.logout().logoutSuccessUrl("/login");
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
         httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
         httpSecurity.userDetailsService(userDetailsServiceImp);
