@@ -162,7 +162,12 @@
                 </tr>
                 <tr th:each="m:${members}" data-th-id="${m.id}"
                     onclick="getProfile($(this).attr('id'))">
-                    <a ></a>
+                    <script>
+                        function getProfile(id) {
+
+                            window.location.href = "/membersList/userProfile?id=" + id;
+                        }
+                    </script>
 
                     </td>
                     <td th:utext="${m.getId()}"></td>

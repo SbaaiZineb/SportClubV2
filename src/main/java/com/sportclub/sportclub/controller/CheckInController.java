@@ -77,8 +77,7 @@ public class CheckInController {
             model.addAttribute("currentTime", currentTime);
 
             model.addAttribute("today", LocalDate.now());
-            List<CheckIn> checkIn = checkInService.getCheckInByDate(localDate);
-//            List<CheckIn> checkIn = checkInService.getAllCheckIns();
+            List<CheckIn> checkIn = checkInService.getAllCheckIns();
             model.addAttribute("checkin", checkIn);
             return "checkIn";
         } catch (Exception e) {

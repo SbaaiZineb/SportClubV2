@@ -220,7 +220,7 @@ scrollbar-width: none;">
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img th:src="@{'/images/'+${#authentication.getPrincipal().pic}}" class="avatar img-fluid rounded me-1" th:text="${#authentication.name}"   alt="profile"/> <span class="text-dark"></span>
+                            <img th:src="@{'/images/'+${#authentication.getPrincipal().pic}}" class="avatar img-fluid rounded me-1" th:text="${#authentication.name}"   /> <span class="text-dark"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
@@ -249,25 +249,10 @@ scrollbar-width: none;">
                 <div class="col-6 text-start">
                     <p class="mb-0">
                         <!--                                TODO : Get the name of the gym--->
-                        <a class="text-muted" href="https://adminkit.io/" target="_blank"><strong>GYMGENIUS</strong></a> 								&copy;
+                        <a class="text-muted"  target="_blank"><strong>SbaaiSoft</strong></a> 								&copy;
                     </p>
                 </div>
-                <div class="col-6 text-end">
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
-                            <a class="text-muted" href="https://adminkit.io/" target="_blank">Support</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="text-muted" href="https://adminkit.io/" target="_blank">Help Center</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="text-muted" href="https://adminkit.io/" target="_blank">Privacy</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="text-muted" href="https://adminkit.io/" target="_blank">Terms</a>
-                        </li>
-                    </ul>
-                </div>
+
             </div>
 
         </div>

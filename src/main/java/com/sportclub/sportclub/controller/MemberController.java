@@ -160,19 +160,25 @@ public class MemberController {
         notification.setRecipient(userApps);
         notification.setTitle("Nouveau Adherent");
         notificationService.addNotification(notification);
-        Paiement paiement = new Paiement();
-        paiement.setStart_date(localDate);
-        paiement.setStatue("Impayé");
-        paiement.setAbonnement(memberForm.getAbonnement());
-        String per = paiement.getAbonnement().getPeriod();
+
+        //NOTE:If you added the member without 'abonnement' no payment would be added, so you can click on the member's profile to book him an 'abonnement'
+
+        if (memberForm.getAbonnement()!=null){
+            Paiement paiement = new Paiement();
+            paiement.setStart_date(localDate);
+            paiement.setStatue("Impayé");
+            paiement.setAbonnement(memberForm.getAbonnement());
+            String per = paiement.getAbonnement().getPeriod();
 //       int period=Integer.parseInt(per);
 //        LocalDate end=paiement.getStart_date().plusMonths(period);
 //        paiement.setEnd_date(end);
-        SetPayEndDate sPD = new SetPayEndDate();
-        sPD.setPayEndDate(per, paiement);
-        paiement.setMember(memberForm);
+            SetPayEndDate sPD = new SetPayEndDate();
+            sPD.setPayEndDate(per, paiement);
+            paiement.setMember(memberForm);
 
-        paymentService.addPayement(paiement);
+            paymentService.addPayement(paiement);
+        }
+
 
         return "redirect:/membersList";
     }

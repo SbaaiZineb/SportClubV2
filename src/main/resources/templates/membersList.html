@@ -239,6 +239,7 @@
 
                                 <label class="form-label">Abonnement</label>
                                 <select name="abonnement" id="abonnement" class="form-control mb-3" >
+                                    <option value="">None</option>
                                     <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
                                             th:text="${abonnement.nameAb}"></option>
                                 </select>

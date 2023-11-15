@@ -129,11 +129,16 @@ public class PaymentController {
 
         context.setVariable("gym",gym);
         String imageFilename = gym.getLogo();
-        imageFilename = imageFilename.trim();
-        // Convert the image to base64 and add it to the context
-        Path imagePath = Paths.get( "uploads", imageFilename);
-        String base64Image = convertToBase64(imagePath);
-        context.setVariable("base64Image", base64Image);
+        if (imageFilename!=null){
+            imageFilename = imageFilename.trim();
+            // Convert the image to base64 and add it to the context
+            Path imagePath = Paths.get( "uploads", imageFilename);
+            String base64Image = convertToBase64(imagePath);
+
+            context.setVariable("base64Image", base64Image);
+        }
+
+
         context.setVariable("payment", paiement);
         System.out.println(gym.getLogo());
 
