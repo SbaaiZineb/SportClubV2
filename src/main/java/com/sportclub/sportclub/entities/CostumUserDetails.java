@@ -13,11 +13,11 @@ import java.util.Collection;
 import java.util.List;
 @Builder
 public class CostumUserDetails implements UserDetails {
- private final UserApp userApp;
-  @Getter
-  String pic;
-@Getter
-String userName;
+    private final UserApp userApp;
+    @Getter
+    String pic;
+    @Getter
+    String userName;
     public CostumUserDetails(UserApp userApp, String pic,String userName) {
         this.userApp = userApp;
         this.pic = pic;

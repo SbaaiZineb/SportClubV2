@@ -7,9 +7,11 @@ import com.sportclub.sportclub.entities.Member;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 import jakarta.servlet.http.HttpServletResponse;
+
 public class CoachPdf {
     private List<Coach> listUsers;
 
@@ -18,18 +20,24 @@ public class CoachPdf {
     }
 
     private void writeTableHeader(PdfPTable table) {
+        table.getDefaultCell().setBackgroundColor(Color.LIGHT_GRAY);
+        table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.setWidthPercentage(100);
+        table.getDefaultCell().setPadding(5);
+
+        Font font = new Font(Font.HELVETICA, 12, Font.BOLD, Color.GRAY);
+
         PdfPCell cell = new PdfPCell();
-        cell.setBackgroundColor(Color.gray);
         cell.setPadding(5);
+        cell.setBorderColor(Color.LIGHT_GRAY);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-        Font font = FontFactory.getFont(FontFactory.HELVETICA);
-        font.setColor(Color.WHITE);
 
-        cell.setPhrase(new Phrase(" ID", font));
-
+        cell.setPhrase(new Phrase("ID", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Prenom", font));
+        cell.setPhrase(new Phrase("Prénom", font));
         table.addCell(cell);
 
         cell.setPhrase(new Phrase("Nom", font));
@@ -38,17 +46,19 @@ public class CoachPdf {
         cell.setPhrase(new Phrase("Email", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("tele", font));
+        cell.setPhrase(new Phrase("Téléphone", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("Address", font));
+
+        cell.setPhrase(new Phrase("Adresse", font));
         table.addCell(cell);
+
         cell.setPhrase(new Phrase("Type de sport", font));
         table.addCell(cell);
     }
 
     private void writeTableData(PdfPTable table) {
         for (Coach user : listUsers) {
-            table.addCell(String.valueOf(user.getId()));
+            table.addCell(user.getId().toString());
             table.addCell(user.getName());
             table.addCell(user.getLname());
             table.addCell(user.getEmail());
@@ -56,36 +66,31 @@ public class CoachPdf {
             table.addCell(user.getAdress());
             table.addCell(user.getSportType());
 
-
         }
     }
 
     public void export(HttpServletResponse response) throws DocumentException, IOException {
-        Document document = new Document(PageSize.A3);
+        Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
-        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        font.setSize(18);
-        font.setColor(Color.gray);
 
-        Paragraph p = new Paragraph("List des entraineurs", font);
-
-        p.setAlignment(Paragraph.ALIGN_CENTER);
-
-        document.add(p);
+        Font font = new Font(Font.HELVETICA, 16, Font.BOLD, Color.GRAY);
+        Paragraph title = new Paragraph("Liste des entaineurs", font);
+        title.setAlignment(Element.ALIGN_CENTER);
 
         PdfPTable table = new PdfPTable(7);
-        table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.0f, 3.0f, 3.0f, 3.5f,3.0f,3.0f, 3.0f});
-        table.setSpacingBefore(10);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{1.0f, 2.5f, 2.5f, 3.0f, 2.0f, 2.5f, 3.5f});
+        table.setSpacingBefore(20);
 
         writeTableHeader(table);
         writeTableData(table);
 
+
+        document.add(title);
         document.add(table);
 
         document.close();
-
     }
 }
