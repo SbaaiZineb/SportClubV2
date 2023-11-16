@@ -35,7 +35,7 @@ public class SportServiceImp implements SportService {
 
     @Override
     public Sport getSportById(Long id) {
-        return sportRepo.findById(id).get();
+        return sportRepo.findById(id).orElse(null);
     }
 
     @Override

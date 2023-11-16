@@ -49,10 +49,11 @@
     <div >
         <p style="font-weight: bold" th:text="'N° de paiment : '+${payment.getId()}"></p>
         <p style="font-weight: bold"  th:text="'Adherent : Mr/Me '+${#strings.capitalize(payment.getMember().getName())}+' '+${#strings.capitalize(payment.getMember().getLname())}"></p>
+        <p style="font-weight: bold"  th:text="'CIN : ' +${#strings.capitalize(payment.getMember().getCin())}"></p>
     </div>
     <div >
-        <p style="font-weight: bold"  th:text="'La date de paiment : '+${payment.getPayedAt()}"></p>
-        <p style="font-weight: bold"  th:text="'La address : '+${payment.getMember().getAdress()}"></p>
+        <p style="font-weight: bold"  th:text="'Date de paiment : '+${payment.getPayedAt()}"></p>
+        <p style="font-weight: bold"  th:text="'Address : '+${payment.getMember().getAdress()}"></p>
     </div>
 </div>
 <table class="table-bordered">

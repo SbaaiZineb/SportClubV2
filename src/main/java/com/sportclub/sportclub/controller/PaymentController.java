@@ -151,7 +151,7 @@ public class PaymentController {
 
         // Set the response headers for PDF download
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+        response.setHeader("Content-Disposition", "inline; filename=recu.pdf");
 
         // Write the PDF content to the response output stream
         outputStream.writeTo(response.getOutputStream());
