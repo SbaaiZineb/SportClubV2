@@ -28,14 +28,14 @@ object-fit: cover;border-radius: 50%"></div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
             <label class="form-label">Nom:</label>
-            <input class="form-control" type="text" th:field="*{coach.name}" />
+            <input class="form-control" type="text" th:field="*{coach.name}" required/>
             <span class="text-danger" th:errors="${coach.name}" th:value="${coach.name}"></span>
           </div>
         </div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
             <label class="form-label">Prénom:</label>
-            <input class="form-control" type="text" th:field="*{coach.lname}"/>
+            <input class="form-control" type="text" th:field="*{coach.lname}" required/>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@ object-fit: cover;border-radius: 50%"></div>
           <div class="form-outline">
 
             <label class="form-label">Email:</label>
-            <input class="form-control" type="text" th:field="*{coach.email}"/>
+            <input class="form-control" type="text" th:field="*{coach.email}" required/>
           </div>
         </div>
         <div class="col-md-6 mb-4">
@@ -58,7 +58,7 @@ object-fit: cover;border-radius: 50%"></div>
         <div class="col-md-6 mb-4">
           <div class="form-outline">
             <label class="form-label">Cin:</label>
-            <input class="form-control" type="text" th:field="*{coach.cin}"/>
+            <input class="form-control" type="text" th:field="*{coach.cin}" required/>
 
           </div>
         </div>

@@ -27,14 +27,14 @@ object-fit: cover;border-radius: 50%"></div>
                     <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label class="form-label">Nom:</label>
-                            <input class="form-control" type="text"th:field="*{member.name}" />
-                            <span class="text-danger" th:errors="${member.name}" th:value="${member.name}"></span>
+                            <input class="form-control" type="text"th:field="*{member.name}" required/>
+                            <span class="text-danger" th:errors="${member.name}" th:value="${member.name}" ></span>
                         </div>
                     </div>
                     <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label class="form-label">Prénom:</label>
-                            <input class="form-control" type="text" th:field="*{member.lname}"/>
+                            <input class="form-control" type="text" th:field="*{member.lname}" required/>
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@ object-fit: cover;border-radius: 50%"></div>
                     <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label class="form-label">Email:</label>
-                            <input class="form-control" type="text" th:field="*{member.email}"/>
+                            <input class="form-control" type="text" th:field="*{member.email}" required/>
                         </div>
                     </div>
                     <div class="col-md-6 mb-4">
@@ -56,7 +56,7 @@ object-fit: cover;border-radius: 50%"></div>
                     <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label class="form-label">Cin:</label>
-                            <input class="form-control" type="text" th:field="*{member.cin}"/>
+                            <input class="form-control" type="text" th:field="*{member.cin}" required/>
                         </div>
                     </div>
                     <div class="col-md-6 mb-4">
