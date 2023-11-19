@@ -43,7 +43,8 @@
     </style>
 </head>
 <body>
-<img th:if="${gym.logo}" th:src="'data:image/png;base64,' + ${base64Image}" alt="Image"></img>
+<img th:if="${gym.logo}" th:src="'data:image/png;base64,' + ${base64Image}" alt="Image" />
+<img th:unless="${gym.logo}" alt="Image" />
 <h1 style="text-align: center">Reçu</h1>
 <div style="display: flex; justify-content: space-between">
     <div >

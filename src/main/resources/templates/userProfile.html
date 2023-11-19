@@ -453,7 +453,7 @@ background: transparent;margin-top: -17px">
                 <tr th:each="check:${checkins}"
                     style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
                     <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId()}"></td>
-                    <td style="font-weight: bold" th:utext="${check.getSession().getClassName()}"></td>
+                    <td style="font-weight: bold" th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></td>
 
                     <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
                     <td style="color: #646fd5;font-weight: bold;"

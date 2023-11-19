@@ -37,7 +37,7 @@
         <tr th:each="p:${paymentList}">
             <td th:utext="${p.getId()}"></td>
             <td th:utext="${p.abonnement}"></td>
-            <td th:utext="${p.getMember()}"></td>
+            <td th:utext="${p.getMember() ?: 'member'}"></td>
             <td th:utext="${p.getMember().getCin()}"></td>
             <td th:utext="${p.getAbonnement().price}+' DH'"></td>
             <td th:utext="${p.getStart_date()}"></td>
@@ -47,9 +47,11 @@
               <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
               <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
             </td>
-            <td><a  th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+            <td>
+                <a th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
                 <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
-                <style>
+            </td>
+            <style>
                     .hide{
                         display: none;
                     }
@@ -57,7 +59,7 @@
                         display: block;
                     }
                 </style>
-            </td>
+
 
 
         </tr>

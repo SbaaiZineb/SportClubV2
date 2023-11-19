@@ -118,8 +118,14 @@ public class CoachController {
     @PostMapping("/addCoach")
     public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "coachList";
-        c.setPic(file.getOriginalFilename());
-        c.setPic(file.getOriginalFilename());
+        if (!file.isEmpty()){
+            c.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        }else {
+            c.setPic("default-user.png");
+        }
+
+
         String password= c.getPassword();
         c.setPassword(passwordEncoder.encode(password));
         List<Role> roles=roleService.findAllRoles();
@@ -132,9 +138,7 @@ public class CoachController {
             }
         }
         coachService.addCoach(c);
-        if (!file.isEmpty()){
-            fileStorageService.save(file);
-        }
+
 
         return "redirect:/coachList";
     }

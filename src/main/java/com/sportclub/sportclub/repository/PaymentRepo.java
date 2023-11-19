@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.repository;
 
+import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Paiement;
 import org.springframework.data.domain.Page;
@@ -14,5 +15,6 @@ List<Paiement> findPaiementByMember(Member member);
 List<Paiement> findByMemberNameContains(String kw);
 Page<Paiement> findByMemberNameContains(String kw,Pageable pageable);
 List<Paiement> getPaiementByMember(Member member);
+List<Paiement> getPaiementByAbonnement(Abonnement abonnement);
 
 }

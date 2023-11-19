@@ -2,9 +2,11 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.Paiement;
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.MemberService;
+import com.sportclub.sportclub.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,8 @@ import java.util.List;
 public class AbonnementController {
     @Autowired
     AbonnementService abonnementService;
+    @Autowired
+    PaymentService paymentService;
     @Autowired
     MemberService memberService;
 @Autowired
@@ -98,10 +102,7 @@ public class AbonnementController {
 
     @GetMapping("/deleteAbonnement")
     public String deleteAB(@RequestParam(name = "id") Long id,String keyword, int page){
-        List<Member> members=memberService.getMemberByMembership(id);
-        for (Member member:members) {
-            member.setAbonnement(null);
-        }
+
         abonnementService.deleteAbonnement(id);
         return "redirect:/abonnementList?page="+page+"&keyword="+keyword;
     }

@@ -65,6 +65,11 @@ public class CheckInServiceImp implements CheckInService{
     }
 
     @Override
+    public void updateCheckIn(CheckIn checkIn) {
+        checkInRepo.save(checkIn);
+    }
+
+    @Override
     public List<CheckIn> getAllCheckIns() {
         return checkInRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }

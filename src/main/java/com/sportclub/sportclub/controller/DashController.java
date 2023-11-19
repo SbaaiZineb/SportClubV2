@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,11 +38,14 @@ public class DashController {
     GymService gymService;
     @Autowired
     CheckInService checkInService;
+    @Autowired
+    AdminService adminService;
 
     @GetMapping("/")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
 
     public String getDash(Model model) {
+        memberService.ifPicIsEmpty(adminService.getAllAdmins(),memberService.getAllMembers(),coachService.getAllCoachs());
 
         updateMemberStatues();
         List<Paiement> paiementList = paymentService.getAllPayment();
@@ -72,6 +76,8 @@ public class DashController {
         model.addAttribute("gymName", gymService.getById(1L).getName());
         return "index";
     }
+
+
 
     @GetMapping("/totalPrice")
     public ResponseEntity<Double> getTotalPrice(@RequestParam(name = "selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
@@ -111,12 +117,15 @@ public class DashController {
             Member member = payment.getMember();
             boolean hasActivePayment = memberHasActivePay(member, allPayments);
 
+            if (member!=null){
             if (!hasActivePayment) {
                 member.setStatue("Inactive");
             } else {
                 member.setStatue("Active");
             }
             memberService.updateMember(member);
+}
+
         }
     }
 

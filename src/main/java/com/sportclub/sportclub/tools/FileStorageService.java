@@ -13,7 +13,6 @@ public interface FileStorageService {
     public void save(MultipartFile file);
 
     public Resource load(String filename);
-
     public void deleteAll();
 
     public void  deleteFile(String file);

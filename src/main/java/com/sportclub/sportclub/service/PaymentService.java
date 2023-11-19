@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.service;
 
+import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Paiement;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,5 @@ Paiement findByMember(Long id);
     void updatePayment(Paiement m);
     List<Paiement> getAllPayment();
     List<Paiement> getPaymentsByMember(Member member);
+    List<Paiement> getPaymentsByAbo(Abonnement abonnement);
 }

@@ -1,5 +1,6 @@
 package com.sportclub.sportclub.service;
 
+import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Paiement;
 import com.sportclub.sportclub.repository.MemberRepository;
@@ -66,5 +67,10 @@ paymentRepo.save(m);
     @Override
     public List<Paiement> getPaymentsByMember(Member member) {
         return paymentRepo.getPaiementByMember(member);
+    }
+
+    @Override
+    public List<Paiement> getPaymentsByAbo(Abonnement abonnement) {
+        return paymentRepo.getPaiementByAbonnement(abonnement);
     }
 }

@@ -21,7 +21,7 @@ public class CheckIn {
     @ManyToOne
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Seance session;
 
     private LocalDate checkinDate;

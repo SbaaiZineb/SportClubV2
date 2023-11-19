@@ -1,8 +1,6 @@
 package com.sportclub.sportclub.service;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.CheckIn;
-import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,6 +21,7 @@ List<Member> getMemberByMembership(Long abid);
      long count();
      Boolean checkEmail(String email);
 
+     public void ifPicIsEmpty(List<UserApp> userAppList, List<Member> members, List<Coach> coaches);
      Boolean checkCinExist(String cin);
      List<Member> getByCin(String cin);
 }

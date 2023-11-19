@@ -77,9 +77,10 @@ public class CheckInController {
             model.addAttribute("currentTime", currentTime);
 
             model.addAttribute("today", LocalDate.now());
-            List<CheckIn> checkIn = checkInService.getCheckInByDate(localDate);
+            List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
+
 //            List<CheckIn> checkIn = checkInService.getAllCheckIns();
-            model.addAttribute("checkin", checkIn);
+            model.addAttribute("checkin", checkIns);
             return "checkIn";
         } catch (Exception e) {
             return "error";
@@ -104,6 +105,7 @@ public class CheckInController {
     @GetMapping("/getCheckedInMembers")
     public String getCheckMembers(@RequestParam(name = "id") Long id, Model model) {
         List<CheckIn> checkIns = checkInService.getBySession(id);
+
         List<Member> members = new ArrayList<>();
         for (CheckIn check : checkIns
         ) {
@@ -123,6 +125,7 @@ public class CheckInController {
         List<Member> members = memberService.getAllMembers();
         List<Member> listFilter = new ArrayList<>();
         Seance seance = seanceService.getSeanceById(id);
+
         for (Member member : members
         ) {
             LocalDate startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));

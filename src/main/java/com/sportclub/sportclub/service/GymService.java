@@ -25,7 +25,7 @@ public class GymService {
         return optionalGym.orElse(null);
     }
     public Role getRoleById(Long id) {
-        return roleRepo.findById(id).get();
+        return roleRepo.findById(id).orElse(null);
     }
     public List<Role> getRoles(){
         return roleRepo.findAll();

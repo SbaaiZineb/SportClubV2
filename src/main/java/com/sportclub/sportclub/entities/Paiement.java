@@ -19,6 +19,7 @@ public class Paiement {
     private LocalDate end_date;
     private String statue;
     private String payedBy;
+
     @JsonFormat(pattern = "YYYY-MM-dd")
     private LocalDate payedAt;
     @ManyToOne

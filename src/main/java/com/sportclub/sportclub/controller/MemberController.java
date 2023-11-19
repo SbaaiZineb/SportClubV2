@@ -9,6 +9,7 @@ import com.sportclub.sportclub.tools.FileStorageService;
 import com.sportclub.sportclub.tools.MemberPdf;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -133,7 +136,13 @@ public class MemberController {
 
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
-        memberForm.setPic(file.getOriginalFilename());
+        if (!file.isEmpty()){
+            memberForm.setPic(file.getOriginalFilename());
+            storageService.save(file);
+        }else {
+            memberForm.setPic("default-user.png");
+        }
+
 
         memberForm.setStatue("Inactive");
         String password = memberForm.getPassword();
@@ -148,9 +157,8 @@ public class MemberController {
             }
         }
         memberService.addMember(memberForm);
-        if (!file.isEmpty()){
-            storageService.save(file);
-        }
+
+
 
         Notification notification = new Notification();
         String username = authentication.getName();
@@ -160,27 +168,36 @@ public class MemberController {
         notification.setRecipient(userApps);
         notification.setTitle("Nouveau Adherent");
         notificationService.addNotification(notification);
-        Paiement paiement = new Paiement();
-        paiement.setStart_date(localDate);
-        paiement.setStatue("Impayé");
-        paiement.setAbonnement(memberForm.getAbonnement());
-        String per = paiement.getAbonnement().getPeriod();
+        if (memberForm.getAbonnement()!=null){
+            Paiement paiement = new Paiement();
+            paiement.setStart_date(localDate);
+            paiement.setStatue("Impayé");
+            paiement.setAbonnement(memberForm.getAbonnement());
+            String per = paiement.getAbonnement().getPeriod();
 //       int period=Integer.parseInt(per);
 //        LocalDate end=paiement.getStart_date().plusMonths(period);
 //        paiement.setEnd_date(end);
-        SetPayEndDate sPD = new SetPayEndDate();
-        sPD.setPayEndDate(per, paiement);
-        paiement.setMember(memberForm);
+            SetPayEndDate sPD = new SetPayEndDate();
+            sPD.setPayEndDate(per, paiement);
+            paiement.setMember(memberForm);
 
-        paymentService.addPayement(paiement);
+            paymentService.addPayement(paiement);
+        }
+
 
         return "redirect:/membersList";
     }
 
     @GetMapping("/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-        Resource file = storageService.load(filename);
+        Resource file;
 
+        // Check if the filename corresponds to the image in the "img" directory
+        if ("default-user.png".equals(filename)) {
+            file = new ClassPathResource("static/img/" + filename);
+        } else {
+            file = storageService.load(filename);
+        }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
@@ -188,26 +205,14 @@ public class MemberController {
     @GetMapping("/deleteMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Model model) {
-        try {
-            //Delete checkins associated to the member
-
-            Member member = memberService.getMemberById(id);
-            System.out.println(member);
-            if (member != null) {
-                List<CheckIn> checkIns = checkInService.getByMemberCheck(member);
-
-                if (!checkIns.isEmpty()) {
-                    checkInRepo.deleteAllCheck(checkIns);
-                    System.out.println("Checks Deleted");
-                }
+       Member member=memberService.getMemberById(id);
 
                 memberService.deletMember(id);
-                fileStorageService.deleteFile(member.getPic());
-            }
-        } catch (Exception e) {
-            System.out.println("Something Wrong!!!!! "+e);
-            return "error";
-        }
+                if (member.getPic()!=null){
+                    fileStorageService.deleteFile(member.getPic());
+
+                }
+
 
         return "redirect:/membersList?page=" + page + "&keyword=" + keyword;
     }
@@ -269,20 +274,13 @@ public class MemberController {
         for (Long cellId : selectedCells) {
 
             Member memberById =memberService.getMemberById(cellId);
-//Delete checkins associated to the member
             try {
-                if (memberById != null) {
-                    List<CheckIn> checkIns = checkInService.getByMemberCheck(memberById);
-
-                    if (!checkIns.isEmpty()) {
-                        checkInRepo.deleteAllCheck(checkIns);
-                        System.out.println("Checks Deleted");
-                    }
-
-                    memberService.deletMember(cellId);
+                memberService.deletMember(cellId);
+                if (memberById.getPic()!=null){
                     fileStorageService.deleteFile(memberById.getPic());
 
                 }
+
             } catch (Exception e) {
                 System.out.println("Something Wrong!!!!! "+e);
                 return "error";

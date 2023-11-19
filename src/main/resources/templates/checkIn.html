@@ -24,7 +24,7 @@
                          onclick="myFunction($(this).attr('id'))">
 
 
-                        <div class="card" style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
+                        <div class="card " style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
 
                             <div class="card-body " style="padding: 9px;">
                                 <div title="nombre des adherents enregistre" class="float-end"
@@ -75,11 +75,11 @@
                                 enregistrements</h3></div>
                             <div class="col-md-6">
 <!--                                TODO : still not working-->
-                                <input type="date" id="selectedDate" name="selectedDate"  style="float: right;
-padding: 5px;
-color: #3b7ddd;
-border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
-background: transparent;">
+<!--                                <input type="date" id="selectedDate" name="selectedDate"  style="float: right;-->
+<!--padding: 5px;-->
+<!--color: #3b7ddd;-->
+<!--border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;-->
+<!--background: transparent;">-->
                             </div>
                         </div>
 
@@ -91,13 +91,13 @@ background: transparent;">
                             <tr th:each="check:${checkin}" style="background-color: white">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img th:if="${check.getMember().getPic()}" alt="user icon"
-                                             th:src="@{'images/'+${check.getMember().getPic()}}">
+                                        <img th:if="${check.getMember() != null && check.getMember().getPic() != null}"
+                                             alt="user icon" th:src="@{'images/' + ${check.getMember().getPic()}}">
+
                                         <div class="d-block px-2">
-                                            <span class="fw-bold"
-                                                  th:utext="${check.getMember().getName()}+' '+${check.getMember().getLname()}"></span>
-                                            <div class="small text-gray"
-                                                 th:utext="${check.getSession().getClassName()}"></div>
+                                            <span class="fw-bold" th:utext="${(check.getMember()?.getName() ?: 'member') + ' ' + (check.getMember()?.getLname() ?: '')}"></span>
+                                            <div class="small text-gray" th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></div>
+
                                             <div class="small text-gray"
                                                  th:utext="${check.getCheckinTime()}"></div>
                                         </div>
@@ -131,6 +131,7 @@ margin: 0 auto;" alt="icon">
                     <th>Image</th>
                     <th>Nom</th>
                     <th>Prénom</th>
+                    <th>Cin</th>
 
                 </tr>
                 <tbody class="tbody">
@@ -218,7 +219,6 @@ margin: 0 auto;" alt="icon">
         var originalContent = document.getElementById('cardContent').innerHTML;
 
         function myFunction(id) {
-
             $.get("/getCheckedInMembers?id=" + id, function (data) {
                 $('#dataTable').find('.tbody').html(data);
             })
@@ -314,7 +314,6 @@ margin: 0 auto;" alt="icon">
                 }
             }
         }
-
 
 
     </script>

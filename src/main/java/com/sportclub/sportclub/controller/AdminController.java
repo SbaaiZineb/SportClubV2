@@ -80,7 +80,12 @@ model.addAttribute("user",userForm);
     public String addAdmin(@Validated UserApp admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
         if(bindingResult.hasErrors()) return "adminList";
 
-        admin.setPic(file.getOriginalFilename());
+        if (!file.isEmpty()){
+            admin.setPic(file.getOriginalFilename());
+            fileStorageService.save(file);
+        }else {
+            admin.setPic("default-user.png");
+        }
 
         String password= admin.getPassword();
         admin.setPassword(passwordEncoder.encode(password));
@@ -95,9 +100,7 @@ model.addAttribute("user",userForm);
         Role role=admin.getRoles();
         UserApp admin=new UserApp(,name,lname,email,adress,cin,dob,tele,password,role);*/
         adminService.addAdmin(admin);
-        if (!file.isEmpty()){
-            fileStorageService.save(file);
-        }
+
 
 
         return "redirect:/adminList";

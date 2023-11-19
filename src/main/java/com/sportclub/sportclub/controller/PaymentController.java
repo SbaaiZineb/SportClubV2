@@ -129,13 +129,17 @@ public class PaymentController {
 
         context.setVariable("gym",gym);
         String imageFilename = gym.getLogo();
-        imageFilename = imageFilename.trim();
-        // Convert the image to base64 and add it to the context
-        Path imagePath = Paths.get( "uploads", imageFilename);
-        String base64Image = convertToBase64(imagePath);
-        context.setVariable("base64Image", base64Image);
+        if (!imageFilename.isEmpty()){
+
+            imageFilename = imageFilename.trim();
+            // Convert the image to base64 and add it to the context
+
+            Path imagePath = Paths.get( "uploads", imageFilename);
+            String base64Image = convertToBase64(imagePath);
+
+            context.setVariable("base64Image", base64Image);
+        }
         context.setVariable("payment", paiement);
-        System.out.println(gym.getLogo());
 
         String htmlContent = templateEngine.process("invoice", context);
 
@@ -161,8 +165,18 @@ public class PaymentController {
     }
 
     public String convertToBase64(Path imagePath) throws IOException {
-        byte[] imageBytes = Files.readAllBytes(imagePath);
-        return Base64.getEncoder().encodeToString(imageBytes);
+        try {
+            // Check if the filename is not empty
+            if (!imagePath.getFileName().toString().isEmpty()) {
+                byte[] imageBytes = Files.readAllBytes(imagePath);
+                return Base64.getEncoder().encodeToString(imageBytes);
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     @Autowired
     InvoiceService invoiceService;

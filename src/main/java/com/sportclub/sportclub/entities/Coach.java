@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,7 +21,7 @@ public class Coach extends UserApp {
         this.sportType = sportType;
     }
 
-    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private List<CheckInCoach> checkInCoaches;
     @OneToMany(mappedBy = "coach",cascade = { CascadeType.ALL}, fetch = FetchType.LAZY )
     private List<Seance> seances;

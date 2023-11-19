@@ -1,8 +1,6 @@
 package com.sportclub.sportclub.service;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.CheckIn;
-import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.*;
 
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.repository.AdminRepo;
@@ -28,6 +26,12 @@ public class MemberServiceImp implements MemberService {
     AbonnementRepo abonnementRepo;
     @Autowired
     AdminRepo adminRepo;
+    @Autowired
+    CheckInService checkInService;
+    @Autowired
+    PaymentService paymentService;
+    @Autowired
+    CoachService coachService;
 
     @Override
     public void addMember(Member member) {
@@ -78,9 +82,27 @@ public class MemberServiceImp implements MemberService {
         if (!exists) {
             throw new IllegalStateException("member with id " + id + " does not exists");
         }
-        memberRepository.deleteById(id);
+        Member member = memberRepository.findById(id).orElse(null);
+        if (member != null) {
+            List<CheckIn> checkIns = checkInService.getByMemberCheck(member);
 
+            for (CheckIn checkIn : checkIns) {
+                checkIn.setMember(null);
+                checkInService.updateCheckIn(checkIn);
+            }
+
+            List<Paiement> paiementList = paymentService.getPaymentsByMember(member);
+            for (Paiement payment : paiementList) {
+                payment.setMember(null);
+                paymentService.updatePayment(payment);
+            }
+
+            memberRepository.delete(member);
+        }
     }
+
+
+
 
     @Override
     public Member getMemberById(Long id) {
@@ -92,7 +114,34 @@ public class MemberServiceImp implements MemberService {
         memberRepository.save(m);
     }
 
+    public void ifPicIsEmpty(List<UserApp> userAppList, List<Member> members, List<Coach> coaches) {
+        try{
 
+            for (Member member : members
+            ) {
+                if (member.getPic()==null) {
+                    member.setPic("default-user.png");
+                    updateMember(member);
+                }
+            }
+            for (Coach coach : coaches
+            ) {
+                if (coach.getPic()==null) {
+                    coach.setPic("default-user.png");
+                    coachService.updateCoach(coach);
+                }
+            } for (UserApp userApp : userAppList
+            ) {
+                if (userApp.getPic()==null) {
+                    userApp.setPic("default-user.png");
+                    adminRepo.save(userApp);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
     @Override
     public List<Member> getAllMembers() {
         return memberRepository.findAll();

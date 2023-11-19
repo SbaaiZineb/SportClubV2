@@ -47,7 +47,8 @@ public class SportClubApplication implements CommandLineRunner {
         Role user = roleService.getRoleByName("ADHERENT");
 
         if (admin == null) {
-            roleService.addRole(new Role(1L, "ADMIN"));
+            admin=new Role(1L,"ADMIN");
+            roleService.addRole(admin);
         }
 
         if (coach == null) {
@@ -65,7 +66,7 @@ public class SportClubApplication implements CommandLineRunner {
 
         if (existingUser == null) {
             // User doesn't exist, so add it
-            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"),roleService.getRoleByName("ADMIN"));
+            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"),admin);
             adminService.addAdmin(newUser);
 
         } else {

@@ -21,6 +21,7 @@ public interface CheckInService {
     List<CheckIn> getCheckInOfWeek();
 
     void addCheck(CheckIn checkIn);
+    void updateCheckIn(CheckIn checkIn);
 
     List<CheckIn> getAllCheckIns();
 
