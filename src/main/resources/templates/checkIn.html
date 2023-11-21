@@ -21,8 +21,14 @@
                         </div>
                     </div>
                     <div th:each="s:${TodaySession}" id="divC" class="divC" data-th-id="${s.id}"
-                         onclick="myFunction($(this).attr('id'))">
+                         onclick="myFunction($(this).attr('id'),this)">
+                        <style>
+                            .divC.clicked{
+                                background-color: rgb(57, 3, 252);
+                                border-radius: 4%;
+                            }
 
+                        </style>
 
                         <div class="card " style="margin-bottom: 4px ;background-color: rgba(210, 230, 230, 0.89); ">
 
@@ -218,7 +224,9 @@ margin: 0 auto;" alt="icon">
 
         var originalContent = document.getElementById('cardContent').innerHTML;
 
-        function myFunction(id) {
+        function myFunction(id,element) {
+            $('.divC').removeClass('clicked');  // Remove the 'clicked' class from all elements
+            $(element).addClass('clicked');
             $.get("/getCheckedInMembers?id=" + id, function (data) {
                 $('#dataTable').find('.tbody').html(data);
             })
