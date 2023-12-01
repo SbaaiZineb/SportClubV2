@@ -48,7 +48,7 @@ public class SeanceController {
 
 
     @GetMapping("/calendar")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getCalendar(Model model) {
         System.out.println(eventRepo.findAll());
@@ -56,7 +56,7 @@ public class SeanceController {
     }
 
     @GetMapping("/seanceList")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getSeances(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int size,
@@ -117,7 +117,7 @@ public class SeanceController {
     }
 
     @GetMapping("/addSeance")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String getAddSeance(Model model) {
         List<Coach> coaches = coachService.getAllCoachs();
         model.addAttribute("coaches", coaches);
@@ -129,7 +129,7 @@ public class SeanceController {
 
 
     @PostMapping("/addSeance")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String addSeance(@Validated Seance seance, BindingResult bindingResult, Authentication authentication) {
         if (bindingResult.hasErrors()) return "seanceList";
         CalendarEvent calendarEvent = new CalendarEvent();
@@ -206,7 +206,7 @@ public class SeanceController {
     }
 
     @PostMapping("/deleteSessions")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
         // Perform the delete operation using the selected cell IDs
         // Seance seance;
@@ -241,7 +241,7 @@ public class SeanceController {
 
 
     @GetMapping("/deleteSeance")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
         Seance seance = service.getSeanceById(id);
         service.deletSeance(id);
@@ -252,7 +252,7 @@ public class SeanceController {
     }
 
     @GetMapping("/editSeance")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String editSeance(@RequestParam(name = "id") Long id, Model model) {
         List<Coach> coaches = coachService.getAllCoachs();
         model.addAttribute("coaches", coaches);
@@ -265,7 +265,7 @@ public class SeanceController {
     }
 
     @PostMapping("/editSeance")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String editSeance(@Validated Seance seance, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) return "error";
         String[] selectedDays = request.getParameterValues("days");

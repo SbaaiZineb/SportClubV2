@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:fragment="EmpHeader">
+    <meta charset="UTF-8">
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+    <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" type="text/css" rel="stylesheet"></link>
+
+    <link th:href="@{/css/barStyle.css}" type="text/css" rel="stylesheet">
+
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+</head>
+<body>
+<div class="cssContainer">
+    <!-- SideBar section -->
+    <aside>
+        <div class="side">
+
+            <a class="active">
+                <style>
+                    .material-symbols-sharp {
+                        font-variation-settings: 'FILL' 0,
+                        'wght' 400,
+                        'GRAD' 0,
+                        'opsz' 24
+                    }
+
+                </style>
+                <span class="material-symbols-sharp">
+bar_chart
+</span>
+                <h3>DashBoard</h3>
+            </a>
+            <a href="">
+                <span class="material-symbols-sharp">
+                payments
+                </span>
+                <h3>Paiments</h3>
+            </a>
+
+            <a href="">
+               <span class="material-symbols-sharp">
+checklist_rtl
+</span>
+                <h3>Check-in</h3>
+            </a>
+            <a href="">
+               <span class="material-symbols-sharp">
+               group
+               </span>
+                <h3>Users</h3>
+            </a>
+
+
+            <!--    <div class="close" id="close-btn">-->
+            <!--        <span class="material-symbols-sharp">-->
+            <!--close-->
+            <!--</span>-->
+            <!--    </div>-->
+            <form id="logoutForm" th:action="@{/logout}" type="submit" method="post">
+                <a onclick="document.getElementById('logoutForm').submit()">
+        <span class="material-symbols-sharp">
+        logout
+            </span>
+                <h3>Logout</h3>
+            </a>
+            </form>
+        </div>
+    </aside>
+    <!-- End of sideBar section -->
+
+    <!-- Main content -->
+    <main>
+        <div class="container-fluid p-0">
+
+            <div layout:fragment="EmpContent"></div>
+
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

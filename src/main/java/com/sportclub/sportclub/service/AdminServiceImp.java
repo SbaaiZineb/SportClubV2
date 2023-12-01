@@ -106,10 +106,12 @@ public class AdminServiceImp implements AdminService {
         adminRepo.save(admin);
     }
 
-    public Page<UserApp> getUsersByRoles(String role, Pageable pageable) {
+    public Page<UserApp> getUsersByRoles(Pageable pageable) {
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
 
-        return adminRepo.findByRolesRoleNameContains(role, pageable);
+      String  role1="ADMIN";
+      String  role2="EMPLOYEE";
+        return adminRepo.findByRolesRoleNameContainsOrRolesRoleNameContains(role1,role2, pageable);
     }
 
     @Override

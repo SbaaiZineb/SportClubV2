@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.sql.DataSource;
 
@@ -37,6 +38,10 @@ public class SecurityConfig {
         );
     }
 */
+@Bean
+public AuthenticationSuccessHandler authenticationSuccessHandler() {
+    return new CustomAuthenticationSuccessHandler();
+}
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -51,7 +56,8 @@ public class SecurityConfig {
                 .and()
                 .logout();*/
 
-        httpSecurity.formLogin().loginPage("/login").defaultSuccessUrl("/").permitAll();
+        httpSecurity.formLogin().loginPage("/login").successHandler(authenticationSuccessHandler())
+                .permitAll();
 
         httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll();
         httpSecurity.authorizeHttpRequests().requestMatchers("/membersList").hasAuthority("COACH");

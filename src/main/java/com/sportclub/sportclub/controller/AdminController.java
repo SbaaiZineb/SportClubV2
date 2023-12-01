@@ -53,8 +53,9 @@ public class AdminController {
                  ) {
                 if (role.getRole_name().equals("Admin") || role.getRole_name().equals("Sub-admin")){*/
         Page<UserApp> pageAdmin;
-        kw="ADMIN";
-        pageAdmin = adminService.getUsersByRoles(kw, PageRequest.of(page, size));
+
+
+        pageAdmin = adminService.getUsersByRoles(PageRequest.of(page, size));
         System.out.println("yessss!!!!!!");
         model.addAttribute("users", pageAdmin.getContent());
                     model.addAttribute("pages", new int[pageAdmin.getTotalPages()]);

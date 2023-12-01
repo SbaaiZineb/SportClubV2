@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
 public class AbonnementController {
     @Autowired
     AbonnementService abonnementService;

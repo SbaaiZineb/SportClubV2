@@ -23,5 +23,5 @@ public interface AdminService {
     void updateAdmin(UserApp admin);
     List<UserApp> getAllAdmins();
     UserApp loadUserByUsername(String email);
-    public Page<UserApp> getUsersByRoles(String role,Pageable pageable);
+    public Page<UserApp> getUsersByRoles(Pageable pageable);
 }

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/employeeBar.html">
+
+<head th:insert="~{partials/employeeBar  :: EmpHeader}">
+    <meta charset="utf-8">
+    <title>Index</title>
+
+</head>
+
+<body>
+
+
+<div layout:fragment="EmpContent" class="d-flex flex-column h-100">
+    <div class="row">
+        <div class="col-md-8">
+            <h4 class="check-h4">Still not sure what to do here</h4>
+
+            <div class="bg-light" style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+                <table class="table table-centered table-hover table-responsive mt-3">
+                    <tr>
+                        <th>Type d'abonnement</th>
+                        <th>CIN</th>
+                        <th>Montant a paye</th>
+                        <th>Date de debut</th>
+                        <th>Date de fin</th>
+                        <th>Statue</th>
+
+
+                        <th colspan="2">Action</th>
+                    </tr>
+                    <tr th:each="p:${payments}">
+                        <td th:utext="${p.abonnement}"></td>
+                        <td th:utext="${p.getMember().getCin()}"></td>
+                        <td th:utext="${p.getAbonnement().price}+' DH'"></td>
+                        <td th:utext="${p.getStart_date()}"></td>
+                        <td th:utext="${p.getEnd_date()}"></td>
+
+                        <td class="text-center">
+                            <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                            <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                        </td>
+                        <td>
+                            <a th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+                            <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
+                        </td>
+                        <style>
+                            .hide{
+                                display: none;
+                            }
+                            .show{
+                                display: block;
+                            }
+                        </style>
+
+
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4 class="check-h4">Derniers enregistrements</h4>
+            <div class="bg-light m-1"
+                 style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+
+                 <div th:each="check:${checkin}">
+
+                            <div class="d-flex align-items-center checkIn-card m-3">
+                                <div class="checkImg">
+                                    <img th:if="${check.getMember() != null && check.getMember().getPic() != null}"
+                                         alt="user icon" th:src="@{'/images/' + ${check.getMember().getPic()}}">
+
+                                </div>
+
+                                <div class="textBox">
+                                    <div class="textContent">
+                                                <span class="fw-bold"
+                                                      th:utext="${(check.getMember()?.getName() ?: 'member') + ' ' + (check.getMember()?.getLname() ?: '')}"></span>
+                                        <span class="float-end ms-7" th:utext="${check.getCheckinDate()}"></span>
+
+                                    </div>
+
+
+
+                                <div class="checkInDev">
+                                    <div
+                                         th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></div>
+
+                                    <div
+                                         th:utext="${check.getCheckinTime()}"></div>
+                                </div>
+                                </div>
+                            </div>
+
+
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-12 ">
+
+            <div class="bg-light " style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+
+                <input type="text" id="cin" onkeyup="searchMember()" placeholder="CIN">
+                <button class="button-65" role="button"><span class="material-symbols-sharp" style="margin-right: 5px">
+person_add
+</span>Ajouter</button>
+
+                <table id="IndexTable" class="table table-centered table-hover table-responsive">
+                    <tr>
+
+                        <th>Id</th>
+                        <th>Adhérent</th>
+
+                        <th>Cin</th>
+
+                        <th>Inscrie le</th>
+                        <th>Abonnement</th>
+                        <th>Statue</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr th:each="m:${members}" data-th-id="${m.id}"
+                        onclick="getProfile($(this).attr('id'))">
+                        <script>
+                            function getProfile(id) {
+
+                                window.location.href = "/membersList/userProfile?id=" + id;
+                            }
+                        </script>
+
+                        <td th:utext="${m.getId()}"></td>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-info__img">
+                                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                                </div>
+                                <div class="user-info__basic">
+                                    <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                                    <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+                        <td th:utext="${m.getName()}"></td>
+                        <td th:utext="${m.getLname()}"></td>
+                        <td th:utext="${m.getEmail()}"></td>-->
+
+
+                        <td th:utext="${m.getCin()}"></td>
+                        <td th:utext="${m.createdAt}"></td>
+                        <td style="color: #04405e;font-weight: bold;" th:utext="${m.abonnement}"></td>
+                        <td>
+                            <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
+                               th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                            <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
+                               th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+
+                        </td>
+<!--                        <td><a href="" class="btn btn-success text-white" onclick="event.stopPropagation()">CheckIn</a></td>-->
+                        <td onclick="event.stopPropagation()"> <div class="kebab-menu" >
+                            <!-- Three dots icon (Unicode character: Horizontal Ellipsis) -->
+                            <div style="font-size: 24px">&#8942;</div>
+                            <!-- Kebab menu content -->
+                            <div class="kebab-menu-content">
+                                <a href="#" onclick="editItem()">Edit</a>
+                                <a href="#" onclick="deleteItem()">Delete</a>
+                            </div>
+                        </div> <a href="" class="btn btn-success text-white " style="margin-left: 4px" >CheckIn</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript functions for menu actions
+        function editItem() {
+            // Implement edit action here
+            console.log('Edit action triggered');
+        }
+
+        function deleteItem() {
+            // Implement delete action here
+            console.log('Delete action triggered');
+        }
+
+        // Toggle kebab menu content visibility
+        document.querySelectorAll('.kebab-menu').forEach(function(menu) {
+            menu.addEventListener('click', function() {
+                var content = this.querySelector('.kebab-menu-content');
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+    </script>
+</div>
+</body>
+
+</html>

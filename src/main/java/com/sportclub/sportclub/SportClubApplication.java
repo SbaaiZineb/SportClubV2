@@ -45,6 +45,7 @@ public class SportClubApplication implements CommandLineRunner {
         Role admin = roleService.getRoleByName("ADMIN");
         Role coach = roleService.getRoleByName("COACH");
         Role user = roleService.getRoleByName("ADHERENT");
+        Role employee = roleService.getRoleByName("EMPLOYEE");
 
         if (admin == null) {
             admin=new Role(1L,"ADMIN");
@@ -57,6 +58,10 @@ public class SportClubApplication implements CommandLineRunner {
 
         if (user == null) {
             roleService.addRole(new Role(3L, "ADHERENT"));
+        }
+
+        if (employee == null) {
+            roleService.addRole(new Role(4L, "EMPLOYEE"));
         }
 
 

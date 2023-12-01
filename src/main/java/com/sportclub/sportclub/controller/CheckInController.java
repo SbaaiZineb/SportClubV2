@@ -45,7 +45,7 @@ public class CheckInController {
     DayOfWeek dayOfWeek = localDate.getDayOfWeek();
 
     @GetMapping("/enregistrement")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String getCheckinPage(Model model) {
         try {
             List<Seance> seances = seanceService.getAllSeance();
@@ -120,7 +120,7 @@ public class CheckInController {
     }
 
     @GetMapping("/checkin")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String getCheckMembersIn(Model model, @RequestParam(name = "id") Long id) {
         List<Member> members = memberService.getAllMembers();
         List<Member> listFilter = new ArrayList<>();
@@ -149,7 +149,7 @@ public class CheckInController {
     }
 
     @PostMapping("/checkin")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells) {
 
         for (Long cellId : selectedCells) {

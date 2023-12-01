@@ -49,7 +49,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
 public class PaymentController {
     @Autowired
     PaymentService paymentService;

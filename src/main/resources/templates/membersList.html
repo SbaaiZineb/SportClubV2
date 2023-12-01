@@ -19,14 +19,14 @@
         </form>
     </div>
     <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
-    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
             data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
     <form th:action="@{/deleteCells}" method="post">
-    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
     <table class="table table-centered table-hover table-responsive">
         <tr>
-            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
             <th>Id</th>
             <th>Adhérent</th>
@@ -37,7 +37,7 @@
 <th>Inscrie le</th>
             <th>Abonnement</th>
             <th>Statue</th>
-            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}" colspan="2">Action</th>
+            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" colspan="2">Action</th>
         </tr>
         <tr th:each="m:${listMember}" data-th-id="${m.id}"
             onclick="getProfile($(this).attr('id'))">
@@ -48,7 +48,7 @@
                 }
             </script>
             <a ></a>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
             <input  onclick="event.stopPropagation()" type="checkbox" name="selectedCells" data-target="requests-all"
                    th:value="${m.id}" />
             </td>
@@ -82,10 +82,10 @@
                 <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
 
             </td>
-            <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
+            <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
                    th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
                     class="bi bi-trash iconT"></i></a></td>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
                 <i class="bi bi-pencil-square iconE "></i></a></td>
 
 

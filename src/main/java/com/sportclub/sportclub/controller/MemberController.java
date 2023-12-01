@@ -75,7 +75,7 @@ public class MemberController {
     NotificationService notificationService;
 
     @RequestMapping(value = "/membersList", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
     public String getMembers(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int siz,
                              @RequestParam(name = "keyword", defaultValue = "") String kw
@@ -122,7 +122,7 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/addMember", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String getAddPage(Model model) {
         Member memberForm = new Member();
         model.addAttribute("memberForm", memberForm);
@@ -130,7 +130,7 @@ public class MemberController {
     }
 
     @PostMapping("/addMember")
-    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
     public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
         if (bindingResult.hasErrors()) return "membersList";
 
@@ -203,7 +203,7 @@ public class MemberController {
     }
 
     @GetMapping("/deleteMember")
-    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
     public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Model model) {
        Member member=memberService.getMemberById(id);
 
@@ -218,7 +218,7 @@ public class MemberController {
     }
 
     @GetMapping("/editMember")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String editMember(@RequestParam(name = "id") Long id, Model model) {
         List<Abonnement> abos = abonnementService.getAllAbos();
         model.addAttribute("abos", abos);
@@ -229,7 +229,7 @@ public class MemberController {
     }
 
     @PostMapping("/editMember")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "error";
         Member existingMember = memberService.getMemberById(member.getId());
@@ -267,7 +267,7 @@ public class MemberController {
     }
 
     @PostMapping("/deleteCells")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
         // Perform the delete operation using the selected cell IDs
 

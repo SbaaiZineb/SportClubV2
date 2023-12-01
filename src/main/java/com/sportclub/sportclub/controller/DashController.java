@@ -4,6 +4,7 @@ import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +44,7 @@ public class DashController {
     AdminService adminService;
 
     @GetMapping("/")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+    @PreAuthorize("hasAuthority('ADMIN')  or hasAuthority('COACH')")
 
     public String getDash(Model model) {
         memberService.ifPicIsEmpty(adminService.getAllAdmins(),memberService.getAllMembers(),coachService.getAllCoachs());

@@ -52,7 +52,7 @@ public class CoachController {
     CoachCheckInRepo coachCheckInRepo;
 
     @GetMapping("/coachList")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
 
     public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
                              @RequestParam(name = "size",defaultValue = "5") int size,
@@ -71,7 +71,7 @@ public class CoachController {
 
     }
     @PostMapping("/deleteCoachs")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') ")
+    @PreAuthorize("hasAuthority('ADMIN') ")
 
     public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
         // Perform the delete operation using the selected cell IDs
@@ -107,7 +107,7 @@ public class CoachController {
     }
 
     @GetMapping("/addCoach")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
 
     public String getAddCoachPage(Model model) {
         Coach coachForm = new Coach();
@@ -182,7 +182,7 @@ public class CoachController {
         return "redirect:/coachList?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/editCoach")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
 
     public String editCoach(@RequestParam(name = "id") Long id, Model model){
         Coach coach=coachService.getCoachById(id);

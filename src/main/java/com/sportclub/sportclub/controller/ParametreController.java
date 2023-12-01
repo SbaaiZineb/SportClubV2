@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class ParametreController {
     @Autowired
     GymRepo gymRepo;
