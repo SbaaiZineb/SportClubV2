@@ -8,25 +8,8 @@
         background-color: #003049 !important;
     }
 
-    #cin {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 12px;
-        width: 18.5cm;
-        margin-right: auto;
-        margin-left: 6px;
-        margin-top: 11px;
-    }
 
-
-    #cin:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px #007bff;
-    }
     a {
-        color: black !important;
         text-decoration: none !important;
     }
 
@@ -87,6 +70,8 @@
     aside .side a h3{
         font-size: large !important;
         font-family: "Poppins",sans-serif;
+        color: gray !important;
+
     }
 
     aside .side a span {
@@ -117,11 +102,17 @@
         color: #0da9be !important;
         margin-left: calc(1rem - 3px) !important;
     }
+aside .side a.active h3 {
+    color: #0da9be !important;
+}
 
     aside .side a:hover {
         color: #0da9be !important;
     }
+aside .side a:hover h3 {
+    color: #0da9be !important;
 
+}
     aside .side a:hover span {
         margin-left: 0.6rem !important;
     }
@@ -142,17 +133,19 @@
         aside .side a {
             width: 5.6rem !important;
         }
-      .table{
-          width: 1%;
-      }
 
+#cin{
+    width: 10.5cm;
+}
     }
 .row .bg-light{
     border-radius: 15px;
-    box-shadow: 3px 6px 4px rgba(152, 152, 152, 0.4);
+    box-shadow: 2px 5px 2px rgba(152, 152, 152, 0.4);
     background-color: #356d78 !important;
 }
-
+.row .bg-light:hover{
+    box-shadow: none;
+}
     .table {
         border-spacing: 0 15px;
         border-collapse: separate;
@@ -265,7 +258,7 @@
         font-size: 13px;
         color: #0da9be;
     }
-.check-h4{
+.check-h3{
     font-family: "Poppins",sans-serif;
     padding: 12px;
     color: whitesmoke;
@@ -305,71 +298,9 @@
     background-color: #f1f1f1;
 }
 
-.button-65 {
-    appearance: none;
-    backface-visibility: hidden;
-    background-color: #2f80ed;
-    border-radius: 10px;
-    border-style: none;
-    box-shadow: none;
-    box-sizing: border-box;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    float: right;
-    margin: 10px;
-    width: 7rem;
-    cursor: pointer;
-    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    height: 42px;
-    letter-spacing: normal;
-    line-height: 1.5;
-    outline: none;
-    overflow: hidden;
-    padding: 14px 30px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    transform: translate3d(0, 0, 0);
-    transition: all .3s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: top;
-    white-space: nowrap;
-}
 
-.button-65:hover {
-    background-color: #1366d6;
-    box-shadow: rgba(0, 0, 0, .05) 0 5px 30px, rgba(0, 0, 0, .05) 0 1px 4px;
-    opacity: 1;
-    transform: translateY(0);
-    transition-duration: .35s;
-}
 
-.button-65:hover:after {
-    opacity: .5;
-}
 
-.button-65:active {
-    box-shadow: rgba(0, 0, 0, .1) 0 3px 6px 0, rgba(0, 0, 0, .1) 0 0 10px 0, rgba(0, 0, 0, .1) 0 1px 4px -1px;
-    transform: translateY(2px);
-    transition-duration: .35s;
-}
-
-.button-65:active:after {
-    opacity: 1;
-}
-
-@media (min-width: 768px) {
-    .button-65 {
-        padding: 14px 22px;
-        width: 7rem;
-    }
-}
 
 
 

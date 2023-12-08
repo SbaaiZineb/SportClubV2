@@ -26,16 +26,17 @@ public class CheckInController {
     CheckInService checkInService;
 
     MemberService memberService;
-
+AdminService adminService;
     CheckInRepo checkInRepo;
 
-    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService, CoachService coachService) {
+    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService,AdminService adminService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService, CoachService coachService) {
         this.seanceService = seanceService;
         this.checkInService = checkInService;
         this.memberService = memberService;
         this.checkInRepo = checkInRepo;
         this.coachCheckInService = coachCheckInService;
         this.coachService = coachService;
+        this.adminService = adminService;
     }
 
     CoachService coachService;
@@ -150,7 +151,12 @@ public class CheckInController {
 
     @PostMapping("/checkin")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells) {
+    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells,Authentication authentication) {
+
+        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
+
+
 
         for (Long cellId : selectedCells) {
 
@@ -162,6 +168,9 @@ public class CheckInController {
             checkIn.setSession(seanceService.getSeanceById(id));
             checkInService.addCheck(checkIn);
 
+        }
+        if (userRole.equals("EMPLOYEE")){
+            return "redirect:/employee/enregistrement";
         }
         return "redirect:/enregistrement";
     }

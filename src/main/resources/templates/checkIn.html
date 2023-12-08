@@ -90,33 +90,27 @@
                         </div>
 
 
-                        <table id="Dtable"
-                               class="table table-centered table-hover table-responsive  table-nowrap mb-0 rounded ">
-
+                        <table id="Dtable" class="table table-centered table-hover table-responsive table-nowrap mb-0 rounded">
                             <tbody class="tbody">
                             <tr th:each="check:${checkin}" style="background-color: white">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img th:if="${check.getMember() != null && check.getMember().getPic() != null}"
-                                             alt="user icon" th:src="@{'images/' + ${check.getMember().getPic()}}">
-
+                                        <img th:if="${check.getMember() != null && check.getMember().getPic() != null}" alt="user icon"
+                                             th:src="@{'/images/' + ${check.getMember().getPic()}}">
                                         <div class="d-block px-2">
-                                            <span class="fw-bold" th:utext="${(check.getMember()?.getName() ?: 'member') + ' ' + (check.getMember()?.getLname() ?: '')}"></span>
-                                            <div class="small text-gray" th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></div>
-
+                        <span class="fw-bold"
+                              th:utext="${(check.getMember()?.getName() ?: 'member') + ' ' + (check.getMember()?.getLname() ?: '')}"></span>
                                             <div class="small text-gray"
-                                                 th:utext="${check.getCheckinTime()}"></div>
+                                                 th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></div>
+                                            <div class="small text-gray" th:utext="${check.getCheckinTime()}"></div>
                                         </div>
-                                        <span class="float-end ms-7" th:utext="${check.getCheckinDate()}"></span>
-
+                                        <span class="ms-auto" th:utext="${check.getCheckinDate()}"></span>
                                     </div>
                                 </td>
-
-
                             </tr>
                             </tbody>
-
                         </table>
+
                         <div id="empty-message" style="display: none;">
                             <img th:src="@{/icons/undraw_No_data_re_kwbl-removebg-preview.png}" style="width: 15rem;
 height: 15rem;display: block;

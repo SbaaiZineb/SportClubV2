@@ -14,7 +14,7 @@
 <div layout:fragment="EmpContent" class="d-flex flex-column h-100">
     <div class="row">
         <div class="col-md-8">
-            <h4 class="check-h4">Still not sure what to do here</h4>
+            <h3 class="check-h3">Still not sure what to do here</h3>
 
             <div class="bg-light" style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
                 <table class="table table-centered table-hover table-responsive mt-3">
@@ -60,9 +60,9 @@
             </div>
         </div>
         <div class="col-md-4">
-            <h4 class="check-h4">Derniers enregistrements</h4>
+            <h3 class="check-h3">Derniers enregistrements</h3>
             <div class="bg-light m-1"
-                 style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+                 style="overflow-x: auto; max-height: 400px;scrollbar-width: none;">
 
                  <div th:each="check:${checkin}">
 
@@ -104,21 +104,34 @@
 
         <div class="col-md-12 ">
 
-            <div class="bg-light " style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
+            <div class="bg-light " style="overflow-x: auto; max-height: 396px;scrollbar-width: none;margin-bottom: 2px">
 
-                <input type="text" id="cin" onkeyup="searchMember()" placeholder="CIN">
-                <button class="button-65" role="button"><span class="material-symbols-sharp" style="margin-right: 5px">
-person_add
-</span>Ajouter</button>
+                <input type="text" id="cin" onkeyup="EmpSearchMember()" placeholder="CIN">
+                <style>
+                    #cin {
+                        padding: 10px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 12px;
+                        width: 18.5cm;
+                        margin-right: auto;
+                        margin-left: 6px;
+                        margin-top: 11px;
+                    }
+
+
+                    #cin:focus {
+                        outline: none;
+                        border-color: #007bff;
+                        box-shadow: 0 0 5px #007bff;
+                    }
+                </style>
 
                 <table id="IndexTable" class="table table-centered table-hover table-responsive">
                     <tr>
 
-                        <th>Id</th>
                         <th>Adhérent</th>
-
                         <th>Cin</th>
-
                         <th>Inscrie le</th>
                         <th>Abonnement</th>
                         <th>Statue</th>
@@ -133,7 +146,6 @@ person_add
                             }
                         </script>
 
-                        <td th:utext="${m.getId()}"></td>
                         <td>
                             <div class="user-info">
                                 <div class="user-info__img">
@@ -171,7 +183,7 @@ person_add
                                 <a href="#" onclick="editItem()">Edit</a>
                                 <a href="#" onclick="deleteItem()">Delete</a>
                             </div>
-                        </div> <a href="" class="btn btn-success text-white " style="margin-left: 4px" >CheckIn</a></td>
+                        </div> <a th:href="@{/employee/enregistrement}"  class="checkinBtn btn btn-success text-white " style="margin-left: 4px" >CheckIn</a></td>
                     </tr>
                 </table>
             </div>
@@ -197,6 +209,27 @@ person_add
                 content.style.display = (content.style.display === 'block') ? 'none' : 'block';
             });
         });
+        function EmpSearchMember() {
+            var input, filter, table, tr, td, i, nameColumn;
+            input = document.getElementById("cin");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("IndexTable");
+            tr = table.getElementsByTagName("tr");
+            nameColumn = 1; // Index of the column where cin are
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[nameColumn];
+                if (td) {
+                    var name = td.textContent || td.innerText;
+                    if (name.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+
+                }
+            }
+        }
     </script>
 </div>
 </body>

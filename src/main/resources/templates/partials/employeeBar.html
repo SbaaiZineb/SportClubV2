@@ -13,6 +13,8 @@
     <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" type="text/css" rel="stylesheet"></link>
 
     <link th:href="@{/css/barStyle.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" type="text/css" rel="stylesheet">
+    <script src="/js/jsFile.js" ></script>
 
 
     <link rel="stylesheet"
@@ -24,7 +26,7 @@
     <aside>
         <div class="side">
 
-            <a class="active">
+            <a class="active" th:href="@{/employee/}">
                 <style>
                     .material-symbols-sharp {
                         font-variation-settings: 'FILL' 0,
@@ -37,7 +39,7 @@
                 <span class="material-symbols-sharp">
 bar_chart
 </span>
-                <h3>DashBoard</h3>
+                <h3>Accueil</h3>
             </a>
             <a href="">
                 <span class="material-symbols-sharp">
@@ -46,13 +48,13 @@ bar_chart
                 <h3>Paiments</h3>
             </a>
 
-            <a href="">
+            <a href="" th:href="@{/employee/enregistrement}">
                <span class="material-symbols-sharp">
 checklist_rtl
 </span>
                 <h3>Check-in</h3>
             </a>
-            <a href="">
+            <a href="" th:href="@{/employee/members}">
                <span class="material-symbols-sharp">
                group
                </span>
@@ -85,6 +87,7 @@ checklist_rtl
 
         </div>
     </main>
+
 
 </div>
 </body>

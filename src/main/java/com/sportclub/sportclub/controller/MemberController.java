@@ -1,7 +1,9 @@
 package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
-import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.entities.Abonnement;
+import com.sportclub.sportclub.entities.Gym;
+import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
@@ -19,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -27,12 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +37,7 @@ import java.util.Map;
 
 @Controller
 public class MemberController {
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
     @Autowired
     FileStorageService fileStorageService;
     @Autowired
@@ -58,8 +54,8 @@ public class MemberController {
     FileStorageService fileService;
 
     GymService gymService;
-    public MemberController(PasswordEncoder passwordEncoder, MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService,GymService gymService) {
-        this.passwordEncoder = passwordEncoder;
+    public MemberController( MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService,GymService gymService) {
+
         this.memberService = memberService;
         this.abonnementService = abonnementService;
         this.storageService = storageService;
@@ -134,55 +130,7 @@ public class MemberController {
     public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
         if (bindingResult.hasErrors()) return "membersList";
 
-        LocalDate localDate = LocalDate.now();
-        memberForm.setCreatedAt(localDate);
-        if (!file.isEmpty()){
-            memberForm.setPic(file.getOriginalFilename());
-            storageService.save(file);
-        }else {
-            memberForm.setPic("default-user.png");
-        }
-
-
-        memberForm.setStatue("Inactive");
-        String password = memberForm.getPassword();
-        memberForm.setPassword(passwordEncoder.encode(password));
-        List<Role> roles = roleService.findAllRoles();
-
-        for (Role role : roles
-        ) {
-            if (role.getRoleName().equals("ADHERENT")) {
-
-                memberForm.setRoles(role);
-            }
-        }
-        memberService.addMember(memberForm);
-
-
-
-        Notification notification = new Notification();
-        String username = authentication.getName();
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setMessage(username + " a ajouté un nouveau adherent");
-        List<UserApp> userApps = adminRepo.findByRolesRoleNameContains("ADMIN");
-        notification.setRecipient(userApps);
-        notification.setTitle("Nouveau Adherent");
-        notificationService.addNotification(notification);
-        if (memberForm.getAbonnement()!=null){
-            Paiement paiement = new Paiement();
-            paiement.setStart_date(localDate);
-            paiement.setStatue("Impayé");
-            paiement.setAbonnement(memberForm.getAbonnement());
-            String per = paiement.getAbonnement().getPeriod();
-//       int period=Integer.parseInt(per);
-//        LocalDate end=paiement.getStart_date().plusMonths(period);
-//        paiement.setEnd_date(end);
-            SetPayEndDate sPD = new SetPayEndDate();
-            sPD.setPayEndDate(per, paiement);
-            paiement.setMember(memberForm);
-
-            paymentService.addPayement(paiement);
-        }
+        memberService.addMember(memberForm,authentication,file);
 
 
         return "redirect:/membersList";

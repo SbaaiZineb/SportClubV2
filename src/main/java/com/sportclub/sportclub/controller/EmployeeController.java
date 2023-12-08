@@ -1,22 +1,20 @@
 package com.sportclub.sportclub.controller;
 
-import com.sportclub.sportclub.entities.CheckIn;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Paiement;
-import com.sportclub.sportclub.entities.Seance;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,13 +45,13 @@ public class EmployeeController {
     @Autowired
     FileStorageService storageService;
 
-    @GetMapping("/employeeBar")
-    public String getEmployeeInterface(){
-        return "partials/employeeBar";
-    }
+
 
     @GetMapping("/")
     public String getEmpIndex(Model model){
+        Member member = new Member();
+        model.addAttribute("member", member);
+
         List<Paiement> paiementList = paymentService.getAllPayment();
         List<Paiement> paiements=new ArrayList<>();
 
@@ -74,18 +72,53 @@ public class EmployeeController {
         return "employeeInterface/empIndex";
     }
 
+    @GetMapping("/members")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public String getMembersPage(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
+                                 @RequestParam(name = "size", defaultValue = "5") int siz,
+                                 @RequestParam(name = "keyword", defaultValue = "") String kw){
+        List<Abonnement> abos = abonnementService.getAllAbos();
+        model.addAttribute("abos", abos);
+        model.addAttribute("abonnement", new Abonnement());
 
-  /*  @GetMapping("/images/{filename:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-        Resource file;
+        Page<Member> pageMember = memberService.findByMemberName(kw, PageRequest.of(page, siz));
+        model.addAttribute("listMember", pageMember.getContent());
+        model.addAttribute("pages", new int[pageMember.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
 
-        // Check if the filename corresponds to the image in the "img" directory
-        if ("default-user.png".equals(filename)) {
-            file = new ClassPathResource("static/img/" + filename);
-        } else {
-            file = storageService.load(filename);
-        }
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }*/
+        Member member = new Member();
+
+        model.addAttribute("member",member);
+        return "employeeInterface/empMembersList";
+    }
+@GetMapping("/addMember")
+@PreAuthorize("hasAuthority('EMPLOYEE')")
+    public String getAddMemberByEmp(Model model) {
+    Member member = new Member();
+
+    model.addAttribute("member", member);
+    return "employeeInterface/empMembersList";
+}
+ @PostMapping("/addMember")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public String addMemberByEmp(@Validated @ModelAttribute("member") Member member, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
+     if (bindingResult.hasErrors()) return "membersList";
+
+     memberService.addMember(member,authentication,file);
+
+
+     return "redirect:/employee/members";
+ }
+ @GetMapping("/enregistrement")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public String getCheckInPage(Model model){
+        List<Seance> seances = seanceService.getAllSeance();
+     List<CheckIn> checkIns = checkInService.getCheckInByDate(LocalDate.now());
+     LocalTime currentTime = LocalTime.now();
+     model.addAttribute("currentTime", currentTime);
+     model.addAttribute("checkin", checkIns);
+        model.addAttribute("sessions",seances);
+        return "employeeInterface/empCheckIns";
+ }
 }

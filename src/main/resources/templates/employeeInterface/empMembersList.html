@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="partials/layout.html">
-<head th:insert="~{partials/sideBar  :: header}">
+      layout:decorate="partials/employeeBar.html">
+
+<head th:insert="~{partials/employeeBar  :: EmpHeader}">
     <title>Member List</title>
 
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="EmpContent">
     <div class="search-field d-none d-md-block ">
         <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group mb-3">
@@ -18,90 +19,94 @@
             </div>
         </form>
     </div>
-    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
+    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><span style="font-size: 20px" class="material-symbols-sharp">
+print
+</span></a>
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
             data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
     <form th:action="@{/deleteCells}" method="post">
-    <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+        <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class=" float-start mb-3 btn btn-rounded  mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
 
-    <table class="table table-centered table-hover table-responsive">
-        <tr>
-            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
+        <table class="table table-centered table-hover table-responsive " style="border-radius: 15px;
+  box-shadow: 2px 5px 2px rgba(152, 152, 152, 0.4);
+  background-color: #356d78 !important;">
+            <tr>
+                <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
-            <th>Id</th>
-            <th>Adhérent</th>
-            <th>Cin</th>
-            <th>Date de naissance</th>
-            <th>Tele</th>
-            <th>Sexe</th>
-<th>Inscrie le</th>
-            <th>Abonnement</th>
-            <th>Statue</th>
-            <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" colspan="2">Action</th>
-        </tr>
-        <tr th:each="m:${listMember}" data-th-id="${m.id}"
-            onclick="getProfile($(this).attr('id'))">
-            <script>
-                function getProfile(id) {
+                <th>Id</th>
+                <th>Adhérent</th>
+                <th>Cin</th>
+                <th>Date de naissance</th>
+                <th>Tele</th>
+                <th>Sexe</th>
+                <th>Inscrie le</th>
+                <th>Abonnement</th>
+                <th>Statue</th>
+                <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" colspan="2">Action</th>
+            </tr>
+            <tr th:each="m:${listMember}" data-th-id="${m.id}"
+                onclick="getProfile($(this).attr('id'))">
+                <script>
+                    function getProfile(id) {
 
-                    window.location.href = "/membersList/userProfile?id=" + id;
-                }
-            </script>
-            <a ></a>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
-            <input  onclick="event.stopPropagation()" type="checkbox" name="selectedCells" data-target="requests-all"
-                   th:value="${m.id}" />
-            </td>
-            <td th:utext="${m.getId()}"></td>
-            <td >
-                <div class="user-info">
-                    <div class="user-info__img">
-                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
-                </div>
-                    <div class="user-info__basic">
-                        <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
-                        <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                        window.location.href = "/membersList/userProfile?id=" + id;
+                    }
+                </script>
+                <a ></a>
+                <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
+                    <input  onclick="event.stopPropagation()" type="checkbox" name="selectedCells" data-target="requests-all"
+                            th:value="${m.id}" />
+                </td>
+                <td th:utext="${m.getId()}"></td>
+                <td >
+                    <div class="user-info">
+                        <div class="user-info__img">
+                            <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                        </div>
+                        <div class="user-info__basic">
+                            <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                            <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                        </div>
                     </div>
-                </div>
-            </td>
+                </td>
 
-            <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-            <td th:utext="${m.getName()}"></td>
-            <td th:utext="${m.getLname()}"></td>
-            <td th:utext="${m.getEmail()}"></td>-->
+                <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+                <td th:utext="${m.getName()}"></td>
+                <td th:utext="${m.getLname()}"></td>
+                <td th:utext="${m.getEmail()}"></td>-->
 
-            <td th:utext="${m.getCin()}"></td>
-            <td th:utext="${m.getDob()}"></td>
-            <td th:utext="${m.getTele()}"></td>
-            <td th:utext="${m.getGender()}"></td>
-            <td th:utext="${m.createdAt}"></td>
-            <td style="color: #4b6c91;
+                <td th:utext="${m.getCin()}"></td>
+                <td th:utext="${m.getDob()}"></td>
+                <td th:utext="${m.getTele()}"></td>
+                <td th:utext="${m.getGender()}"></td>
+                <td th:utext="${m.createdAt}"></td>
+                <td style="color: #4b6c91;
   font-weight: bold;" th:utext="${m.abonnement}"></td>
-            <td>
-                <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
-                <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+                <td>
+                    <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                    <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
 
-            </td>
-            <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
-                   th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
-                    class="bi bi-trash iconT"></i></a></td>
-            <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
-                <i class="bi bi-pencil-square iconE "></i></a></td>
+                </td>
+                <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
+                                                                                                                      th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
+                        class="bi bi-trash iconT"></i></a></td>
+                <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
+                    <i class="bi bi-pencil-square iconE "></i></a></td>
 
 
-        </tr>
-    </table></form>
+            </tr>
+        </table></form>
     <ul class="nav nav-pills">
         <li th:each="page,status:${pages}" >
             <a
                     th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
-                    th:href="@{/membersList(page=${status.index}, keyword=${keyword})}"
+                    th:href="@{/employee/members(page=${status.index}, keyword=${keyword})}"
                     th:text="${status.index}">
             </a>
         </li>
     </ul>
 
-<!--Add Member Modal-->
+    <!--Add Member Modal-->
     <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -117,7 +122,7 @@
                         <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
                             <form id="myForm" th:action="@{/addMember}"
-                                  th:object="${memberForm}" method="POST" enctype="multipart/form-data">
+                                  th:object="${member}" method="POST" enctype="multipart/form-data">
 
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
@@ -169,7 +174,7 @@
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Cin:<span class="text-danger"> *</span></label>
-                                                <input class="form-control required-field" type="text" name="cin" th:field="*{cin}" id="cin" required/>
+                                            <input class="form-control required-field" type="text" name="cin" th:field="*{cin}" id="cin" required/>
                                             <div id="cinExistsMessage" class="error-message"></div>
 
                                         </div>
@@ -183,10 +188,10 @@
                                 </div>
                                 <div class="row">
 
-                                        <div class="form-outline">
-                                            <label class="form-label">Adresse:</label>
-                                            <input class="form-control" type="text" th:field="*{adress}"/>
-                                        </div>
+                                    <div class="form-outline">
+                                        <label class="form-label">Adresse:</label>
+                                        <input class="form-control" type="text" th:field="*{adress}"/>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
@@ -253,7 +258,7 @@
 
                                 <input type="submit" id="submitBtn" class="btn btn-primary mt-2" value="Ajouter"/>
                             </form>
-<!--                            <button onclick="performFingerprintRegistration();" class="btn btn-primary mt-2">Emprint</button>-->
+                            <!--                            <button onclick="performFingerprintRegistration();" class="btn btn-primary mt-2">Emprint</button>-->
 
                         </div>
                     </div>
@@ -333,7 +338,7 @@
                 input1.classList.add('mismatched-border');
                 input2.classList.add('mismatched-border');
             }
-     }
+        }
     </script>
 
     <script>
@@ -343,7 +348,7 @@
             handleInputValidation('cin', 'cinExistsMessage', '/checkCinExists?cin=', 'myForm', 'submitBtn');
         });
     </script>
-        
+
 </div>
 </body>
 </html>

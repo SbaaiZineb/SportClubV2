@@ -3,13 +3,15 @@ package com.sportclub.sportclub.service;
 import com.sportclub.sportclub.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
-     void addMember(Member member);
+     void addMember(Member member, Authentication authentication, MultipartFile file);
 List<Member> getMemberByMembership(Long abid);
      List<Member> getMemberBynName(String name);
 
