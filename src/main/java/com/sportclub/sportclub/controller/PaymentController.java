@@ -3,11 +3,10 @@ package com.sportclub.sportclub.controller;
 import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.Gym;
 import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.repository.GymRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
-import com.sportclub.sportclub.service.GymService;
-import com.sportclub.sportclub.service.InvoiceService;
-import com.sportclub.sportclub.service.MemberService;
+import com.sportclub.sportclub.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.jsoup.Jsoup;
@@ -16,10 +15,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.TemplateEngine;
 import com.sportclub.sportclub.entities.Paiement;
-import com.sportclub.sportclub.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +53,8 @@ public class PaymentController {
     @Autowired
     PaymentService paymentService;
     @Autowired
+    AdminService adminService;
+    @Autowired
     PaymentRepo paymentRepo;
     @Autowired
     MemberService memberService;
@@ -81,7 +82,7 @@ public class PaymentController {
     }
 
 
-    @GetMapping("paymentList/pay")
+    @GetMapping("payments/pay")
     public String getPay(@RequestParam(name = "id") Long id, Model model) {
         LocalDate localDate = LocalDate.now();
         model.addAttribute("date", localDate);
@@ -90,7 +91,7 @@ public class PaymentController {
         return "paymentModal";
     }
 
-    @RequestMapping(path = {"/paymentList/search"})
+    @RequestMapping(path = {"/payments/search"})
     public String search(Model model, String keyword) {
 
         Paiement paiement = new Paiement();
@@ -105,15 +106,25 @@ public class PaymentController {
         return "paymentList";
     }
 
-    @PostMapping("paymentList/pay")
-    public String addAb(@Validated Paiement paiement, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) return "paymentModal";
+    @PostMapping("payments/pay")
+    public String pay(@Validated Paiement paiement, BindingResult bindingResult, Authentication authentication) {
+        if (bindingResult.hasErrors()) return "error";
+
+
+        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
+
+
         paiement.setPayedAt(LocalDate.now());
         paiement.setStatue("Payé");
+        paiement.setPayedBy("CASH");
         Member member= paiement.getMember();
         member.setStatue("Active");
         memberService.updateMember(member);
         paymentService.updatePayment(paiement);
+        if (userRole.equals("EMPLOYEE")){
+            return "redirect:/employee/payments";
+        }
         return "redirect:/paymentList";
     }
 

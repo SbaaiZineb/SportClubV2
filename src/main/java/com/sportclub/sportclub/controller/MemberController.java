@@ -4,6 +4,7 @@ import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Gym;
 import com.sportclub.sportclub.entities.Member;
+import com.sportclub.sportclub.entities.UserApp;
 import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.service.*;
@@ -49,6 +50,8 @@ public class MemberController {
 
     @Autowired
     CheckInService checkInService;
+    @Autowired
+            AdminService adminService;
     PaymentService paymentService;
     RoleService roleService;
     FileStorageService fileService;
@@ -152,15 +155,21 @@ public class MemberController {
 
     @GetMapping("/deleteMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
-    public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Model model) {
+    public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Authentication authentication) {
+
+        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
+
        Member member=memberService.getMemberById(id);
 
                 memberService.deletMember(id);
-                if (member.getPic()!=null){
+                if (member.getPic()!=null && !member.getPic().equals("default-user.png")){
                     fileStorageService.deleteFile(member.getPic());
 
                 }
-
+        if (userRole.equals("EMPLOYEE")){
+            return "redirect:/employee/members?page=" + page + "&keyword="+ keyword;
+        }
 
         return "redirect:/membersList?page=" + page + "&keyword=" + keyword;
     }
@@ -178,8 +187,12 @@ public class MemberController {
 
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file,Authentication authentication) {
         if (bindingResult.hasErrors()) return "error";
+
+        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
+
         Member existingMember = memberService.getMemberById(member.getId());
         if (file != null && !file.isEmpty()) {
 
@@ -192,6 +205,9 @@ public class MemberController {
             }
         }
         memberService.updateMember(member);
+        if (userRole.equals("EMPLOYEE")){
+            return "redirect:/employee/members";
+        }
         return "redirect:/membersList";
     }
 
@@ -216,7 +232,10 @@ public class MemberController {
 
     @PostMapping("/deleteCells")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells,Authentication authentication) {
+
+        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
         // Perform the delete operation using the selected cell IDs
 
         for (Long cellId : selectedCells) {
@@ -234,8 +253,10 @@ public class MemberController {
                 return "error";
             }
         }
-
-        // Redirect to a success page or return a response as needed
+        //Redirect to employee's members interface if the role of the connected user is "EMPLOYEE"
+        if (userRole.equals("EMPLOYEE")){
+            return "redirect:/employee/members";
+        }
         return "redirect:/membersList";
     }
 

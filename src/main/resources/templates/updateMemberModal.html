@@ -27,7 +27,7 @@ object-fit: cover;border-radius: 50%"></div>
                     <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label class="form-label">Nom:</label>
-                            <input class="form-control" type="text"th:field="*{member.name}" required/>
+                            <input class="form-control" type="text" th:field="*{member.name}" required/>
                             <span class="text-danger" th:errors="${member.name}" th:value="${member.name}" ></span>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ object-fit: cover;border-radius: 50%"></div>
 
             <label class="form-label">Abonnement : </label>
             <label class="fw-bold" th:text="${member.abonnement != null ? member.abonnement.nameAb : 'None'}"></label>
-            <input type="hidden" class="form-control" id="abonnement"  name="abonnement" th:value="${member.abonnement.id}">
+            <input type="hidden" class="form-control" id="abonnement"  name="abonnement" th:value="${member.abonnement != null ? member.abonnement.id : ''}">
 
 <!--            <select name="abonnement" id="abonnement" class="form-control mb-3" >-->
 <!--                <option th:each="abonnement :${abos}" th:value="${abonnement.id}" th:field="*{member.abonnement}"-->

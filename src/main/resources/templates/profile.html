@@ -42,7 +42,7 @@ object-fit: cover;"
             </div>
             <div class="col-md-8">
                 <form th:action="@{/editAdminProfile}" method="post" enctype="multipart/form-data"
-                      th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
+                      th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
                     <input type="hidden" name="id" th:value="${user.id}" >
                     <input type="hidden" name="pic" th:value="${userPic}">
                     <input type="hidden" name="roles" th:value="${user.roles.role_id}">

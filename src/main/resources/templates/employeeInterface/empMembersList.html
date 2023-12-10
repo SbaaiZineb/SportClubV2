@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="EmpContent">
     <div class="search-field d-none d-md-block ">
-        <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/employee/members/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group mb-3">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
@@ -88,10 +88,13 @@ print
 
                 </td>
                 <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
-                                                                                                                      th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
-                        class="bi bi-trash iconT"></i></a></td>
+                                                                                                                      th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"><span style="color: #d51d1d" class="material-symbols-sharp">
+delete
+</span></a></td>
                 <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
-                    <i class="bi bi-pencil-square iconE "></i></a></td>
+                    <span class="material-symbols-sharp">
+edit
+</span></a></td>
 
 
             </tr>
@@ -121,7 +124,7 @@ print
                     <div class="card align-content-center">
                         <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
-                            <form id="myForm" th:action="@{/addMember}"
+                            <form id="myForm" th:action="@{/employee/addMember}"
                                   th:object="${member}" method="POST" enctype="multipart/form-data">
 
                                 <div class="row">

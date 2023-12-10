@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="partials/layout.html">
-<head th:insert="~{partials/sideBar:: header}">
+      layout:decorate="partials/employeeBar.html">
 
-    <title>Paiment List</title>
+<head th:insert="~{partials/employeeBar  :: EmpHeader}">
+
+    <title>Les paiments</title>
 
 
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="EmpContent">
     <div class="search-field d-none mb-1 d-md-block">
-        <form th:action="@{/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/employee/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group">
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
@@ -44,35 +45,35 @@
             <td th:utext="${p.getEnd_date()}"></td>
 
             <td class="text-center">
-              <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-              <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
             </td>
             <td>
                 <a th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
                 <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
             </td>
             <style>
-                    .hide{
-                        display: none;
-                    }
-                    .show{
-                        display: block;
-                    }
-                </style>
+                .hide{
+                    display: none;
+                }
+                .show{
+                    display: block;
+                }
+            </style>
 
 
 
         </tr>
     </table>
-     <ul class="nav nav-pills">
-       <li th:each="page,status:${pages}">
-         <a
-                 th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
-                 th:href="@{/payments(page=${status.index}, keyword=${keyword})}"
-                 th:text="${status.index}">
-         </a>
-       </li>
-     </ul>
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}">
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{/employee/payments(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
 
     <!-- Payment Modal -->
     <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="paymentLabel"
@@ -166,18 +167,18 @@
 
 
         })
-       /* $('#invoice').on('show.bs.modal', function () {
+        /* $('#invoice').on('show.bs.modal', function () {
 
-            $(".inv").click(function () {
-                var id = $(this).attr('id');
+             $(".inv").click(function () {
+                 var id = $(this).attr('id');
 
-                $.get("/invoice?id=" + id, function (data) {
-                    $('#invoice').find('.modal-body').html(data);
-                })
-            })
+                 $.get("/invoice?id=" + id, function (data) {
+                     $('#invoice').find('.modal-body').html(data);
+                 })
+             })
 
 
-        })*/
+         })*/
     </script>
 
 </div>

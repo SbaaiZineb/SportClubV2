@@ -2,6 +2,7 @@ package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
+import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/employee")
+@PreAuthorize("hasAuthority('EMPLOYEE')")
 public class EmployeeController {
     @Autowired
     MemberService memberService;
@@ -36,6 +38,8 @@ public class EmployeeController {
     PaymentService paymentService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    PaymentRepo paymentRepo;
     @Autowired
     GymService gymService;
     @Autowired
@@ -121,4 +125,60 @@ public class EmployeeController {
         model.addAttribute("sessions",seances);
         return "employeeInterface/empCheckIns";
  }
+
+    @GetMapping("/members/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("member", new Member());
+        List<Member> searchResults = memberService.getMemberBynName(keyword);
+        model.addAttribute("listMember", searchResults);
+        return "employeeInterface/empMembersList";
+    }
+    @GetMapping("/payments")
+    public String getPaymentPage(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
+                                 @RequestParam(name = "size", defaultValue = "5") int size,
+                                 @RequestParam(name = "keyword", defaultValue = "") String kw){
+        Page<Paiement> pageP = paymentService.getPage(kw, PageRequest.of(page, size));
+        model.addAttribute("paymentList", pageP.getContent());
+        model.addAttribute("pages", new int[pageP.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
+
+
+
+        Paiement paiement = new Paiement();
+        model.addAttribute("payment", paiement);
+        return "employeeInterface/empPayments";
+    }
+    @RequestMapping(path = {"/payments/search"})
+    public String search(Model model, String keyword) {
+
+        Paiement paiement = new Paiement();
+        model.addAttribute("payment", paiement);
+        List<Paiement> list;
+        if (keyword != null) {
+            list = paymentRepo.findByMemberNameContains(keyword);
+        } else {
+            list = paymentService.getAllPayment();
+        }
+        model.addAttribute("paymentList", list);
+        return "employeeInterface/empPayments";
+    }
+    @PostMapping("payments/pay")
+    public String pay(@Validated Paiement paiement, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "error";
+
+
+
+
+        paiement.setPayedAt(LocalDate.now());
+        paiement.setStatue("Payé");
+        paiement.setPayedBy("CASH");
+        Member member= paiement.getMember();
+        member.setStatue("Active");
+        memberService.updateMember(member);
+        paymentService.updatePayment(paiement);
+
+             return "redirect:/employee/payments";
+
+    }
 }

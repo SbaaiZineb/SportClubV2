@@ -42,7 +42,7 @@ public class userProfileController {
     AbonnementService abonnementService;
 
     @GetMapping("/membersList/userProfile")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
 

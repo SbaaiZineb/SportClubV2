@@ -40,7 +40,7 @@ public class ProfilController {
     CoachCheckInRepo coachCheckInRepo;
     AdminService adminService;
 @GetMapping("/profil")
-@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SUBADMIN') or hasAuthority('COACH')")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getProfile(Model model, Authentication authentication){
     String username = authentication.getName();
