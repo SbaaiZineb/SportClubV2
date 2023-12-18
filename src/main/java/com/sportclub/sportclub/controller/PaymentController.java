@@ -179,8 +179,13 @@ public class PaymentController {
         try {
             // Check if the filename is not empty
             if (!imagePath.getFileName().toString().isEmpty()) {
-                byte[] imageBytes = Files.readAllBytes(imagePath);
-                return Base64.getEncoder().encodeToString(imageBytes);
+                // Check if the file exists
+                if (Files.exists(imagePath)) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    return Base64.getEncoder().encodeToString(imageBytes);
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
