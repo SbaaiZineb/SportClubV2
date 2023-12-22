@@ -117,7 +117,7 @@
                 </li>
 
                 <li  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/paymentList}">
+                    <a class="sidebar-link" th:href="@{/payments}">
                         <i class="bi bi-credit-card-2-back"></i><span class="align-middle">Paiement</span>
                     </a>
                 </li>

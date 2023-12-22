@@ -49,7 +49,9 @@ public class userProfileController {
         Member member = memberService.getMemberById(id);
         List<CheckIn> checkIns = checkInRepo.getCheckInByMember(member);
         List<Paiement> paiements = paymentRepo.findPaiementByMember(member);
+        Abonnement abonnement = member.getAbonnement();
 
+        model.addAttribute("membership",abonnement);
         model.addAttribute("abos", abonnementService.getAllAbos());
         model.addAttribute("today", LocalDate.now());
         model.addAttribute("checkins", checkIns);
@@ -82,6 +84,7 @@ public class userProfileController {
             Abonnement abonnement = abonnementService.getAboById(id);
 
             member.setAbonnement(abonnement);
+            member.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
             memberService.updateMember(member);
             //Add new payment
             Paiement paiement = new Paiement();

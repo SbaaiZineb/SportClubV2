@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import com.sportclub.sportclub.entities.Paiement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -61,7 +58,7 @@ public class PaymentController {
     @Autowired
     GymService gymService;
 
-    @GetMapping("/paymentList")
+    @GetMapping("/payments")
     public String getPayment(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                              @RequestParam(name = "size", defaultValue = "5") int size,
                              @RequestParam(name = "keyword", defaultValue = "") String kw
@@ -72,7 +69,6 @@ public class PaymentController {
         model.addAttribute("pages", new int[pageP.getTotalPages()]);
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
-
 
 
         Paiement paiement = new Paiement();
@@ -111,21 +107,21 @@ public class PaymentController {
         if (bindingResult.hasErrors()) return "error";
 
 
-        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
 
         paiement.setPayedAt(LocalDate.now());
         paiement.setStatue("Payé");
         paiement.setPayedBy("CASH");
-        Member member= paiement.getMember();
+        Member member = paiement.getMember();
         member.setStatue("Active");
         memberService.updateMember(member);
         paymentService.updatePayment(paiement);
-        if (userRole.equals("EMPLOYEE")){
+        if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/payments";
         }
-        return "redirect:/paymentList";
+        return "redirect:/payments";
     }
 
     @Autowired
@@ -138,14 +134,14 @@ public class PaymentController {
 
         Gym gym = gymService.getById(1L);
 
-        context.setVariable("gym",gym);
+        context.setVariable("gym", gym);
         String imageFilename = gym.getLogo();
-        if (!imageFilename.isEmpty()){
+        if (!imageFilename.isEmpty()) {
 
             imageFilename = imageFilename.trim();
             // Convert the image to base64 and add it to the context
 
-            Path imagePath = Paths.get( "uploads", imageFilename);
+            Path imagePath = Paths.get("uploads", imageFilename);
             String base64Image = convertToBase64(imagePath);
 
             context.setVariable("base64Image", base64Image);
@@ -194,6 +190,7 @@ public class PaymentController {
             return null;
         }
     }
+
     @Autowired
     InvoiceService invoiceService;
   /*  @PostMapping("/invoice")
@@ -207,4 +204,19 @@ public class PaymentController {
     }*/
 
 
+    @RequestMapping(value = "/payments/cancel", method = {RequestMethod.GET, RequestMethod.POST})
+
+    public String cancelPayment(@RequestParam(name = "payId") Long id) {
+
+        try {
+
+            Paiement paiement = paymentService.getPaymentById(id);
+            paiement.setStatue("Annulée");
+            paymentService.updatePayment(paiement);
+
+        } catch (Exception e) {
+            System.out.println("Something is wrong !! " + e);
+        }
+        return "redirect:/payments";
+    }
 }

@@ -16,7 +16,7 @@ public class Coach extends UserApp {
     private String sportType;
 
 
-    public Coach(String name, String lname, String adress, String cin, LocalDate dob, int tele, Role roles, String email, String password, String sportType) {
+    public Coach(String name, String lname, String adress, String cin, LocalDate dob, String tele, Role roles, String email, String password, String sportType) {
         super(name, lname, adress, cin, dob, tele, roles, email, password);
         this.sportType = sportType;
     }

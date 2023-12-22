@@ -3,7 +3,7 @@
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar :: header}">
 
-    <title>List des Abonnement</title>
+    <title>List des Abonnements</title>
 
 
 </head>
@@ -34,7 +34,7 @@
             <th>Type d'abonnement</th>
             <th>Prix</th>
             <th>Period</th>
-            <th>Nombre des seances par Semaine</th>
+            <th>Nombre des seances</th>
             <th>Action</th>
         </tr>
         <tr th:each="ab:${listAb}">
@@ -45,7 +45,7 @@
             <td th:utext="${ab.getId()}"></td>
             <td th:utext="${ab.getNameAb()}"></td>
             <td th:utext="${ab.getPrice()}+' DH'"></td>
-            <td th:utext="${ab.getPeriod()}+' mois'"></td>
+            <td th:utext="${ab.getPeriod() == '0' ? 'Carnet' : ab.getPeriod() + ' mois'}"></td>
             <td th:utext="${ab.getNbrSeance()}"></td>
 
             <td><a onclick="return confirm('Vous avez sure')"
@@ -87,22 +87,31 @@
                         <div class="card-body">
                             <form th:action="@{/addAbonnement}"
                                   th:object="${abonnement}" method="POST">
+
                                 <label class="form-label">Nom d'abonnement:<span class="text-danger"> *</span></label>
                                 <input class="form-control" type="text" th:field="*{nameAb}" required/>
+
                                 <label class="form-label mt-3">prix:<span class="text-danger"> *</span></label>
                                 <input class="form-control" type="text" th:field="*{price}" required/>
-                                <label class="form-label mt-3">period:<span class="text-danger"> *</span></label>
-                                <select th:field="*{period}" class="form-control mb-1">
 
+                                <label class="form-label mt-3">period:<span class="text-danger"> *</span></label>
+                                <select th:field="*{period}" class="form-control mb-1" id="periodDropdown">
                                     <option value="1">1 mois</option>
                                     <option value="2">2 mois</option>
                                     <option value="3">3 mois</option>
                                     <option value="6">6 mois</option>
                                     <option value="12">12 mois</option>
+                                    <option value="0">Carnet</option>
+
                                 </select>
 
-                                <label class="form-label mt-2">Nomber des seances par semaine:</label>
-                                <input class="form-control" type="text" th:field="*{nbrSeance}"/>
+                                <label class="form-label mt-2" id="nbrSeanceLabel" style="display: none;" >Nomber des seances :</label>
+                                <select name="nbrSeance" id="nbrSeance" th:field="*{nbrSeance}" style="display: none;">
+                                    <option value="0">0</option>
+                                    <option value="10">10</option>
+                                    <option value="35">35</option>
+                                    <option value="70">70</option>
+                                </select>
 
 
                                 <input class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
@@ -188,6 +197,25 @@ overflow: auto;">
 
 
         })
+
+        // Make the "Nomber des séance" field appear only when selecting "Carnet"
+        const periodDropdown = document.getElementById('periodDropdown');
+        const nbrSeanceLabel = document.getElementById('nbrSeanceLabel');
+        const nbrSeanceDropdown = document.getElementById('nbrSeance');
+
+        // Event listener to the period dropdown
+        periodDropdown.addEventListener('change', function () {
+            // Check if the selected value is "Carnet"
+            if (this.value === '0') {
+                // If selected, display the nbrSeanceLabel and nbrSeanceDropdown
+                nbrSeanceLabel.style.display = 'block';
+                nbrSeanceDropdown.style.display = 'block';
+            } else {
+                // If another option is selected, hide the nbrSeanceLabel and nbrSeanceDropdown
+                nbrSeanceLabel.style.display = 'none';
+                nbrSeanceDropdown.style.display = 'none';
+            }
+        });
     </script>
 </div>
 

@@ -31,8 +31,7 @@
             <th>Date de fin</th>
             <th>Statue</th>
 
-
-            <th colspan="2">Action</th>
+            <th>Action</th>
         </tr>
         <tr th:each="p:${paymentList}">
             <td th:utext="${p.getId()}"></td>
@@ -44,35 +43,43 @@
             <td th:utext="${p.getEnd_date()}"></td>
 
             <td class="text-center">
-              <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-              <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
+                <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                <p class="badge bg-warning m-0" th:if="${p.getStatue() == 'Annulée'}">Annulée</p>
             </td>
             <td>
-                <a th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
-                <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
+                <a th:class="${p.getStatue() == 'Payé' or p.getStatue() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}"
+                   data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+
+                <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv"
+                   data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}">Recu</a>
+                <a title="Annuler le paiement " th:if="${p.getStatue() == 'Impayé'}" th:href="@{/payments/cancel(payId=${p.getId()})}"><i
+                        class="bi bi-x-circle" style="color: red;
+font-size: 22px;
+  margin-left: 1rem;"></i></a>
             </td>
             <style>
-                    .hide{
-                        display: none;
-                    }
-                    .show{
-                        display: block;
-                    }
-                </style>
+                .hide {
+                    display: none;
+                }
 
+                .show {
+                    display: block;
+                }
+            </style>
 
 
         </tr>
     </table>
-     <ul class="nav nav-pills">
-       <li th:each="page,status:${pages}">
-         <a
-                 th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
-                 th:href="@{/payments(page=${status.index}, keyword=${keyword})}"
-                 th:text="${status.index}">
-         </a>
-       </li>
-     </ul>
+    <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}">
+            <a
+                    th:class="${status.index==currentPage?'btn pBtn btn-info ms-2':'btn oBtn btn-outline-info ms-2'}"
+                    th:href="@{/payments(page=${status.index}, keyword=${keyword})}"
+                    th:text="${status.index}">
+            </a>
+        </li>
+    </ul>
 
     <!-- Payment Modal -->
     <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-labelledby="paymentLabel"
@@ -125,11 +132,11 @@
             // Send an AJAX request to the server to generate the invoice
             $.ajax({
                 type: "GET",
-                url: "/invoice?id="+paymentId,
-                data: { id: paymentId },
-                success: function(response) {
+                url: "/invoice?id=" + paymentId,
+                data: {id: paymentId},
+                success: function (response) {
                     // Create a Blob from the response data
-                    var blob = new Blob([response], { type: "application/pdf" });
+                    var blob = new Blob([response], {type: "application/pdf"});
 
                     // Create a temporary URL for the Blob
                     var url = URL.createObjectURL(blob);
@@ -147,7 +154,7 @@
                     URL.revokeObjectURL(url);
                     document.body.removeChild(link);
                 },
-                error: function() {
+                error: function () {
                     alert("Failed to generate the invoice.");
                 }
             });
@@ -166,18 +173,18 @@
 
 
         })
-       /* $('#invoice').on('show.bs.modal', function () {
+        /* $('#invoice').on('show.bs.modal', function () {
 
-            $(".inv").click(function () {
-                var id = $(this).attr('id');
+             $(".inv").click(function () {
+                 var id = $(this).attr('id');
 
-                $.get("/invoice?id=" + id, function (data) {
-                    $('#invoice').find('.modal-body').html(data);
-                })
-            })
+                 $.get("/invoice?id=" + id, function (data) {
+                     $('#invoice').find('.modal-body').html(data);
+                 })
+             })
 
 
-        })*/
+         })*/
     </script>
 
 </div>

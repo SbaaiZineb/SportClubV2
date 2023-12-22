@@ -4,21 +4,15 @@ import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +41,7 @@ public class DashController {
     @PreAuthorize("hasAuthority('ADMIN')  or hasAuthority('COACH')")
 
     public String getDash(Model model) {
-        memberService.ifPicIsEmpty(adminService.getAllAdmins(),memberService.getAllMembers(),coachService.getAllCoachs());
+        memberService.ifPicIsEmpty(adminService.getAllAdmins(), memberService.getAllMembers(), coachService.getAllCoachs());
 
         updateMemberStatues();
         List<Paiement> paiementList = paymentService.getAllPayment();
@@ -80,7 +74,6 @@ public class DashController {
     }
 
 
-
     @GetMapping("/totalPrice")
     public ResponseEntity<Double> getTotalPrice(@RequestParam(name = "selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate) {
         List<Paiement> paiementList = paymentService.getAllPayment();
@@ -111,38 +104,50 @@ public class DashController {
 
     //Update the member's statue
     public void updateMemberStatues() {
-        List<Paiement> allPayments = paymentService.getAllPayment();
-        LocalDate currentDate = LocalDate.now();
+        try {
 
-        for (Paiement payment : allPayments) {
-            LocalDate payEndDate = payment.getEnd_date();
-            Member member = payment.getMember();
-            boolean hasActivePayment = memberHasActivePay(member, allPayments);
+            List<Paiement> allPayments = paymentService.getAllPayment();
 
-            if (member!=null){
-            if (!hasActivePayment) {
-                member.setStatue("Inactive");
-            } else {
-                member.setStatue("Active");
+            for (Paiement payment : allPayments) {
+
+                Member member = payment.getMember();
+                if (member != null) {
+
+                    boolean hasActivePayment = memberHasActivePay(member);
+
+
+                    if (!hasActivePayment) {
+                        member.setStatue("Inactive");
+                    } else {
+                        member.setStatue("Active");
+                    }
+                    memberService.updateMember(member);
+                }
+
             }
-            memberService.updateMember(member);
-}
-
+        } catch (Exception e) {
+            System.out.println("Something is off " + e);
         }
     }
 
-    public boolean memberHasActivePay(Member member, List<Paiement> payments) {
+    public boolean memberHasActivePay(Member member) {
         LocalDate currentDate = LocalDate.now();
-        payments = paymentService.getPaymentsByMember(member);
-        for (Paiement payment : payments) {
+        List<Paiement> payments = paymentService.getPaymentsByMember(member);
+        int nbrSession = member.getNbrSessionCurrentCarnet();
+        if (payments != null) {
 
-            if (currentDate.isBefore(payment.getEnd_date()) && payment.getStatue().equals("Payé")) {
-                //If there is an active payment for the member return true
-                return true;
+
+            for (Paiement payment : payments) {
+
+                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatue().equals("Payé")) || (nbrSession > 0 && payment.getStatue().equals("Payé"))) {
+                    //If there is an active payment for the member return true
+                    return true;
+                }
             }
         }
-        //If not
-        return false;
+            //If not
+            return false;
+
     }
 
 /*@GetMapping("/memberShipStatistic")

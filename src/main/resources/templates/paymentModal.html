@@ -1,121 +1,168 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Paiment</title>
-</head>
-<body>
-<div class="container-fluid">
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Paiment</title>
+    </head>
+    <body>
+    <div class="container-fluid">
 
 
-    <div class="card p-3">
-        <form th:action="@{payments/pay}" method="post" class="form-card">
-            <input type="hidden" name="id" th:value="${payment.getId()}">
-            <input type="hidden" name="member" th:value="${payment.getMember().id}">
-            <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
-            <input type="hidden" name="start_date" th:value="${payment.getStart_date()}">
-            <input type="hidden" name="end_date" th:value="${payment.getEnd_date()}">
+        <div class="card p-3">
+            <form th:action="@{payments/pay}" method="post" class="form-card">
+                <input type="hidden" name="id" th:value="${payment.getId()}">
+                <input type="hidden" name="member" th:value="${payment.getMember().id}">
+                <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
+                <input type="hidden" name="start_date" th:value="${payment.getStart_date()}">
+                <input type="hidden" name="end_date" th:value="${payment.getEnd_date()}">
 
+                <div class="row">
+                    <div class="form-outline">
+                        <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                            <div class="form-check form-check-inline mb-0 me-4 mt-3">
 
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="input-group"><input type="text" name="Name"
-                                                    th:value="${payment.member.getName()+' '+payment.member.getLname()}">
-                        <label>Nom </label></div>
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+    padding: 7px;"
+                                       value="Cheque" id="flexRadioDefault1" th:field="${payment.payedBy}" onclick="selectCheque()">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Chéque
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+    padding: 7px;"
+                                       value="visa" id="flexRadioDefault2" th:field="${payment.payedBy}" >
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Visa
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline mb-0 me-4 mt-3" >
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+    padding: 7px;"
+                                       value="cash" id="flexRadioDefault3" th:field="${payment.payedBy}" checked  onclick="selectCash()">
+                                <label class="form-check-label" for="flexRadioDefault3">
+                                    Cash
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="input-group"><input type="text" id="price" name="price"
-                                                    th:value="${payment.abonnement.price}"> <label>Montant</label></div>
-                </div>
 
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-12">
-                    <button class="btn btn-primary mt-2" type="submit">Payer</button>
-                </div>
-            </div>
-        </form>
+    <div id="cashDiv">
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="input-group"><input type="text" name="Name"
+                                                            th:value="${payment.member.getName()+' '+payment.member.getLname()}">
+                                <label>Nom </label></div>
+                        </div>
+                    </div>
     </div>
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="input-group"><input type="text" id="price" name="price"
+                                                            th:value="${payment.abonnement.price}"> <label>Montant</label></div>
+                        </div>
+
+                    </div>
+
+                    <div class="cheque-div" id="chequeDiv" style="display: none">
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <div class="input-group"><input type="text" name="Name">
+                                    <label>Nom </label></div>
+                            </div>
+                            <div class="col-6">
+                                    <label for="numberOfInputs" style="padding-top: 1rem;">Nombre de cheques </label>
+                                    <select id="numberOfInputs" onchange="generateInputs()">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+
+                            </div>
+                        </div>
+                        <div id="outputArea">
+                            <!-- Dynamically generated input fields will be inserted here -->
+                        </div>
+                    </div>
+                <div class="row justify-content-center">
+                <div class="col-md-12"> <button class="btn btn-primary mt-2" type="submit">Payer</button></div>
+            </div>
+            </form>
+        </div>
 
 
-    <style>
+        <style>
+            .hide{
+                display: none;
+            }
+            .form-card{margin-left: 20px;margin-right: 20px}.form-card input, .form-card textarea{padding: 10px 15px 5px 15px;border: 1px solid lightgrey;border-radius: 6px;margin-bottom: 25px;margin-top: 2px;width: 100%;box-sizing: border-box;font-family: arial,sans-serif;color: #2C3E50;font-size: 14px;letter-spacing: 1px}.form-card input:focus, .form-card textarea:focus{-moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;-webkit-box-shadow: 0px 0px 0px 1.5px skyblue !important;box-shadow: 0px 0px 0px 1.5px skyblue !important;font-weight: bold;border: 1px solid #304FFE;outline-width: 0}.input-group{position:relative;width:100%;overflow:hidden}.input-group input{position:relative;height:60px;margin-left: 1px;margin-right: 1px;border-radius:6px;padding-top: 30px;padding-left: 25px}.input-group label{position:absolute;height: 24px;background: none;border-radius: 6px;line-height: 48px;font-size: 15px;color: gray;width:100%;font-weight:100;padding-left: 25px}input:focus + label{color: #304FFE}.btn-pay{background-color: #304FFE;height: 60px;color: #ffffff !important;font-weight: bold}
+        </style>
 
-        .form-card {
-            margin-left: 20px;
-            margin-right: 20px
-        }
+        <!-- jQuery library -->
+        <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
 
-        .form-card input, .form-card textarea {
-            padding: 10px 15px 5px 15px;
-            border: 1px solid lightgrey;
-            border-radius: 6px;
-            margin-bottom: 25px;
-            margin-top: 2px;
-            width: 100%;
-            box-sizing: border-box;
-            font-family: arial, sans-serif;
-            color: #2C3E50;
-            font-size: 14px;
-            letter-spacing: 1px
-        }
+        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
 
-        .form-card input:focus, .form-card textarea:focus {
-            -moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;
-            -webkit-box-shadow: 0px 0px 0px 1.5px skyblue !important;
-            box-shadow: 0px 0px 0px 1.5px skyblue !important;
-            font-weight: bold;
-            border: 1px solid #304FFE;
-            outline-width: 0
-        }
+        <script>
+            $(document).ready(function() {
+                var div = document.getElementById('dd');
 
-        .input-group {
-            position: relative;
-            width: 100%;
-            overflow: hidden
-        }
+                $('input[name="flexRadioDefault"]').on('change', function() {
+                    var selectedValue = this.value; // Retrieve the selected value directly
+                    alert(selectedValue);
+                    console.log(selectedValue);
+                    if (selectedValue === 'cash') {
+                        div.style.display = 'none'; // Hide the element
+                    } else {
+                        div.style.display = ''; // Show the element (default display)
+                    }
+                });
+            });
+            function selectCheque(){
 
-        .input-group input {
-            position: relative;
-            height: 60px;
-            margin-left: 1px;
-            margin-right: 1px;
-            border-radius: 6px;
-            padding-top: 30px;
-            padding-left: 25px
-        }
+                var div = document.getElementById('cashDiv');
+                var chequeDiv = document.getElementById('chequeDiv')
+                chequeDiv.style.display = 'block';
+                console.log("Done");
+                div.style.display = 'none';
+            }
+            function  selectCash(){
+                var div = document.getElementById('cashDiv');
+                var chequeDiv = document.getElementById('chequeDiv')
+                chequeDiv.style.display = 'none';
+                div.style.display = 'block';
+            }
 
-        .input-group label {
-            position: absolute;
-            height: 24px;
-            background: none;
-            border-radius: 6px;
-            line-height: 48px;
-            font-size: 15px;
-            color: gray;
-            width: 100%;
-            font-weight: 100;
-            padding-left: 25px
-        }
+            function generateInputs(){
+                    var htmlString = "";
+                    var len = $("#numberOfInputs option:selected").val();
+                    for (var i = 0; i < len; i++) {
+                        htmlString += "<label style='font-weight: bold'>Chéque " + (i + 1) + ":</label>";
+                        htmlString += "<div class='row mt-2'>";
+                        htmlString += "<label>N° Chéque :</label>";
+                        htmlString += "</div>";
+                        htmlString += "<input class='mt-1' type='text'  name='num'>";
+                        htmlString += "<div class='row'>";
+                        htmlString += "<div class='col-md-6'>";
+                        htmlString += "<label>Montant :</label>";
+                        htmlString += "<input type='number' name='montant'>";
+                        htmlString += "</div>";
+                        htmlString += "<div class='col-md-6'>";
+                        htmlString += "<label>La date :</label>";
+                        htmlString += "<input type='date' name='laDate'>";
+                        htmlString += "</div>";
+                        htmlString += "</div>";
 
-        input:focus + label {
-            color: #304FFE
-        }
+                        htmlString += "<br>"; // Added line break for spacing
+                    }
+                    $("#outputArea").html(htmlString);
 
-        .btn-pay {
-            background-color: #304FFE;
-            height: 60px;
-            color: #ffffff !important;
-            font-weight: bold
-        }
-    </style>
 
-    <!-- jQuery library -->
-    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
-
-    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
-
-</div>
-</body>
-</html>
+            }
+        </script>
+    </div>
+    </body>
+    </html>

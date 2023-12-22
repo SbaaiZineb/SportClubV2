@@ -41,7 +41,7 @@ public class MemberServiceImp implements MemberService {
     CoachService coachService;
     @Autowired
     PasswordEncoder passwordEncoder;
-   @Autowired
+    @Autowired
     FileStorageService storageService;
     @Autowired
     NotificationService notificationService;
@@ -71,8 +71,12 @@ public class MemberServiceImp implements MemberService {
                 memberForm.setRoles(role);
             }
         }
+        if (memberForm.getAbonnement() != null) {
+            memberForm.setNbrSessionCurrentCarnet(memberForm.getAbonnement().getNbrSeance());
 
+        }
         memberRepository.save(memberForm);
+
         Notification notification = new Notification();
         String username = authentication.getName();
         notification.setTimestamp(LocalDateTime.now());
@@ -96,6 +100,7 @@ public class MemberServiceImp implements MemberService {
             paymentService.addPayement(paiement);
         }
     }
+
     public long count() {
         return memberRepository.count();
     }
@@ -160,8 +165,6 @@ public class MemberServiceImp implements MemberService {
     }
 
 
-
-
     @Override
     public Member getMemberById(Long id) {
         return memberRepository.findById(id).get();
@@ -173,33 +176,35 @@ public class MemberServiceImp implements MemberService {
     }
 
     public void ifPicIsEmpty(List<UserApp> userAppList, List<Member> members, List<Coach> coaches) {
-        try{
+        try {
 
             for (Member member : members
             ) {
-                if (member.getPic()==null) {
+                if (member.getPic() == null) {
                     member.setPic("default-user.png");
                     updateMember(member);
                 }
             }
             for (Coach coach : coaches
             ) {
-                if (coach.getPic()==null) {
+                if (coach.getPic() == null) {
                     coach.setPic("default-user.png");
                     coachService.updateCoach(coach);
                 }
-            } for (UserApp userApp : userAppList
+            }
+            for (UserApp userApp : userAppList
             ) {
-                if (userApp.getPic()==null) {
+                if (userApp.getPic() == null) {
                     userApp.setPic("default-user.png");
                     adminRepo.save(userApp);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     @Override
     public List<Member> getAllMembers() {
         return memberRepository.findAll();

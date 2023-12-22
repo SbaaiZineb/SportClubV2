@@ -63,7 +63,7 @@ public class AbonnementController {
         }
 
         // Redirect to a success page or return a response as needed
-        return "redirect:/abList";
+        return "redirect:/abonnementList";
     }
      @RequestMapping(path = {"/abonnementList/search"})
     public String search( Model model, String ab) {

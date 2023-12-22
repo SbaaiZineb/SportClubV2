@@ -17,7 +17,7 @@ public class Person {
     private String name;
     private String lname;
 
-    public Person(String name, String lname, String adress, String cin, LocalDate dob, int tele) {
+    public Person(String name, String lname, String adress, String cin, LocalDate dob, String tele) {
         this.name = name;
         this.lname = lname;
         this.adress = adress;
@@ -31,6 +31,6 @@ public class Person {
     @Temporal(TemporalType.DATE)
     private LocalDate dob;
 
-    private int tele;
+    private String tele;
 
 }

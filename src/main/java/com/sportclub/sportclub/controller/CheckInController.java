@@ -165,8 +165,19 @@ AdminService adminService;
             checkIn.setMember(member);
             checkIn.setCheckinDate(LocalDate.now());
             checkIn.setCheckinTime(LocalTime.now());
+
             checkIn.setSession(seanceService.getSeanceById(id));
+
             checkInService.addCheck(checkIn);
+
+            // Decrement the number of sessions in the current "Carnet" by one when check into a session
+            int nbrSessionCurrentCarnet = member.getNbrSessionCurrentCarnet();
+            if (nbrSessionCurrentCarnet!=0){
+                nbrSessionCurrentCarnet = nbrSessionCurrentCarnet-1;
+                member.setNbrSessionCurrentCarnet(nbrSessionCurrentCarnet);
+                memberService.updateMember(member);
+
+            }
 
         }
         if (userRole.equals("EMPLOYEE")){
