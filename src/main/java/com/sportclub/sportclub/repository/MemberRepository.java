@@ -15,12 +15,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Object[]> countUsersByMembership();
     long countByAbonnement(Abonnement abonnement);
     Page<Member> findByNameContains(String mc, Pageable pageable);
-    List<Member> findByLnameContains(String s);
+    List<Member> findByLnameContainsIgnoreCase(String s);
+    List<Member> findByCinContainsIgnoreCase(String cin);
+
+    List<Member> findByTeleContains(String tele);
     List<Member> findByAbonnement(Abonnement membership);
     @Query("select count(p) = 1 from Member p where p.email= ?1")
     Boolean findExistByEmail(String email);
 
     @Query("select count(p) = 1 from Member p where p.cin= ?1")
     Boolean findExistByCin(String cin);
-    List<Member> findByCinContains(String cin);
 }

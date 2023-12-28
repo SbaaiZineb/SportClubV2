@@ -115,6 +115,16 @@ public class AdminServiceImp implements AdminService {
     }
 
     @Override
+    public List<UserApp> getByCin(String cin) {
+        return adminRepo.findByCinContainsIgnoreCase(cin);
+    }
+
+    @Override
+    public List<UserApp> getByTele(String tele) {
+        return adminRepo.findByTeleContains(tele);
+    }
+
+    @Override
     public List<UserApp> getAllAdmins() {
         return adminRepo.findAll();
     }

@@ -26,9 +26,9 @@ object-fit: cover;"
                                    th:utext="${user.getEmail()}"></p>
                                 <div th:class="${user.getRoles().roleName == 'ADHERENT' ? '' : 'hide'}">
                                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
-                                       th:if="${user.statue == 'Active'}" th:utext="${user.getStatue()}"></p>
+                                       th:if="${user.status == 'Active'}" th:utext="${user.getStatus()}"></p>
                                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
-                                       th:if="${user.statue == 'Inactive'}" th:utext="${user.getStatue()}"></p>
+                                       th:if="${user.status == 'Inactive'}" th:utext="${user.getStatus()}"></p>
                                 </div>
 
 
@@ -123,7 +123,7 @@ object-fit: cover;"
                                         </div>
                                     </div>
                                 </div>
-                                <button th:if="${user.statue == 'Inactive'}" class="button-43" id="abButton">
+                                <button th:if="${user.status == 'Inactive'}" class="button-43" id="abButton">
                                     Renouvellement d'abonnement
                                 </button>
                                 <!-- HTML !-->
@@ -390,7 +390,7 @@ object-fit: cover;"
                     <th>ID d'abonnement</th>
                     <th>Nom d'abonnement</th>
                     <th>Montant</th>
-                    <th>Nomber des seance</th>
+                    <th>Nomber des seances/Period</th>
                 </tr>
 
                 <tr th:if="${membership != null}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
@@ -462,8 +462,9 @@ background: transparent;margin-top: -17px">
                     <td th:utext="${p.payedBy}"></td>
                     <td style="color: #646fd5;font-weight: bold;"  th:utext="${p.payedAt}"></td>
                     <td class="text-center">
-                        <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-                        <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                        <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
+                        <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
+                        <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
                     </td>
 
 

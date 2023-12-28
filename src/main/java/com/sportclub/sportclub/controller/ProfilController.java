@@ -105,14 +105,14 @@ public class ProfilController {
     return "profile";
     }
     @PostMapping("/passwordUpdate")
-    public String unpdatePassword(@RequestParam(name = "id") Long id,@RequestParam(name = "password") String password){
+    public String updatePassword(@RequestParam(name = "id") Long id,@RequestParam(name = "password") String password){
     UserApp user=adminService.getAdminById(id);
     try {
         user.setPassword(passwordEncoder.encode(password));
         adminService.updateAdmin(user);
         System.out.println("OK!!!!!!!!!!!!!!");
     }catch (Exception e){
-        System.out.println("somthing wrong !!!!!!!!!!!");
+        System.out.println("something wrong !!!!!!!!!!!");
     }
     return "redirect:/profil";
     }

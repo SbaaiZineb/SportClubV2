@@ -37,8 +37,8 @@ paymentRepo.deleteById(id);
     }
 
     @Override
-    public List<Paiement> getByMember(String kw) {
-        return paymentRepo.findByMemberNameContains(kw);
+    public List<Paiement> getByMemberPhone(String kw) {
+        return paymentRepo.findByMemberTeleContains(kw);
     }
 
     @Override

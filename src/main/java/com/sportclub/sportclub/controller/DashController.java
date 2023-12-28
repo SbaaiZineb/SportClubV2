@@ -50,7 +50,7 @@ public class DashController {
 
         for (Paiement payment : paiementList
         ) {
-            if (payment != null && payment.getStatue().equals("Payé")) {
+            if (payment != null && payment.getStatus().equals("Payé")) {
                 double price = payment.getAbonnement().getPrice();
                 totalPrice += price;
 
@@ -82,18 +82,18 @@ public class DashController {
         // Filter payments based on the selected date (if provided)
         if (selectedDate != null) {
             paiementList = paiementList.stream()
-                    .filter(payment -> payment != null && payment.getStatue().equals("Payé")
+                    .filter(payment -> payment != null && payment.getStatus().equals("Payé")
                             && payment.getPayedAt().isEqual(selectedDate))
                     .collect(Collectors.toList());
         } else {
             paiementList = paiementList.stream()
-                    .filter(payment -> payment != null && payment.getStatue().equals("Payé"))
+                    .filter(payment -> payment != null && payment.getStatus().equals("Payé"))
                     .collect(Collectors.toList());
         }
 
         for (Paiement payment : paiementList
         ) {
-            if (payment != null && payment.getStatue().equals("Payé")) {
+            if (payment != null && payment.getStatus().equals("Payé")) {
                 double price = payment.getAbonnement().getPrice();
                 totalPrice += price;
 
@@ -117,9 +117,9 @@ public class DashController {
 
 
                     if (!hasActivePayment) {
-                        member.setStatue("Inactive");
+                        member.setStatus("Inactive");
                     } else {
-                        member.setStatue("Active");
+                        member.setStatus("Active");
                     }
                     memberService.updateMember(member);
                 }
@@ -139,7 +139,7 @@ public class DashController {
 
             for (Paiement payment : payments) {
 
-                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatue().equals("Payé")) || (nbrSession > 0 && payment.getStatue().equals("Payé"))) {
+                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatus().equals("Payé")) || (nbrSession > 0 && payment.getStatus().equals("Payé"))) {
                     //If there is an active payment for the member return true
                     return true;
                 }

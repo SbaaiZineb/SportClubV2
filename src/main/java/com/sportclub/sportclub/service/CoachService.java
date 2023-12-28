@@ -3,6 +3,7 @@ package com.sportclub.sportclub.service;
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Coach;
 import com.sportclub.sportclub.entities.Member;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,6 @@ public interface CoachService {
     Coach getCoachById(Long id);
     void updateCoach(Coach c);
     List<Coach> getAllCoachs();
+    List<Coach> getCoachByCin(String cin);
+    List<Coach> getCoachByTele(String tele);
 }

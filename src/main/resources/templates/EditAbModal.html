@@ -21,7 +21,15 @@
       <input class="form-control" id="prix" type="text"th:field="*{abonnement.price}" />
       <span class="text-danger" th:errors="${abonnement.price}" th:value="${abonnement.price}"></span>
       <label class="form-label mt-3">Périod:</label>
-      <input class="form-control" id="per" type="text" th:field="*{abonnement.period}"/>
+      <select th:field="*{abonnement.period}"  class="form-control mb-1" id="per">
+        <option value="1">1 mois</option>
+        <option value="2">2 mois</option>
+        <option value="3">3 mois</option>
+        <option value="6">6 mois</option>
+        <option value="12">12 mois</option>
+        <option value="0">Carnet</option>
+
+      </select>
       <label class="form-label mi-3">Nombres des seances par semaine:</label>
       <input class="form-control" type="number" id="nbrS" th:field="*{abonnement.nbrSeance}"/>
 

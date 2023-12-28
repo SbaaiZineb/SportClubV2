@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -93,16 +94,22 @@ public class CoachController {
         return "redirect:/coachList";
     }
 
-    @RequestMapping(path = {"/coachList/search"})
-    public String search( Model model, String coach) {
-        Coach coachForm = new Coach();
-        model.addAttribute("CoachForm", coachForm);
-        if(coach!=null) {
-            List<Coach> list = coachRepository.findByNameContains(coach);
-            model.addAttribute("listCoach", list);
-        }else {
-            List<Coach> list = coachService.getAllCoachs();
-            model.addAttribute("listCoach", list);}
+    @GetMapping("/coachList/search")
+    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("CoachForm", new Coach());
+        List<Coach> searchResults = new ArrayList<>();
+
+        if ("cin".equals(searchBy)) {
+            searchResults = coachService.getCoachByCin(keyword);
+        } else if ("tele".equals(searchBy)) {
+            searchResults = coachService.getCoachByTele(keyword);
+        }else if(keyword.isEmpty()){
+            searchResults = coachService.getAllCoachs();
+        }
+
+        model.addAttribute("listCoach", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "coachList";
     }
 
@@ -116,8 +123,8 @@ public class CoachController {
     }
 
     @PostMapping("/addCoach")
-    public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "coachList";
+    public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
+        if(bindingResult.hasErrors()) return "error";
         if (!file.isEmpty()){
             c.setPic(file.getOriginalFilename());
             fileStorageService.save(file);
@@ -138,6 +145,8 @@ public class CoachController {
             }
         }
         coachService.addCoach(c);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Coach ajouté avec succès!");
 
 
         return "redirect:/coachList";

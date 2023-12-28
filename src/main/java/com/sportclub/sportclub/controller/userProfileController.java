@@ -91,7 +91,8 @@ public class userProfileController {
             paiement.setMember(member);
             paiement.setStart_date(LocalDate.now());
             paiement.setAbonnement(abonnement);
-            paiement.setStatue("Impayé");
+            paiement.setTotalAmount(abonnement.getPrice());
+            paiement.setStatus("Impayé");
             String per = paiement.getAbonnement().getPeriod();
             SetPayEndDate sPD = new SetPayEndDate();
             sPD.setPayEndDate(per,paiement);

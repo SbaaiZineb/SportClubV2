@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -151,7 +152,8 @@ AdminService adminService;
 
     @PostMapping("/checkin")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells,Authentication authentication) {
+    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells, Authentication authentication,
+                          RedirectAttributes redirectAttributes) {
 
         UserApp user=adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
@@ -178,6 +180,10 @@ AdminService adminService;
                 memberService.updateMember(member);
 
             }
+
+            // Add success message to be displayed on the redirected page
+            redirectAttributes.addFlashAttribute("successMessage", "L'enregistrement du membre s'est bien déroulé!");
+
 
         }
         if (userRole.equals("EMPLOYEE")){

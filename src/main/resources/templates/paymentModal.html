@@ -1,168 +1,269 @@
-    <!DOCTYPE html>
-    <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Paiment</title>
-    </head>
-    <body>
-    <div class="container-fluid">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiment</title>
+</head>
+<body>
+<div class="container-fluid">
 
 
-        <div class="card p-3">
-            <form th:action="@{payments/pay}" method="post" class="form-card">
-                <input type="hidden" name="id" th:value="${payment.getId()}">
-                <input type="hidden" name="member" th:value="${payment.getMember().id}">
-                <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
-                <input type="hidden" name="start_date" th:value="${payment.getStart_date()}">
-                <input type="hidden" name="end_date" th:value="${payment.getEnd_date()}">
+    <div class="card p-3">
+        <form id="paymentForm" th:action="@{payments/pay}" method="post" class="form-card">
+            <input type="hidden" name="id" th:value="${payment.getId()}">
+            <input type="hidden" name="member" th:value="${payment.getMember().id}">
+            <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
+            <input type="hidden" name="start_date" th:value="${payment.getStart_date()}">
+            <input type="hidden" name="end_date" th:value="${payment.getEnd_date()}">
 
-                <div class="row">
-                    <div class="form-outline">
-                        <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
-                            <div class="form-check form-check-inline mb-0 me-4 mt-3">
 
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+            <div class="row">
+                <div class="form-outline">
+                    <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
+
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
     padding: 7px;"
-                                       value="Cheque" id="flexRadioDefault1" th:field="${payment.payedBy}" onclick="selectCheque()">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    Chéque
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline mb-0 me-4 mt-3">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+                                   value="Cheque" id="flexRadioDefault1" th:field="${payment.payedBy}"
+                                   onclick="selectCheque()">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Chéque
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
     padding: 7px;"
-                                       value="visa" id="flexRadioDefault2" th:field="${payment.payedBy}" >
-                                <label class="form-check-label" for="flexRadioDefault2">
-                                    Visa
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline mb-0 me-4 mt-3" >
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
+                                   value="visa" id="flexRadioDefault2" th:field="${payment.payedBy}">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Visa
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
     padding: 7px;"
-                                       value="cash" id="flexRadioDefault3" th:field="${payment.payedBy}" checked  onclick="selectCash()">
-                                <label class="form-check-label" for="flexRadioDefault3">
-                                    Cash
-                                </label>
-                            </div>
+                                   value="CASH" id="flexRadioDefault3" th:field="${payment.payedBy}"
+                                   onclick="selectCash()" checked>
+                            <label class="form-check-label" for="flexRadioDefault3">
+                                Cash
+                            </label>
                         </div>
                     </div>
                 </div>
-
-    <div id="cashDiv">
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <div class="input-group"><input type="text" name="Name"
-                                                            th:value="${payment.member.getName()+' '+payment.member.getLname()}">
-                                <label>Nom </label></div>
-                        </div>
-                    </div>
-    </div>
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <div class="input-group"><input type="text" id="price" name="price"
-                                                            th:value="${payment.abonnement.price}"> <label>Montant</label></div>
-                        </div>
-
-                    </div>
-
-                    <div class="cheque-div" id="chequeDiv" style="display: none">
-                        <div class="row justify-content-center">
-                            <div class="col-6">
-                                <div class="input-group"><input type="text" name="Name">
-                                    <label>Nom </label></div>
-                            </div>
-                            <div class="col-6">
-                                    <label for="numberOfInputs" style="padding-top: 1rem;">Nombre de cheques </label>
-                                    <select id="numberOfInputs" onchange="generateInputs()">
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-
-                            </div>
-                        </div>
-                        <div id="outputArea">
-                            <!-- Dynamically generated input fields will be inserted here -->
-                        </div>
-                    </div>
-                <div class="row justify-content-center">
-                <div class="col-md-12"> <button class="btn btn-primary mt-2" type="submit">Payer</button></div>
             </div>
-            </form>
-        </div>
 
 
-        <style>
-            .hide{
-                display: none;
-            }
-            .form-card{margin-left: 20px;margin-right: 20px}.form-card input, .form-card textarea{padding: 10px 15px 5px 15px;border: 1px solid lightgrey;border-radius: 6px;margin-bottom: 25px;margin-top: 2px;width: 100%;box-sizing: border-box;font-family: arial,sans-serif;color: #2C3E50;font-size: 14px;letter-spacing: 1px}.form-card input:focus, .form-card textarea:focus{-moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;-webkit-box-shadow: 0px 0px 0px 1.5px skyblue !important;box-shadow: 0px 0px 0px 1.5px skyblue !important;font-weight: bold;border: 1px solid #304FFE;outline-width: 0}.input-group{position:relative;width:100%;overflow:hidden}.input-group input{position:relative;height:60px;margin-left: 1px;margin-right: 1px;border-radius:6px;padding-top: 30px;padding-left: 25px}.input-group label{position:absolute;height: 24px;background: none;border-radius: 6px;line-height: 48px;font-size: 15px;color: gray;width:100%;font-weight:100;padding-left: 25px}input:focus + label{color: #304FFE}.btn-pay{background-color: #304FFE;height: 60px;color: #ffffff !important;font-weight: bold}
-        </style>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="input-group"><input type="text" name="Name"
+                                                    th:value="${payment.member.getName()+' '+payment.member.getLname()}">
+                        <label>Nom </label></div>
+                </div>
+            </div>
 
-        <!-- jQuery library -->
-        <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="input-group"><input type="text" id="price" name="price"
+                                                    th:value="${payment.abonnement.price}"> <label>Montant</label></div>
+                </div>
 
-        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+            </div>
 
-        <script>
-            $(document).ready(function() {
-                var div = document.getElementById('dd');
+            <div class="cheque-div" id="chequeDiv" style="display: none">
+                <div class="row justify-content-center">
 
-                $('input[name="flexRadioDefault"]').on('change', function() {
-                    var selectedValue = this.value; // Retrieve the selected value directly
-                    alert(selectedValue);
-                    console.log(selectedValue);
-                    if (selectedValue === 'cash') {
-                        div.style.display = 'none'; // Hide the element
-                    } else {
-                        div.style.display = ''; // Show the element (default display)
-                    }
-                });
-            });
-            function selectCheque(){
+                    <div class="col-12 mb-3">
+                        <label for="numberOfInputs" style="padding-top: 1rem;font-weight: bold">Nombre de cheques :  </label>
+                        <select id="numberOfInputs" onchange="generateInputs()">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
 
-                var div = document.getElementById('cashDiv');
-                var chequeDiv = document.getElementById('chequeDiv')
-                chequeDiv.style.display = 'block';
-                console.log("Done");
-                div.style.display = 'none';
-            }
-            function  selectCash(){
-                var div = document.getElementById('cashDiv');
-                var chequeDiv = document.getElementById('chequeDiv')
-                chequeDiv.style.display = 'none';
-                div.style.display = 'block';
-            }
+                    </div>
+                </div>
+                <div id="outputArea">
 
-            function generateInputs(){
-                    var htmlString = "";
-                    var len = $("#numberOfInputs option:selected").val();
-                    for (var i = 0; i < len; i++) {
-                        htmlString += "<label style='font-weight: bold'>Chéque " + (i + 1) + ":</label>";
-                        htmlString += "<div class='row mt-2'>";
-                        htmlString += "<label>N° Chéque :</label>";
-                        htmlString += "</div>";
-                        htmlString += "<input class='mt-1' type='text'  name='num'>";
-                        htmlString += "<div class='row'>";
-                        htmlString += "<div class='col-md-6'>";
-                        htmlString += "<label>Montant :</label>";
-                        htmlString += "<input type='number' name='montant'>";
-                        htmlString += "</div>";
-                        htmlString += "<div class='col-md-6'>";
-                        htmlString += "<label>La date :</label>";
-                        htmlString += "<input type='date' name='laDate'>";
-                        htmlString += "</div>";
-                        htmlString += "</div>";
+                    <!-- Dynamic input fields for cheque information -->
+                    <div class="row mt-2" th:each="cheque, itemStat : *{cheques}">
+                        <div class="col-md-12">
+                            <label>N° Chèque :</label>
+                            <input type="number" th:name="${'cheques[' + itemStat.index + '].numCheque'}"
+                                   th:value="${cheque.numCheque}" onchange="logFieldValue(this)">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Montant :</label>
+                                <input type="number" th:name="${'cheques[' + itemStat.index + '].chequeMontant'}"
+                                       th:value="${cheque.chequeMontant}" onchange="logFieldValue(this)">
+                            </div>
+                            <div class="col-md-6">
+                                <label>La date :</label>
+                                <input type="date" th:name="${'cheques[' + itemStat.index + '].chequeDate'}"
+                                       th:value="${cheque.chequeDate}" onchange="logFieldValue(this)">
+                            </div>
+                        </div>
+                        <br>
+                    </div>
 
-                        htmlString += "<br>"; // Added line break for spacing
-                    }
-                    $("#outputArea").html(htmlString);
+                </div>
 
-
-            }
-        </script>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <button class="btn btn-primary mt-2" type="submit">Payer</button>
+                </div>
+            </div>
+        </form>
     </div>
-    </body>
-    </html>
+
+
+    <style>
+        .hide {
+            display: none;
+        }
+
+        .form-card {
+            margin-left: 20px;
+            margin-right: 20px
+        }
+
+        .form-card input, .form-card textarea {
+            padding: 10px 15px 5px 15px;
+            border: 1px solid lightgrey;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: arial, sans-serif;
+            color: #2C3E50;
+            font-size: 14px;
+            letter-spacing: 1px
+        }
+
+        .form-card input:focus, .form-card textarea:focus {
+            -moz-box-shadow: 0px 0px 0px 1.5px skyblue !important;
+            -webkit-box-shadow: 0px 0px 0px 1.5px skyblue !important;
+            box-shadow: 0px 0px 0px 1.5px skyblue !important;
+            font-weight: bold;
+            border: 1px solid #304FFE;
+            outline-width: 0
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            overflow: hidden
+        }
+
+        .input-group input {
+            position: relative;
+            height: 60px;
+            margin-left: 1px;
+            margin-right: 1px;
+            border-radius: 6px;
+            padding-top: 30px;
+            padding-left: 25px
+        }
+
+        .input-group label {
+            position: absolute;
+            height: 24px;
+            background: none;
+            border-radius: 6px;
+            line-height: 48px;
+            font-size: 15px;
+            color: gray;
+            width: 100%;
+            font-weight: 100;
+            padding-left: 25px
+        }
+
+        input:focus + label {
+            color: #304FFE
+        }
+
+        .btn-pay {
+            background-color: #304FFE;
+            height: 60px;
+            color: #ffffff !important;
+            font-weight: bold
+        }
+    </style>
+
+    <!-- jQuery library -->
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+
+    <script>
+        $(document).ready(function () {
+            var div = document.getElementById('dd');
+
+            $('input[name="flexRadioDefault"]').on('change', function () {
+                var selectedValue = this.value; // Retrieve the selected value directly
+                alert(selectedValue);
+                console.log(selectedValue);
+                if (selectedValue === 'cash') {
+                    div.style.display = 'none'; // Hide the element
+                } else {
+                    div.style.display = ''; // Show the element (default display)
+                }
+            });
+        });
+
+        function selectCheque() {
+
+            var div = document.getElementById('cashDiv');
+            var chequeDiv = document.getElementById('chequeDiv')
+            chequeDiv.style.display = 'block';
+            console.log("Done");
+            div.style.display = 'none';
+        }
+
+        function selectCash() {
+            var chequeDiv = document.getElementById('chequeDiv')
+            chequeDiv.style.display = 'none';
+        }
+
+        function generateInputs() {
+            // Get the selected number of cheques
+            var numberOfCheques = $("#numberOfInputs option:selected").val();
+
+            // Clear existing dynamic input fields
+            $("#outputArea").empty();
+
+            // Generate dynamic input fields based on the selected number
+            for (var i = 0; i < numberOfCheques; i++) {
+                var htmlString = "<div class='row mt-2'>";
+                htmlString += "<label style='font-weight: bold'>Chèque " + (i + 1) + ":</label>";
+                htmlString += "<div class='col-md-12'>";
+                htmlString += "<label>N° Chèque :</label>";
+                htmlString += "<input type='number' name='cheques[" + i + "].numCheque' onchange='logFieldValue(this)'>";
+                htmlString += "</div>";
+                htmlString += "<div class='row'>";
+                htmlString += "<div class='col-md-6'>";
+                htmlString += "<label>Montant :</label>";
+                htmlString += "<input type='number' name='cheques[" + i + "].chequeMontant' onchange='logFieldValue(this)'>";
+                htmlString += "</div>";
+                htmlString += "<div class='col-md-6'>";
+                htmlString += "<label>La date :</label>";
+                htmlString += "<input type='date' name='cheques[" + i + "].chequeDate' onchange='logFieldValue(this)'>";
+                htmlString += "</div>";
+                htmlString += "</div>";
+                htmlString += "<br>";
+                $("#outputArea").append(htmlString);
+            }
+        }
+
+
+        // Function to log the field value to the console
+        function logFieldValue(element) {
+            console.log(element.name + ": " + element.value);
+        }
+
+    </script>
+</div>
+</body>
+</html>

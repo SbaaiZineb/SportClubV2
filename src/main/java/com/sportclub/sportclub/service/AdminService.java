@@ -24,4 +24,6 @@ public interface AdminService {
     List<UserApp> getAllAdmins();
     UserApp loadUserByUsername(String email);
     public Page<UserApp> getUsersByRoles(Pageable pageable);
+    List<UserApp> getByCin(String cin);
+    List<UserApp> getByTele(String Tele);
 }

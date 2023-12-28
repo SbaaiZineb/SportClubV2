@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Member extends UserApp {
     private String gender;
-    private String statue;
+    private String status;
 
     private String profession;
     private String famSituation;

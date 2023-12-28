@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment details</title>
+</head>
+<body>
+<table th:each="cheque :${payment.getCheques()}" class="table table-centered table-hover table-responsive mt-3">
+    <tr>
+        <th>Nom</th>
+        <th>Cheque Numero</th>
+        <th>Cheque Montant</th>
+        <th>Cheque Date</th>
+    </tr>
+    <tr>
+        <td th:utext="${cheque.namePayor}"></td>
+        <td th:utext="${cheque.numCheque}"></td>
+        <td th:utext="${cheque.chequeMontant}"></td>
+        <td th:utext="${cheque.chequeDate}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

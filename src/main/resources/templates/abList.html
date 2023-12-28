@@ -10,6 +10,11 @@
 <body>
 
 <div layout:fragment="content">
+    <!-- Success message for successful add -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
     <div class="search-field d-none d-md-block">
         <form th:action="@{abonnementList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group mb-3">

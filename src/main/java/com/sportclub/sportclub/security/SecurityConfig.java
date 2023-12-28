@@ -1,4 +1,5 @@
 package com.sportclub.sportclub.security;
+
 import com.sportclub.sportclub.service.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +26,13 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsServiceImp userDetailsServiceImp;
-@Bean
-    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource){
+
+    @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
         return new JdbcUserDetailsManager(dataSource);
     }
-//    @Bean
+
+    //    @Bean
   /*  public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         return new InMemoryUserDetailsManager(
                 User.withUsername("user1").password(passwordEncoder.encode("1234")).roles("USER").build(),
@@ -38,10 +41,11 @@ public class SecurityConfig {
         );
     }
 */
-@Bean
-public AuthenticationSuccessHandler authenticationSuccessHandler() {
-    return new CustomAuthenticationSuccessHandler();
-}
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -59,13 +63,14 @@ public AuthenticationSuccessHandler authenticationSuccessHandler() {
         httpSecurity.formLogin().loginPage("/login").successHandler(authenticationSuccessHandler())
                 .permitAll();
 
-        httpSecurity.authorizeHttpRequests().requestMatchers("/*","/abonnementList/**","/membersList/**","/coachList/**","/addMember","/webjars/**","/css/**","/js/**","/uploads/**","/images/**","/favicon.ico","/node_modules/**","/calendar","/search","/coachList/images").permitAll();
+        httpSecurity.authorizeHttpRequests().requestMatchers("/*", "/abonnementList/**", "/membersList/**", "/coachList/**", "/addMember", "/webjars/**", "/css/**", "/js/**", "/uploads/**", "/images/**", "/favicon.ico", "/node_modules/**", "/calendar", "/search", "/coachList/images").permitAll();
         httpSecurity.authorizeHttpRequests().requestMatchers("/membersList").hasAuthority("COACH");
 
-    httpSecurity.logout().logoutSuccessUrl("/login");
+        httpSecurity.logout().logoutSuccessUrl("/login");
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
         httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
         httpSecurity.userDetailsService(userDetailsServiceImp);
+        httpSecurity.rememberMe().key("uniqueAndSecret").userDetailsService(userDetailsServiceImp).tokenValiditySeconds(604800);
 //        httpSecurity.rememberMe();
         return httpSecurity.build();
     }

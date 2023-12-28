@@ -59,4 +59,14 @@ public class CoachServiceImp implements CoachService {
     public List<Coach> getAllCoachs() {
         return coachRepository.findAll();
     }
+
+    @Override
+    public List<Coach> getCoachByCin(String cin) {
+        return coachRepository.findByCinContainsIgnoreCase(cin);
+    }
+
+    @Override
+    public List<Coach> getCoachByTele(String tele) {
+        return coachRepository.findByTeleContains(tele);
+    }
 }

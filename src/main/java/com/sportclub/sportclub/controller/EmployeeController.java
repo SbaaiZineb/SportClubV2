@@ -156,7 +156,7 @@ public class EmployeeController {
         model.addAttribute("payment", paiement);
         List<Paiement> list;
         if (keyword != null) {
-            list = paymentRepo.findByMemberNameContains(keyword);
+            list = paymentService.getByMemberPhone(keyword);
         } else {
             list = paymentService.getAllPayment();
         }
@@ -171,10 +171,10 @@ public class EmployeeController {
 
 
         paiement.setPayedAt(LocalDate.now());
-        paiement.setStatue("Payé");
+        paiement.setStatus("Payé");
         paiement.setPayedBy("CASH");
         Member member= paiement.getMember();
-        member.setStatue("Active");
+        member.setStatus("Active");
         memberService.updateMember(member);
         paymentService.updatePayment(paiement);
 

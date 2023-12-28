@@ -7,17 +7,38 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="search-field d-none d-md-block ">
+    <div class="row" style=" margin: auto; width: 50%;">
         <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend bg-transparent">
+            <div class="row mb-3">
+                <div class="col-md-1">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+
                 </div>
-                <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                       th:value="${keyword}" placeholder="Chercher par prenom">
+                <div class="col-md-4">
+
+                    <select class="form-control  " name="searchBy">
+                        <option value="tele">Cherecher par Telephone</option>
+                        <option value="cin">Chercher par CIN</option>
+
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control " name="keyword" th:value="${keyword}"
+                           placeholder="Chercher...">
+
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-info">Search</button>
+                </div>
             </div>
         </form>
     </div>
+    <!-- Success message for successful Add -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
+
     <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary "
        style="border-radius: 15px;"><i data-feather="printer"></i></a>
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"
@@ -89,9 +110,9 @@
   font-weight: bold;" th:utext="${m.abonnement}"></td>
                 <td>
                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
-                       th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                       th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
-                       th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+                       th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
                 </td>
                 <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a
@@ -134,7 +155,7 @@
                         <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
                             <form id="myForm" th:action="@{/addMember}"
-                                  th:object="${memberForm}" method="POST" enctype="multipart/form-data">
+                                  th:object="${member}" method="POST" enctype="multipart/form-data">
 
                                 <div class="row">
                                     <div class="col-md-4 mb-4">
@@ -146,7 +167,8 @@
                                     </div>
                                     <div class="col-md-4 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Prénom :<span class="text-danger"> *</span></label>
+                                            <label class="form-label">Prénom :<span
+                                                    class="text-danger"> *</span></label>
                                             <input class="form-control required-field" type="text" th:field="*{lname}"
                                                    required/>
                                         </div>
@@ -171,6 +193,7 @@
                                                 .input-error {
                                                     border: 1px solid red;
                                                 }
+
                                                 .input-border {
                                                     border: 1px solid gray;
                                                 }
@@ -199,7 +222,8 @@
                                     </div>
                                     <div class="col-md-4 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Tele 1 :<span class="text-danger"> *</span></label>
+                                            <label class="form-label">Tele 1 :<span
+                                                    class="text-danger"> *</span></label>
                                             <input class="form-control required-field" type="text" th:field="*{tele}"
                                                    required/>
 
@@ -208,8 +232,9 @@
                                     <div class="col-md-4 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Tele 2 :</label>
-                                            <input class="form-control required-field" type="text" th:field="*{secondTele}"
-                                                   />
+                                            <input class="form-control required-field" type="text"
+                                                   th:field="*{secondTele}"
+                                            />
 
                                         </div>
                                     </div>
@@ -218,8 +243,9 @@
                                     <div class="col-md-4 ">
                                         <div class="form-outline">
                                             <label class="form-label">Profession :</label>
-                                            <input class="form-control required-field" type="text" th:field="*{profession}"
-                                                   />
+                                            <input class="form-control required-field" type="text"
+                                                   th:field="*{profession}"
+                                            />
                                         </div>
                                     </div>
                                     <div class="col-md-4 ">
@@ -308,7 +334,8 @@
                                     </div>
                                 </div>
 
-                                <input type="submit" id="submitBtn" class="btn btn-primary mt-2" value="Ajouter" style="width: 7rem;"/>
+                                <input type="submit" id="submitBtn" class="btn btn-primary mt-2" value="Ajouter"
+                                       style="width: 7rem;"/>
                             </form>
                             <!--                            <button onclick="performFingerprintRegistration();" class="btn btn-primary mt-2">Emprint</button>-->
 
@@ -323,7 +350,8 @@
         </div>
     </div>
     <!-- Edit Member Modal -->
-    <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog"
+         aria-labelledby="editModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">

@@ -1,9 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
-import com.sportclub.sportclub.entities.Gym;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.UserApp;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.GymRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
@@ -17,8 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.TemplateEngine;
-import com.sportclub.sportclub.entities.Paiement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,10 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
@@ -77,16 +72,6 @@ public class PaymentController {
 
     }
 
-
-    @GetMapping("payments/pay")
-    public String getPay(@RequestParam(name = "id") Long id, Model model) {
-        LocalDate localDate = LocalDate.now();
-        model.addAttribute("date", localDate);
-        Paiement paiement = paymentService.getPaymentById(id);
-        model.addAttribute("payment", paiement);
-        return "paymentModal";
-    }
-
     @RequestMapping(path = {"/payments/search"})
     public String search(Model model, String keyword) {
 
@@ -94,7 +79,7 @@ public class PaymentController {
         model.addAttribute("payment", paiement);
         List<Paiement> list;
         if (keyword != null) {
-            list = paymentRepo.findByMemberNameContains(keyword);
+            list = paymentRepo.findByMemberTeleContains(keyword);
         } else {
             list = paymentService.getAllPayment();
         }
@@ -102,22 +87,50 @@ public class PaymentController {
         return "paymentList";
     }
 
-    @PostMapping("payments/pay")
-    public String pay(@Validated Paiement paiement, BindingResult bindingResult, Authentication authentication) {
+    @GetMapping("payments/pay")
+    public String getPay(@RequestParam(name = "id") Long id, Model model) {
+        LocalDate localDate = LocalDate.now();
+        model.addAttribute("date", localDate);
+        Paiement paiement = paymentService.getPaymentById(id);
+        model.addAttribute("payment", paiement);
+        List<Cheque> cheques = new ArrayList<>();
+        cheques.add(new Cheque());
+
+
+        model.addAttribute("cheques", cheques); // Add cheques to the model
+        model.addAttribute("cheque", new Cheque());
+        return "paymentModal";
+    }
+
+
+    @PostMapping("/payments/pay")
+    public String pay(@Validated Paiement paiement, BindingResult bindingResult, Authentication authentication,
+                      RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "error";
 
+        for (Cheque cheque : paiement.getCheques()) {
+
+            cheque.setNamePayor(paiement.getMember().getName()+" "+paiement.getMember().getLname());
+            cheque.setPaiement(paiement);
+
+            System.out.println("Cheque Number: " + cheque.getNumCheque());
+            System.out.println("Cheque Amount: " + cheque.getChequeMontant());
+            System.out.println("Cheque Date: " + cheque.getChequeDate());
+            System.out.println("----------------------");
+        }
 
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
 
         paiement.setPayedAt(LocalDate.now());
-        paiement.setStatue("Payé");
-        paiement.setPayedBy("CASH");
+        paiement.setStatus("Payé");
         Member member = paiement.getMember();
-        member.setStatue("Active");
+        member.setStatus("Active");
         memberService.updateMember(member);
         paymentService.updatePayment(paiement);
+        redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
+
         if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/payments";
         }
@@ -211,12 +224,22 @@ public class PaymentController {
         try {
 
             Paiement paiement = paymentService.getPaymentById(id);
-            paiement.setStatue("Annulée");
+            paiement.setStatus("Annulée");
             paymentService.updatePayment(paiement);
 
         } catch (Exception e) {
             System.out.println("Something is wrong !! " + e);
         }
         return "redirect:/payments";
+    }
+
+
+    @GetMapping("/paymentDetails")
+    public String paymentDetails(@RequestParam(name = "id") Long paymentId, Model model){
+
+        Paiement payment = paymentService.getPaymentById(paymentId);
+        model.addAttribute("payment",payment);
+
+        return "paymentDetails";
     }
 }

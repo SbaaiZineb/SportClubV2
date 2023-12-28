@@ -17,8 +17,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -26,26 +28,27 @@ import java.util.List;
 public class AdminController {
     @Autowired
     PasswordEncoder passwordEncoder;
-@Autowired
+    @Autowired
     RoleService roleService;
-@Autowired
+    @Autowired
     AdminService adminService;
-@Autowired
+    @Autowired
     FileStorageService fileStorageService;
-@Autowired
+    @Autowired
     AdminRepo adminRepo;
+
     @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping(value = "/adminList",method = RequestMethod.GET)
+    @RequestMapping(value = "/adminList", method = RequestMethod.GET)
     public String getAdmins(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
-                             @RequestParam(name = "size", defaultValue = "5") int size,
-                             @RequestParam(name = "keyword", defaultValue = "") String kw
+                            @RequestParam(name = "size", defaultValue = "5") int size,
+                            @RequestParam(name = "keyword", defaultValue = "") String kw
     ) {
 
 
         model.addAttribute("user", new UserApp());
 
-        List<Role> roles=roleService.findAllRoles();
-        model.addAttribute("roles",roles);
+        List<Role> roles = roleService.findAllRoles();
+        model.addAttribute("roles", roles);
 
       /*  for (User user:adminService.getAllAdmins()
              ) {
@@ -58,18 +61,19 @@ public class AdminController {
         pageAdmin = adminService.getUsersByRoles(PageRequest.of(page, size));
         System.out.println("yessss!!!!!!");
         model.addAttribute("users", pageAdmin.getContent());
-                    model.addAttribute("pages", new int[pageAdmin.getTotalPages()]);
-                    model.addAttribute("currentPage", page);
-                    model.addAttribute("keyword", kw);
-                    UserApp userForm = new UserApp();
-                    model.addAttribute("userForm", userForm);
+        model.addAttribute("pages", new int[pageAdmin.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
+        UserApp userForm = new UserApp();
+        model.addAttribute("userForm", userForm);
 
-model.addAttribute("user",userForm);
+        model.addAttribute("user", userForm);
         return "adminList";
 
     }
-@GetMapping("/addAdmin")
-@PreAuthorize("hasAuthority('ADMIN')")
+
+    @GetMapping("/addAdmin")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String getAddAdminPage(Model model) {
         UserApp userForm = new UserApp();
         model.addAttribute("userForm", userForm);
@@ -78,17 +82,18 @@ model.addAttribute("user",userForm);
 
     @PostMapping("/addAdmin")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String addAdmin(@Validated UserApp admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "adminList";
+    public String addAdmin(@Validated UserApp admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file,
+                           RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) return "adminList";
 
-        if (!file.isEmpty()){
+        if (!file.isEmpty()) {
             admin.setPic(file.getOriginalFilename());
             fileStorageService.save(file);
-        }else {
+        } else {
             admin.setPic("default-user.png");
         }
 
-        String password= admin.getPassword();
+        String password = admin.getPassword();
         admin.setPassword(passwordEncoder.encode(password));
        /* String name = admin.getLname();
         String lname = admin.getLname();
@@ -101,11 +106,12 @@ model.addAttribute("user",userForm);
         Role role=admin.getRoles();
         UserApp admin=new UserApp(,name,lname,email,adress,cin,dob,tele,password,role);*/
         adminService.addAdmin(admin);
-
+        redirectAttributes.addFlashAttribute("successMessage", "Utilisateur ajouté avec succès!");
 
 
         return "redirect:/adminList";
     }
+
     @PostMapping("/deleteAdmins")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
@@ -118,48 +124,52 @@ model.addAttribute("user",userForm);
             fileStorageService.deleteFile(admin.getPic());
 
         }
-            // Redirect to a success page or return a response as needed
-            return "redirect:/adminList";
+        // Redirect to a success page or return a response as needed
+        return "redirect:/adminList";
+    }
+
+    @GetMapping("/adminList/search")
+    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("userForm", new UserApp());
+        List<UserApp> searchResults = new ArrayList<>();
+
+        if ("cin".equals(searchBy)) {
+            searchResults = adminService.getByCin(keyword);
+        } else if ("tele".equals(searchBy)) {
+            searchResults = adminService.getByTele(keyword);
+        } else if (keyword.isEmpty()) {
+            searchResults = adminService.getAllAdmins();
         }
 
-        @RequestMapping(path = {"/adminList/search"})
-
-        public String search (Model model, String user){
-            UserApp userForm = new UserApp();
-            model.addAttribute("userForm", userForm);
-            List<UserApp> list;
-            if (user != null) {
-                list = adminRepo.findByNameContains(user);
-            } else {
-                list = adminService.getAllAdmins();
-            }
-            model.addAttribute("users", list);
-            return "adminList";
-        }
+        model.addAttribute("users", searchResults);
+        model.addAttribute("keyword", keyword);
+        return "adminList";
+    }
 
     @GetMapping("/deleteAdmin")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteAdmin(@RequestParam(name = "id") Long id,String keyword, int page){
+    public String deleteAdmin(@RequestParam(name = "id") Long id, String keyword, int page) {
 
         UserApp admin = adminService.getAdminById(id);
         adminService.deleteAdmin(id);
         fileStorageService.deleteFile(admin.getPic());
 
-        return "redirect:/adminList?page="+page+"&keyword="+keyword;
+        return "redirect:/adminList?page=" + page + "&keyword=" + keyword;
     }
+
     @GetMapping("/editAdmin")
-    public String editAdmin(@RequestParam(name = "id") Long id, Model model){
-        UserApp userApp=adminService.getAdminById(id);
-        model.addAttribute("userApp",userApp);
-        model.addAttribute("pic",userApp.getPic());
-        model.addAttribute("role",userApp.getRoles().getRole_id());
-        model.addAttribute("id",userApp.getId());
+    public String editAdmin(@RequestParam(name = "id") Long id, Model model) {
+        UserApp userApp = adminService.getAdminById(id);
+        model.addAttribute("userApp", userApp);
+        model.addAttribute("pic", userApp.getPic());
+        model.addAttribute("role", userApp.getRoles().getRole_id());
+        model.addAttribute("id", userApp.getId());
         return "updateAdminModal";
     }
 
     @PostMapping("/editAdmin")
-    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult,@RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "error";
+    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+        if (bindingResult.hasErrors()) return "error";
         UserApp existingAdmin = adminService.getAdminById(user.getId());
         if (file != null && !file.isEmpty()) {
 
@@ -174,9 +184,10 @@ model.addAttribute("user",userForm);
         adminService.updateAdmin(user);
         return "redirect:/adminList";
     }
+
     @PostMapping("/editAdminProfile")
-    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult,@RequestParam(name = "file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "profile";
+    public String editAdminProfile(@Validated UserApp c, BindingResult bindingResult, @RequestParam(name = "file") MultipartFile file) {
+        if (bindingResult.hasErrors()) return "profile";
         UserApp existingAdmin = adminService.getAdminById(c.getId());
         if (file != null && !file.isEmpty()) {
 
@@ -192,4 +203,4 @@ model.addAttribute("user",userForm);
 
         return "redirect:/profil";
     }
-    }
+}

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 
@@ -15,6 +17,13 @@ public interface AdminRepo extends JpaRepository<UserApp,Long> {
     Page<UserApp> findByNameContains(String mc, Pageable pageable);
     Page<UserApp> findByRolesRoleNameContainsOrRolesRoleNameContains(String role1,String role2,Pageable pageable);
     List<UserApp> findByNameContains(String name);
+
+    //    u is an alias for UserApp.
+    //    TYPE(u) = UserApp ensures that only instances of the UserApp class are retrieved.
+    @Query("SELECT u FROM UserApp u WHERE u.cin LIKE %:cin% AND TYPE(u) = UserApp")
+    List<UserApp> findByCinContainsIgnoreCase(@Param("cin") String cin);
+    @Query("SELECT u FROM UserApp u WHERE u.tele LIKE %:tele% AND TYPE(u) = UserApp")
+    List<UserApp> findByTeleContains(@Param("tele") String tele);
 
     List<UserApp> findByRolesRoleNameContains(String name);
     UserApp findByEmail(String email);

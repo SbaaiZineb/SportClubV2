@@ -8,6 +8,12 @@
 <body>
 <div layout:fragment="content" class="container">
     <div class="row">
+        <!-- Success message for successful check in -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong th:text="${successMessage}"></strong>
+
+        </div>
+
         <div class="col-md-6" style="height: 33rem;scrollbar-width: none;">
             <div class="card h-100" style="overflow-y: auto">
                 <div class="card-body">

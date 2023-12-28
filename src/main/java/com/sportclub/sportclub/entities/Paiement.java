@@ -9,6 +9,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Data@AllArgsConstructor@NoArgsConstructor
 public class Paiement {
@@ -17,8 +19,13 @@ public class Paiement {
     private Long id;
     private LocalDate start_date;
     private LocalDate end_date;
-    private String statue;
+    private String status;
     private String payedBy;
+    private double totalAmount;
+    private double amountPaid;
+
+    @OneToMany(mappedBy = "paiement", cascade = CascadeType.ALL)
+    private List<Cheque> cheques;
 
     @JsonFormat(pattern = "YYYY-MM-dd")
     private LocalDate payedAt;

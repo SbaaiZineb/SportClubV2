@@ -20,7 +20,8 @@ import java.util.List;
 public class UserApp extends Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "user_generator")
+    @TableGenerator(name = "user_generator", allocationSize = 1)
     private Long id;
 
     public UserApp(Long id, String email, String password, Role roles) {

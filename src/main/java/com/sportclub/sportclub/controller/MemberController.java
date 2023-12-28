@@ -27,14 +27,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MemberController {
@@ -90,7 +88,7 @@ public class MemberController {
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
         Member memberForm = new Member();
-        model.addAttribute("memberForm", memberForm);
+        model.addAttribute("member", memberForm);
         return "membersList";
 
     }
@@ -113,10 +111,21 @@ public class MemberController {
     }*/
 
     @GetMapping("/membersList/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
-        model.addAttribute("memberForm", new Member());
-        List<Member> searchResults = memberService.getMemberBynName(keyword);
+    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("member", new Member());
+        List<Member> searchResults = new ArrayList<>();
+
+        if ("cin".equals(searchBy)) {
+            searchResults = memberService.getMemberByCin(keyword);
+        } else if ("tele".equals(searchBy)) {
+            searchResults = memberService.getMemberByPhone(keyword);
+        }else if(keyword.isEmpty()){
+            searchResults = memberService.getAllMembers();
+        }
+
         model.addAttribute("listMember", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "membersList";
     }
 
@@ -124,17 +133,21 @@ public class MemberController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String getAddPage(Model model) {
         Member memberForm = new Member();
-        model.addAttribute("memberForm", memberForm);
+        model.addAttribute("member", memberForm);
         return "membersList";
     }
 
     @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
-    public String addMember(@Validated @ModelAttribute("memberForm") Member memberForm, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
+    public String addMember(@Validated @ModelAttribute("member") Member memberForm, Authentication authentication, BindingResult bindingResult,
+                            @RequestParam("file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "membersList";
 
         memberService.addMember(memberForm,authentication,file);
 
+
+        // Add success message to be displayed on the redirected page
+        redirectAttributes.addFlashAttribute("successMessage", "Membre ajouté avec succès!");
 
         return "redirect:/membersList";
     }
@@ -155,7 +168,7 @@ public class MemberController {
 
     @GetMapping("/deleteMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
-    public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Authentication authentication) {
+    public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Authentication authentication,RedirectAttributes redirectAttributes) {
 
         UserApp user=adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
@@ -167,6 +180,8 @@ public class MemberController {
                     fileStorageService.deleteFile(member.getPic());
 
                 }
+        redirectAttributes.addFlashAttribute("successMessage", "Membre supprimé avec succès!");
+
         if (userRole.equals("EMPLOYEE")){
             return "redirect:/employee/members?page=" + page + "&keyword="+ keyword;
         }
@@ -187,7 +202,8 @@ public class MemberController {
 
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file,Authentication authentication) {
+    public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file,
+                             Authentication authentication,RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "error";
 
         UserApp user=adminService.loadUserByUsername(authentication.getName());
@@ -205,6 +221,8 @@ public class MemberController {
             }
         }
         memberService.updateMember(member);
+        redirectAttributes.addFlashAttribute("successMessage", "Membre actualisé avec succès!");
+
         if (userRole.equals("EMPLOYEE")){
             return "redirect:/employee/members";
         }
@@ -232,7 +250,7 @@ public class MemberController {
 
     @PostMapping("/deleteCells")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells,Authentication authentication) {
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells,Authentication authentication,RedirectAttributes redirectAttributes) {
 
         UserApp user=adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
@@ -253,6 +271,8 @@ public class MemberController {
                 return "error";
             }
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Membres supprimés avec succès!");
+
         //Redirect to employee's members interface if the role of the connected user is "EMPLOYEE"
         if (userRole.equals("EMPLOYEE")){
             return "redirect:/employee/members";

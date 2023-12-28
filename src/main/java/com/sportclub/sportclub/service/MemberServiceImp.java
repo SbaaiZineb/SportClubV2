@@ -60,7 +60,7 @@ public class MemberServiceImp implements MemberService {
             memberForm.setPic("default-user.png");
         }
 
-        memberForm.setStatue("Inactive");
+        memberForm.setStatus("Inactive");
         String password = memberForm.getPassword();
         memberForm.setPassword(passwordEncoder.encode(password));
 
@@ -89,8 +89,9 @@ public class MemberServiceImp implements MemberService {
         if (memberForm.getAbonnement() != null) {
             Paiement paiement = new Paiement();
             paiement.setStart_date(localDate);
-            paiement.setStatue("Impayé");
+            paiement.setStatus("Impayé");
             paiement.setAbonnement(memberForm.getAbonnement());
+            paiement.setTotalAmount(memberForm.getAbonnement().getPrice());
             String per = paiement.getAbonnement().getPeriod();
 
             SetPayEndDate sPD = new SetPayEndDate();
@@ -116,8 +117,8 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public List<Member> getByCin(String cin) {
-        return memberRepository.findByCinContains(cin);
+    public List<Member> getMemberByCin(String cin) {
+        return memberRepository.findByCinContainsIgnoreCase(cin);
     }
 
     @Override
@@ -129,7 +130,12 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public List<Member> getMemberBynName(String name) {
-        return memberRepository.findByLnameContains(name);
+        return memberRepository.findByLnameContainsIgnoreCase(name);
+    }
+
+    @Override
+    public List<Member> getMemberByPhone(String phone) {
+        return memberRepository.findByTeleContains(phone);
     }
 
 

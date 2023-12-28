@@ -9,6 +9,11 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <!-- Success message for successful payment -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
     <div class="search-field d-none mb-1 d-md-block">
         <form th:action="@{/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="input-group">
@@ -16,7 +21,7 @@
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
                 <input type="text" class="form-control bg-transparent border-0" name="keyword"
-                       th:value="${keyword}" placeholder="Chercher">
+                       th:value="${keyword}" placeholder="Chercher par tele">
             </div>
         </form>
     </div>
@@ -43,17 +48,17 @@
             <td th:utext="${p.getEnd_date()}"></td>
 
             <td class="text-center">
-                <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-                <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
-                <p class="badge bg-warning m-0" th:if="${p.getStatue() == 'Annulée'}">Annulée</p>
+                <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
+                <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
+                <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
             </td>
             <td>
-                <a th:class="${p.getStatue() == 'Payé' or p.getStatue() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}"
+                <a th:class="${p.getStatus() == 'Payé' or p.getStatus() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}"
                    data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
 
-                <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv"
+                <a th:if="${p.getStatus() == 'Payé'}" href="#" class="btn btn-light text-dark inv"
                    data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}">Recu</a>
-                <a title="Annuler le paiement " th:if="${p.getStatue() == 'Impayé'}" th:href="@{/payments/cancel(payId=${p.getId()})}"><i
+                <a title="Annuler le paiement " th:if="${p.getStatus() == 'Impayé'}" th:href="@{/payments/cancel(payId=${p.getId()})}"><i
                         class="bi bi-x-circle" style="color: red;
 font-size: 22px;
   margin-left: 1rem;"></i></a>

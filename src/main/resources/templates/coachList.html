@@ -8,17 +8,36 @@
 <body>
 
 <div layout:fragment="content">
-        <div class="search-field d-none d-md-block">
-          <form th:action="@{coachList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend bg-transparent">
-                <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-              </div>
-              <input type="text" class="form-control bg-transparent border-0" name="coach"
-                     th:value="${keyword}" placeholder="Chercher par nom">
-            </div>
-          </form>
+  <div class="row" style=" margin: auto; width: 50%;">
+    <!-- Success message for successful add  -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong th:text="${successMessage}"></strong>
+
+    </div>
+    <form th:action="@{/coachList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+      <div class="row mb-3">
+        <div class="col-md-1">
+          <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+
         </div>
+        <div class="col-md-4">
+
+          <select class="form-control  " name="searchBy" >
+            <option value="tele">Cherecher par Telephone</option>
+            <option value="cin">Chercher par CIN</option>
+          </select>
+        </div>
+        <div class="col-md-5">
+          <input type="text" class="form-control " name="keyword" th:value="${keyword}"
+                 placeholder="Chercher...">
+
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-outline-info">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
   <a th:href="@{/coachList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><i data-feather="printer"></i></a>
 
   <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"

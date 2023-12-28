@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -92,9 +93,11 @@ public class AbonnementController {
         return "abList";
     }
     @PostMapping("/addAbonnement")
-    public String addAb(@Validated Abonnement ab, BindingResult bindingResult){
+    public String addAb(@Validated Abonnement ab, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()) return "abList";
         abonnementService.addAb(ab);
+        redirectAttributes.addFlashAttribute("successMessage", "Abonnement ajouté avec succès!");
+
         return "redirect:/abonnementList";
     }
 
@@ -115,9 +118,11 @@ public class AbonnementController {
     }
 
     @PostMapping("/editAbonnement")
-    public String editAb(@Validated Abonnement ab, BindingResult bindingResult){
+    public String editAb(@Validated Abonnement ab, BindingResult bindingResult,RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()) return "error";
         abonnementService.updateAbonnement(ab);
+        redirectAttributes.addFlashAttribute("successMessage", "Abonnement actualisé avec succès!");
+
         return "redirect:/abonnementList";
     }
 
