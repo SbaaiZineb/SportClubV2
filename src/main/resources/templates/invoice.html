@@ -57,26 +57,74 @@
         <p style="font-weight: bold"  th:text="'Address : '+${payment.getMember().getAdress()}"></p>
     </div>
 </div>
-<table class="table-bordered">
-    <thead>
-    <tr>
-        <th>Numéro d'abonnement</th>
-        <th>Nom d'abonnement</th>
-        <th>Période d'abonnement</th>
-        <th>Montant</th>
-        <th>Payé par</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${payment.getAbonnement().getId()}"></td>
-        <td th:text="${payment.getAbonnement().getNameAb()}"></td>
-        <td style="padding: 7px" th:text="'De ' + ${payment.getStart_date()} + ' A ' + ${payment.getEnd_date()}"></td>
-        <td th:text="${payment.getAbonnement().getPrice()}"></td>
-        <td th:text="${payment.payedBy}"></td>
-    </tr>
-    </tbody>
-</table>
+<div th:if="${payment.getPayedBy()!='Cheque'}">
+    <table class="table-bordered">
+        <thead>
+        <tr>
+            <th>Numéro d'abonnement</th>
+            <th>Nom d'abonnement</th>
+            <th th:if="${payment.getAbonnement().getPeriod()!='0'}">Période d'abonnement</th>
+            <th th:if="${payment.getAbonnement().getPeriod()=='0'}">Carnet de</th>
+            <th>Montant</th>
+            <th>Payé par</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${payment.getAbonnement().getId()}"></td>
+            <td th:text="${payment.getAbonnement().getNameAb()}"></td>
+            <td th:if="${payment.getAbonnement().getPeriod()!='0'}" style="padding: 7px" th:text="'De ' + ${payment.getStart_date()} + ' A ' + ${payment.getEnd_date()}"></td>
+            <td th:if="${payment.getAbonnement().getPeriod()=='0'}" th:utext="${payment.getAbonnement().getNbrSeance()}"></td>
+            <td th:text="${payment.getAbonnement().getPrice()}"></td>
+            <td th:text="${payment.payedBy}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:if="${payment.getPayedBy()=='Cheque'}">
+
+    <table class="table-bordered">
+        <thead>
+        <tr>
+            <th>Numéro d'abonnement</th>
+            <th>Nom d'abonnement</th>
+            <th th:if="${payment.getAbonnement().getPeriod()!='0'}">Période d'abonnement</th>
+            <th th:if="${payment.getAbonnement().getPeriod()=='0'}">Carnet de</th>
+            <th>Montant</th>
+            <th>Payé par</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${payment.getAbonnement().getId()}"></td>
+            <td th:text="${payment.getAbonnement().getNameAb()}"></td>
+            <td th:if="${payment.getAbonnement().getPeriod()!='0'}" style="padding: 7px" th:text="'De ' + ${payment.getStart_date()} + ' A ' + ${payment.getEnd_date()}"></td>
+            <td th:if="${payment.getAbonnement().getPeriod()=='0'}" th:utext="${payment.getAbonnement().getNbrSeance()}"></td>
+            <td th:text="${payment.getAbonnement().getPrice()}"></td>
+            <td th:text="${payment.payedBy}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p style="font-weight: bold">Information de(s) cheque(s):</p>
+    <table>
+        <thead>
+        <tr>
+        <th>Numéro de cheque</th>
+        <th>Montant de cheque</th>
+        <th>Date de cheque</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cheque :${payment.getCheques()}">
+            <td th:utext="${cheque.getNumCheque()}"></td>
+            <td th:utext="${cheque.getChequeMontant()}"></td>
+            <td th:utext="${cheque.getChequeDate()}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <p class="signature">Signature</p>
 </body>
 </html>

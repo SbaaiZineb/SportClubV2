@@ -397,7 +397,7 @@ object-fit: cover;"
                     <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getId()}"></td>
                     <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getNameAb()}"></td>
                     <td style="font-weight: bold" th:utext="${membership.getPrice()}+' DH'"></td>
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${user.getNbrSessionCurrentCarnet()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getPeriod() == '0' ? user.getNbrSessionCurrentCarnet() : membership.getPeriod()+' mois' }"></td>
                 </tr>
 
             </table>
@@ -445,7 +445,7 @@ background: transparent;margin-top: -17px">
                     <th>Type d'abonnement</th>
                     <th>Montant</th>
                     <th>Date de debut</th>
-                    <th>Nomber des seances/Period</th>
+                    <th>Nomber des seances/Fin date</th>
                     <th>Payer par</th>
                     <th>Payer le</th>
                     <th></th>
