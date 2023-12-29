@@ -21,33 +21,36 @@
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
 
-                    <select class="form-control  " name="searchBy">
+                    <select class="form-control select" name="searchBy">
                         <option value="tele">Cherecher par Telephone</option>
                         <option value="cin">Chercher par CIN</option>
-
                     </select>
                 </div>
+
                 <div class="col-md-5">
                     <input type="text" class="form-control " name="keyword" th:value="${keyword}"
                            placeholder="Chercher...">
 
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <button type="submit" class="btn btn-outline-info">Search</button>
                 </div>
             </div>
         </form>
     </div>
     <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
-            data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter</button>
+            data-bs-target="#exampleModal"><i class="bi bi-person-plus me-1"></i>Ajouter
+    </button>
     <form th:action="@{/deleteAdmins}" method="post">
-        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white"
+                type="submit" onclick="return confirm('Vous avez sure?')"><i class="bi bi-trash me-1"></i>Supprimer
+        </button>
 
         <table class="table table-centered table-hover table-responsive">
             <tr>
-                <th><input  type="checkbox" class="selectall" data-target="requests-all"/></th>
+                <th><input type="checkbox" class="selectall" data-target="requests-all"/></th>
 
                 <th>Id</th>
                 <th>Entaineur</th>
@@ -59,13 +62,12 @@
                 <th>Role</th>
 
 
-
                 <th colspan="2">Action</th>
             </tr>
             <tr th:each="m:${users}">
                 <td>
                     <input type="checkbox" name="selectedCells" data-target="requests-all"
-                           th:value="${m.id}" />
+                           th:value="${m.id}"/>
                 </td>
                 <td th:utext="${m.getId()}"></td>
                 <td>
@@ -84,20 +86,24 @@
                 <td th:utext="${m.getDob()}"></td>
                 <td th:utext="${m.getTele()}"></td>
                 <td>
-                    <p class="m-0" style="font-weight: bold;color: #16375d" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName == 'ADMIN'}"></p>
-                    <p class="m-0" style="font-weight: bold;color: #0d5d73" th:utext="${m.getRoles().roleName}" th:if="${m.getRoles().roleName== 'EMPLOYEE'}"></p>
-                    <span class="bold" ></span>
+                    <p class="m-0" style="font-weight: bold;color: #16375d" th:utext="${m.getRoles().roleName}"
+                       th:if="${m.getRoles().roleName == 'ADMIN'}"></p>
+                    <p class="m-0" style="font-weight: bold;color: #0d5d73" th:utext="${m.getRoles().roleName}"
+                       th:if="${m.getRoles().roleName== 'EMPLOYEE'}"></p>
+                    <span class="bold"></span>
                 </td>
 
                 <td><a onclick="return confirm('Vous avez sure?')"
-                       th:href="@{/deleteAdmin(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i class="bi bi-trash iconT"></i></a></td>
-                <td><a data-th-id="${m.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                       th:href="@{/deleteAdmin(id=${m.id},keyword=${keyword}, page=${currentPage})}"> <i
+                        class="bi bi-trash iconT"></i></a></td>
+                <td><a data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
                         class="bi bi-pencil-square iconE"></i></a>
                 </td>
 
 
             </tr>
-        </table></form>
+        </table>
+    </form>
     <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">
             <a
@@ -108,11 +114,12 @@
         </li>
     </ul>
 
-<!---- Add admin modal----->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!---- Add admin modal----->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" >
+                <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">Ajouter Admin</h3>
                     <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
@@ -122,18 +129,20 @@
                         <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
                             <form id="adForm" th:action="@{/addAdmin}"
-                                   th:object="${userForm}" method="POST" enctype="multipart/form-data">
+                                  th:object="${userForm}" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Nom:<span class="text-danger"> *</span></label>
-                                            <input class="form-control required-field" type="text" th:field="*{name}" required/>
+                                            <input class="form-control required-field" type="text" th:field="*{name}"
+                                                   required/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                                <label class="form-label">Prénom:<span class="text-danger"> *</span></label>
-                                            <input class="form-control required-field" type="text" th:field="*{lname}" required/>
+                                            <label class="form-label">Prénom:<span class="text-danger"> *</span></label>
+                                            <input class="form-control required-field" type="text" th:field="*{lname}"
+                                                   required/>
                                         </div>
                                     </div>
                                 </div>
@@ -141,9 +150,11 @@
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Email:<span class="text-danger"> *</span></label>
-                                            <input class="form-control required-field" type="text" th:field="*{email}" id="email" name="email" required/>
+                                            <input class="form-control required-field" type="text" th:field="*{email}"
+                                                   id="email" name="email" required/>
                                             <div id="adminEmailExistsMessage" class="error-message"></div>
-                                        </div></div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Adresse:</label>
@@ -155,7 +166,8 @@
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Cin:<span class="text-danger"> *</span></label>
-                                            <input class="form-control required-field" type="text" th:field="*{cin}" id="cin" name="cin" required/>
+                                            <input class="form-control required-field" type="text" th:field="*{cin}"
+                                                   id="cin" name="cin" required/>
                                             <div id="adminCinExistsMessage" class="error-message"></div>
 
                                             <style>
@@ -167,6 +179,7 @@
                                                 .email-exists {
                                                     border: 1px solid #ff0000;
                                                 }
+
                                                 .input-error {
                                                     border: 1px solid red;
                                                 }
@@ -193,14 +206,19 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Mot de passe:<span class="text-danger"> *</span></label>
-                                            <input class="form-control input-border" id="input1" onkeyup="validateInput()" type="password" th:field="*{password}" required/>
+                                            <label class="form-label">Mot de passe:<span
+                                                    class="text-danger"> *</span></label>
+                                            <input class="form-control input-border" id="input1"
+                                                   onkeyup="validateInput()" type="password" th:field="*{password}"
+                                                   required/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <label class="form-label">Confirm Mot de passe:<span class="text-danger"> *</span></label>
-                                            <input class="form-control input-border" id="input2" type="password" onkeyup="validateInput()" required />
+                                            <label class="form-label">Confirm Mot de passe:<span
+                                                    class="text-danger"> *</span></label>
+                                            <input class="form-control input-border" id="input2" type="password"
+                                                   onkeyup="validateInput()" required/>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +243,8 @@
                                 </div>
                                 <div class="checkbox-row" th:each="role:${roles}">
                                     <label>
-                                        <input type="checkbox" name="roles" th:value="${role.role_id}" th:text="${role.roleName}" />
+                                        <input type="checkbox" name="roles" th:value="${role.role_id}"
+                                               th:text="${role.roleName}"/>
                                     </label>
                                     <style>
                                         .checkbox-row {
@@ -320,7 +339,7 @@
     </script>
     <script>
         // Call the handleInputValidation function
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             handleInputValidation('email', 'adminEmailExistsMessage', '/checkEmailExists?email=', 'adForm', 'submitBtn');
             handleInputValidation('cin', 'adminCinExistsMessage', '/checkCinExists?cin=', 'adForm', 'submitBtn');
         });

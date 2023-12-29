@@ -149,7 +149,7 @@ public class PaymentController {
 
         context.setVariable("gym", gym);
         String imageFilename = gym.getLogo();
-        if (!imageFilename.isEmpty()) {
+        if (imageFilename!=null && !imageFilename.isEmpty()) {
 
             imageFilename = imageFilename.trim();
             // Convert the image to base64 and add it to the context

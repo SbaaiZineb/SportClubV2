@@ -21,7 +21,9 @@
         <th>Nom</th>
         <th>Prénom</th>
         <th>Cin</th>
+        <th>Numero de tele</th>
         <th>Statue</th>
+        <th>Nombres des seances</th>
 
     </tr>
     <tbody class="tbody">
@@ -35,11 +37,13 @@
         <td th:utext="${m.getName()}"></td>
         <td th:utext="${m.getLname()}"></td>
         <td th:utext="${m.getCin()}"></td>
+        <td th:utext="${m.getTele()}"></td>
         <td>
             <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
             <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
         </td>
+        <td style="font-weight: bold;color: #3c1dab;text-align: center" th:utext="${m.getAbonnement().getPeriod()=='0'? m.getNbrSessionCurrentCarnet() : 'illimité'} "></td>
 
 
     </tr>

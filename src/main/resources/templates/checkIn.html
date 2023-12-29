@@ -98,7 +98,13 @@
 
                         <table id="Dtable" class="table table-centered table-hover table-responsive table-nowrap mb-0 rounded">
                             <tbody class="tbody">
-                            <tr th:each="check:${checkin}" style="background-color: white">
+                            <tr th:each="check:${checkin}" style="background-color: white" data-th-id="${check.member.id}" onclick="getProfile($(this).attr('id'))">
+                                <script>
+                                    function getProfile(id) {
+
+                                        window.location.href = "/membersList/userProfile?id=" + id;
+                                    }
+                                </script>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <img th:if="${check.getMember() != null && check.getMember().getPic() != null}" alt="user icon"
@@ -138,6 +144,7 @@ margin: 0 auto;" alt="icon">
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>Cin</th>
+                    <th>Nombres des seances</th>
 
                 </tr>
                 <tbody class="tbody">
@@ -149,9 +156,9 @@ margin: 0 auto;" alt="icon">
         </div>
     </div>
     <!-- check members in Modal -->
-    <div class="modal fade" id="checkin" tabindex="-1" role="dialog" aria-labelledby="checkinLabel"
+    <div class="modal fade bd-example-modal-lg" id="checkin" tabindex="-1"  role="dialog" aria-labelledby="checkinLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="checkinlabel"></h3>
@@ -160,7 +167,7 @@ margin: 0 auto;" alt="icon">
                     </button>
                 </div>
 
-                <input type="text" id="myInput" onkeyup="search()" placeholder="CIN">
+                <input type="text" id="myInput" onkeyup="search()" placeholder="Telephone">
                 <style>
                     #myInput {
                         padding: 10px;
@@ -307,7 +314,7 @@ margin: 0 auto;" alt="icon">
             filter = input.value.toUpperCase();
             table = document.getElementById("dTable");
             tr = table.getElementsByTagName("tr");
-            nameColumn = 4; // Index of the column where cin are
+            nameColumn = 5; // Index of the column where cin are
 
             for (i = 0; i < tr.length; i++) {
                 td = tr[i].getElementsByTagName("td")[nameColumn];

@@ -15,6 +15,8 @@
                 <div class="card h-100" style="background-color: #3f6693; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
+                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>
+
                             <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
 height: 200px;
 object-fit: cover;"
@@ -44,66 +46,94 @@ object-fit: cover;"
                      style="background-color: #598edb26; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Nom</h6>
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Nom :</h6>
                                     </div>
 
                                     <div class="col-sm-9 text-secondary input" th:utext="${user.getName()}"></div>
                                 </div>
 
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Prénom</h6>
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Prénom :</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary input" th:utext="${user.getLname()}">
                                     </div>
                                 </div>
 
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Email</h6>
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Email :</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary input" th:utext="${user.getEmail()}">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Cin :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getCin()}">
+                                    </div>
+                                </div>
 
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="row me-1">
-                                    <div class="col-sm-3 d-flex align-items-center">
-                                        <h6 class="mb-0">Tele</h6>
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Tele :</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary input" th:utext="${user.getTele()}">
 
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Tele 2 :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getSecondTele()}">
+
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="row me-1">
-                                        <div class="col-sm-3 d-flex align-items-center">
-                                            <h6 class="mb-0">Cin</h6>
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Profession :</h6>
                                         </div>
-                                        <div class="col-sm-9 text-secondary input" th:utext="${user.getCin()}">
+                                        <div class="col-sm-9 text-secondary input" th:utext="${user.getProfession()}">
                                         </div>
                                     </div>
 
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="row me-1">
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Situation familiale :</h6>
+                                        </div>
+                                        <div class="col-sm-5 text-secondary input" th:utext="${user.getFamSituation()}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
 
                                     <div class="row me-1">
-                                        <div class="col-sm-7 d-flex align-items-center">
-                                            <h6 class="mb-0">Date de naissance</h6>
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance :</h6>
                                         </div>
                                         <div class="col-sm-5 text-secondary input" th:utext="${user.getDob()}">
                                         </div>
@@ -113,12 +143,21 @@ object-fit: cover;"
 
 
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <div class="col-sm-3 d-flex align-items-center">
-                                                <h6 class="mb-0">Adresse</h6>
+                                    <div class="col-md-7">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse :</h6>
                                             </div>
-                                            <div class="col-sm-9 text-secondary input" th:utext="${user.getAdress()}">
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getAdress()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">Le sexe :</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getGender()}">
                                             </div>
                                         </div>
                                     </div>
@@ -169,7 +208,7 @@ object-fit: cover;"
                                         border: none;
                                         border-bottom: 1px solid #9997ba;
                                         background: transparent;
-                                        margin-bottom: 10px;
+                                        margin-bottom: 14px;
                                         font: 16px Arial, Helvetica, sans-serif;
                                         height: 45px;
                                         margin-left: 4px;

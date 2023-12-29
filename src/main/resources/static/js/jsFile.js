@@ -55,5 +55,4 @@ function checkFormValidity(formId, submitButtonId) {
         }
     });
 
-    submitButton.disabled = !isFormValid;
 }
