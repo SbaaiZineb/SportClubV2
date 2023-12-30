@@ -43,7 +43,7 @@
             <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
         </td>
-        <td style="font-weight: bold;color: #3c1dab;text-align: center" th:utext="${m.getAbonnement().getPeriod()=='0'? m.getNbrSessionCurrentCarnet() : 'illimité'} "></td>
+        <td style="font-weight: bold;color: #3c1dab;text-align: center"  th:utext="${(m.getAbonnement()!=null) && (m.getAbonnement().getPeriod()=='0')? m.getNbrSessionCurrentCarnet() : 'illimité'} "></td>
 
 
     </tr>

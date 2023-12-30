@@ -14,20 +14,20 @@
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
 
-                    <select class="form-control  " name="searchBy">
+                    <select class="form-control select" name="searchBy">
                         <option value="tele">Cherecher par Telephone</option>
                         <option value="cin">Chercher par CIN</option>
-
                     </select>
                 </div>
+
                 <div class="col-md-5">
                     <input type="text" class="form-control " name="keyword" th:value="${keyword}"
                            placeholder="Chercher...">
 
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <button type="submit" class="btn btn-outline-info">Search</button>
                 </div>
             </div>

@@ -54,7 +54,7 @@
                 </li>
                 <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
                     <a class="sidebar-link" th:href="@{/enregistrement}">
-                        <i class="bi bi-check2-all"></i> <span class="align-middle">Enregistrement</span>
+                        <i class="bi bi-check2-all"></i> <span class="align-middle">Check-in</span>
                     </a>
                 </li>
                 <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}">

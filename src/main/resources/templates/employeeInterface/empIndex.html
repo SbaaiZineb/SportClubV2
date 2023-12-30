@@ -37,12 +37,12 @@
                         <td th:utext="${p.getEnd_date()}"></td>
 
                         <td class="text-center">
-                            <p class="badge bg-success m-0" th:if="${p.getStatue() == 'Payé'}">Payé</p>
-                            <p class="badge bg-danger m-0" th:if="${p.getStatue() == 'Impayé'}">Impayé</p>
+                            <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
+                            <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
                         </td>
                         <td>
-                            <a th:class="${p.getStatue() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
-                            <a th:if="${p.getStatue() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
+                            <a th:class="${p.getStatus() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+                            <a th:if="${p.getStatus() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
                         </td>
                         <style>
                             .hide{
@@ -169,9 +169,9 @@
                         <td style="color: #04405e;font-weight: bold;" th:utext="${m.abonnement}"></td>
                         <td>
                             <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
-                               th:if="${m.statue == 'Active'}" th:utext="${m.statue}"></p>
+                               th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
                             <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
-                               th:if="${m.statue == 'Inactive'}" th:utext="${m.statue}"></p>
+                               th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
                         </td>
 <!--                        <td><a href="" class="btn btn-success text-white" onclick="event.stopPropagation()">CheckIn</a></td>-->

@@ -1,23 +1,48 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head  th:insert="~{partials/sideBar:: header}">
     <meta charset="UTF-8">
     <title>Payment details</title>
 </head>
 <body>
-<table th:each="cheque :${payment.getCheques()}" class="table table-centered table-hover table-responsive mt-3">
+<table th:if="${payment.getPayedBy()=='Cheque'}" th:each="cheque :${payment.getCheques()}" class="table table-centered table-hover table-responsive mt-3">
     <tr>
-        <th>Nom</th>
+        <th>Adhérent</th>
         <th>Cheque Numero</th>
         <th>Cheque Montant</th>
         <th>Cheque Date</th>
+        <th>Payer par</th>
+
     </tr>
     <tr>
         <td th:utext="${cheque.namePayor}"></td>
         <td th:utext="${cheque.numCheque}"></td>
         <td th:utext="${cheque.chequeMontant}"></td>
         <td th:utext="${cheque.chequeDate}"></td>
+        <td style="font-weight: bold;color: #055405"  th:utext="${payment.getPayedBy()}"></td>
     </tr>
+</table>
+<table th:if="${payment.getPayedBy()!='Cheque'}" class="table table-centered table-hover table-responsive mt-3">
+    <tr>
+        <th>Adherent</th>
+        <th>Montant</th>
+        <th>La date de paiement</th>
+        <th>Payer par</th>
+    </tr>
+    <tr>
+        <td th:utext="${payment.getMember().getName()+' '+payment.getMember().getLname()}"></td>
+        <td th:utext="${payment.getAbonnement().getPrice()}"></td>
+        <td th:if="${payment.getStatus()=='Annulée'}" style="font-weight: bold;color: #c46f13" th:utext="'Annulée'"></td>
+        <td th:if="${payment.getStatus()=='Annulée'}" style="font-weight: bold;color: #c46f13" th:utext="'Annulée'"></td>
+
+        <td th:utext="${payment.getPayedAt()}" th:class="${payment.getStatus()=='Annulée' ? 'hide':''}"></td>
+        <td style="font-weight: bold;color: #055405" th:utext="${payment.getPayedBy()}" th:class="${payment.getStatus()=='Annulée' ? 'hide':''}">></td>
+    </tr>
+    <style>
+        .hide{
+            display: none;
+        }
+    </style>
 </table>
 
 </body>

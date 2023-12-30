@@ -219,7 +219,9 @@ public class PaymentController {
 
     @RequestMapping(value = "/payments/cancel", method = {RequestMethod.GET, RequestMethod.POST})
 
-    public String cancelPayment(@RequestParam(name = "payId") Long id) {
+    public String cancelPayment(@RequestParam(name = "payId") Long id,Authentication authentication) {
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
 
         try {
 
@@ -229,6 +231,9 @@ public class PaymentController {
 
         } catch (Exception e) {
             System.out.println("Something is wrong !! " + e);
+        }
+        if (userRole.equals("EMPLOYEE")) {
+            return "redirect:/employee/payments";
         }
         return "redirect:/payments";
     }

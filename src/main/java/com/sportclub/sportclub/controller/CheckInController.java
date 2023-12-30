@@ -27,10 +27,10 @@ public class CheckInController {
     CheckInService checkInService;
 
     MemberService memberService;
-AdminService adminService;
+    AdminService adminService;
     CheckInRepo checkInRepo;
 
-    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService,AdminService adminService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService, CoachService coachService) {
+    public CheckInController(SeanceService seanceService, CheckInService checkInService, MemberService memberService, AdminService adminService, CheckInRepo checkInRepo, CoachCheckInService coachCheckInService, CoachService coachService) {
         this.seanceService = seanceService;
         this.checkInService = checkInService;
         this.memberService = memberService;
@@ -79,9 +79,9 @@ AdminService adminService;
             model.addAttribute("currentTime", currentTime);
 
             model.addAttribute("today", LocalDate.now());
-            List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
+           // List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
 
-//            List<CheckIn> checkIn = checkInService.getAllCheckIns();
+            List<CheckIn> checkIns = checkInService.getAllCheckIns();
             model.addAttribute("checkin", checkIns);
             return "checkIn";
         } catch (Exception e) {
@@ -155,9 +155,8 @@ AdminService adminService;
     public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells, Authentication authentication,
                           RedirectAttributes redirectAttributes) {
 
-        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
-
 
 
         for (Long cellId : selectedCells) {
@@ -174,8 +173,8 @@ AdminService adminService;
 
             // Decrement the number of sessions in the current "Carnet" by one when check into a session
             int nbrSessionCurrentCarnet = member.getNbrSessionCurrentCarnet();
-            if (nbrSessionCurrentCarnet!=0){
-                nbrSessionCurrentCarnet = nbrSessionCurrentCarnet-1;
+            if (nbrSessionCurrentCarnet != 0) {
+                nbrSessionCurrentCarnet = nbrSessionCurrentCarnet - 1;
                 member.setNbrSessionCurrentCarnet(nbrSessionCurrentCarnet);
                 memberService.updateMember(member);
 
@@ -186,12 +185,11 @@ AdminService adminService;
 
 
         }
-        if (userRole.equals("EMPLOYEE")){
+        if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/enregistrement";
         }
         return "redirect:/enregistrement";
     }
-
 
 
     // Manage coach check in

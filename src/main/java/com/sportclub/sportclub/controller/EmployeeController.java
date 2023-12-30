@@ -126,11 +126,22 @@ public class EmployeeController {
         return "employeeInterface/empCheckIns";
  }
 
-    @GetMapping("/members/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
+    @GetMapping("/search")
+    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("member", new Member());
-        List<Member> searchResults = memberService.getMemberBynName(keyword);
+        List<Member> searchResults = new ArrayList<>();
+
+        if ("cin".equals(searchBy)) {
+            searchResults = memberService.getMemberByCin(keyword);
+        } else if ("tele".equals(searchBy)) {
+            searchResults = memberService.getMemberByPhone(keyword);
+        }else if(keyword.isEmpty()){
+            searchResults = memberService.getAllMembers();
+        }
+
         model.addAttribute("listMember", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "employeeInterface/empMembersList";
     }
     @GetMapping("/payments")
@@ -149,14 +160,15 @@ public class EmployeeController {
         model.addAttribute("payment", paiement);
         return "employeeInterface/empPayments";
     }
-    @RequestMapping(path = {"/payments/search"})
+
+    @RequestMapping(path = {"payments/search"})
     public String search(Model model, String keyword) {
 
         Paiement paiement = new Paiement();
         model.addAttribute("payment", paiement);
         List<Paiement> list;
         if (keyword != null) {
-            list = paymentService.getByMemberPhone(keyword);
+            list = paymentRepo.findByMemberTeleContains(keyword);
         } else {
             list = paymentService.getAllPayment();
         }

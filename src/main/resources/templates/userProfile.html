@@ -11,21 +11,20 @@
 
 
         <div class="row gutters-sm">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card h-100" style="background-color: #3f6693; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>
+<!--                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>-->
 
-                            <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 200px;
-height: 200px;
+                            <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 195px;
+height: 195px;
 object-fit: cover;"
                                  th:src="@{'/images/'+${user.pic}}">
                             <div class="mt-3">
-                                <h4 class="fw-bold"
+                                <h4 class="fw-bold" style="color: whitesmoke"
                                     th:utext="${#strings.capitalize(user.getName())}+' '+${#strings.capitalize(user.getLname())}"></h4>
-                                <p class="text-secondary fw-bold mb-1" style="color: #f2f7fd  !important;"
-                                   th:utext="${user.getEmail()}"></p>
+
                                 <div th:class="${user.getRoles().roleName == 'ADHERENT' ? '' : 'hide'}">
                                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
                                        th:if="${user.status == 'Active'}" th:utext="${user.getStatus()}"></p>
@@ -41,7 +40,19 @@ object-fit: cover;"
             </div>
 
 
-            <div class="col-md-8 idd" th:id="${user.id}">
+            <div class="col-md-9 idd" th:id="${user.id}">
+                    <input type="hidden" name="id" th:value="${user.id}" >
+                    <input type="hidden" name="pic" th:value="${user.pic}">
+                    <input type="hidden" name="roles" th:value="${user.roles.role_id}">
+                    <input type="hidden" name="password" th:value="${user.password}">
+                    <img th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
+                         th:src="@{'images/'+${user.pic}}">
+                    <style>
+                        .hidden {
+                            display: none;
+                        }
+                    </style>
+
                 <div class="card mb-3 h-100"
                      style="background-color: #598edb26; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                     <div class="card-body">
@@ -142,7 +153,7 @@ object-fit: cover;"
                                 </div>
 
 
-                                <div class="row">
+                                <div class="row mt-1">
                                     <div class="col-md-7">
                                         <div class="row me-1">
                                             <div class=" d-flex align-items-center">
@@ -162,6 +173,7 @@ object-fit: cover;"
                                         </div>
                                     </div>
                                 </div>
+
                                 <button th:if="${user.status == 'Inactive'}" class="button-43" id="abButton">
                                     Renouvellement d'abonnement
                                 </button>
