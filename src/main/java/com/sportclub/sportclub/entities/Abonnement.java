@@ -25,6 +25,8 @@ public class Abonnement {
     private int nbrSeance;
     private boolean deleted = Boolean.FALSE;
 
+
+
     public Abonnement(String nameAb, double price, String period,int nbrSeance) {
         this.nameAb = nameAb;
         this.price = price;
@@ -34,7 +36,8 @@ public class Abonnement {
 
     private String period;
     @OneToMany(mappedBy = "abonnement",fetch = FetchType.EAGER)
-    private List<Member> members;
+
+    private List<MemberAbonnement> memberAbonnements;
 
 
 

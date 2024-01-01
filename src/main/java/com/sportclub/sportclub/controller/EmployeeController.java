@@ -106,10 +106,12 @@ public class EmployeeController {
 }
  @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public String addMemberByEmp(@Validated @ModelAttribute("member") Member member, Authentication authentication, BindingResult bindingResult, @RequestParam("file") MultipartFile file, Model model) {
+    public String addMemberByEmp(@Validated @ModelAttribute("member") Member member, Authentication authentication,
+                                 BindingResult bindingResult, @RequestParam("file") MultipartFile file,
+                                 @RequestParam(name = "abonnementId", required = false) Long abonnementId) {
      if (bindingResult.hasErrors()) return "membersList";
 
-     memberService.addMember(member,authentication,file);
+     memberService.addMember(member,authentication,file,abonnementId);
 
 
      return "redirect:/employee/members";

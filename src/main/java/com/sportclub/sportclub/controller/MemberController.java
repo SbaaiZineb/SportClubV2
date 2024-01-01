@@ -140,10 +140,11 @@ public class MemberController {
     @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
     public String addMember(@Validated @ModelAttribute("member") Member memberForm, Authentication authentication, BindingResult bindingResult,
-                            @RequestParam("file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+                            @RequestParam("file") MultipartFile file, @RequestParam(name = "abonnementId", required = false) Long abonnementId ,
+                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "membersList";
 
-        memberService.addMember(memberForm,authentication,file);
+        memberService.addMember(memberForm,authentication,file,abonnementId);
 
 
         // Add success message to be displayed on the redirected page

@@ -59,9 +59,26 @@ public class Member extends UserApp {
 
    /* @ManyToMany(mappedBy = "members", cascade = CascadeType.ALL)
     private List<Seance> seanceList;*/
-    @ManyToOne
-    @JoinColumn(name = "ab_id")
-    private Abonnement abonnement;
+    @OneToMany(mappedBy = "member")
+    private List<MemberAbonnement> memberAbonnements;
     @OneToMany(mappedBy = "member",cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<CheckIn> checkIn;
+
+
+    public Abonnement getCurrentAbonnement() {
+        LocalDate currentDate = LocalDate.now();
+        MemberAbonnement currentAbonnement = null;
+
+        for (MemberAbonnement memberAbonnement : memberAbonnements) {
+            LocalDate bookedDate = memberAbonnement.getBookedDate();
+            if (bookedDate != null && !bookedDate.isAfter(currentDate)) {
+                // Check if the bookedDate is not after current date
+                if (currentAbonnement == null || bookedDate.isAfter(currentAbonnement.getBookedDate())) {
+                    currentAbonnement = memberAbonnement;
+                }
+            }
+        }
+
+        return (currentAbonnement != null) ? currentAbonnement.getAbonnement() : null;
+    }
 }

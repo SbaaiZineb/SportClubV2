@@ -98,11 +98,14 @@
 
                         <table id="Dtable" class="table table-centered table-hover table-responsive table-nowrap mb-0 rounded">
                             <tbody class="tbody">
-                            <tr th:each="check:${checkin}" style="background-color: white" data-th-id="${check.member.id}" onclick="getProfile($(this).attr('id'))">
+                            <tr th:each="check:${checkin}" style="background-color: white" data-th-id="${check.getMember().id}" onclick="getProfile($(this).attr('id'))">
                                 <script>
                                     function getProfile(id) {
 
-                                        window.location.href = "/membersList/userProfile?id=" + id;
+                                        if(id !==null){
+                                            window.location.href = "/membersList/userProfile?id=" + id;
+
+                                        }
                                     }
                                 </script>
                                 <td>

@@ -5,6 +5,7 @@ import com.sportclub.sportclub.entities.*;
 
 import com.sportclub.sportclub.repository.AbonnementRepo;
 import com.sportclub.sportclub.repository.AdminRepo;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.tools.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +30,12 @@ import java.util.Optional;
 public class MemberServiceImp implements MemberService {
 
     @Autowired
+    MemberAbonnementRepo memberAbonnementRepo;
+    @Autowired
     MemberRepository memberRepository;
 
     @Autowired
-    AbonnementRepo abonnementRepo;
+    AbonnementService abonnementService;
     @Autowired
     AdminRepo adminRepo;
     @Autowired
@@ -49,7 +54,7 @@ public class MemberServiceImp implements MemberService {
     RoleService roleService;
 
     @Override
-    public void addMember(Member memberForm, Authentication authentication, MultipartFile file) {
+    public void addMember(Member memberForm, Authentication authentication, MultipartFile file, Long abonnementId) {
         LocalDate localDate = LocalDate.now();
         memberForm.setCreatedAt(localDate);
 
@@ -71,11 +76,29 @@ public class MemberServiceImp implements MemberService {
                 memberForm.setRoles(role);
             }
         }
-        if (memberForm.getAbonnement() != null) {
-            memberForm.setNbrSessionCurrentCarnet(memberForm.getAbonnement().getNbrSeance());
+        MemberAbonnement memberAbonnement = new MemberAbonnement();
+
+        if (abonnementId != null) {
+            Abonnement abonnement = abonnementService.getAboById(abonnementId);
+            memberAbonnement.setAbonnement(abonnement);
+            memberAbonnement.setBookedDate(localDate);
+            if (memberForm.getMemberAbonnements() == null) {
+                memberForm.setMemberAbonnements(new ArrayList<>());
+            }
+            memberAbonnement.setMember(memberForm);
+
+            memberForm.getMemberAbonnements().add(memberAbonnement);
+            memberForm.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
+
+
 
         }
         memberRepository.save(memberForm);
+
+        if (abonnementId != null) {
+            memberAbonnementRepo.save(memberAbonnement);
+
+        }
 
         Notification notification = new Notification();
         String username = authentication.getName();
@@ -86,12 +109,12 @@ public class MemberServiceImp implements MemberService {
         notification.setTitle("Nouveau Adherent");
         notificationService.addNotification(notification);
 
-        if (memberForm.getAbonnement() != null) {
+        if (abonnementId != null) {
             Paiement paiement = new Paiement();
             paiement.setStart_date(localDate);
             paiement.setStatus("Impayé");
-            paiement.setAbonnement(memberForm.getAbonnement());
-            paiement.setTotalAmount(memberForm.getAbonnement().getPrice());
+            paiement.setAbonnement(abonnementService.getAboById(abonnementId));
+            paiement.setTotalAmount(paiement.getAbonnement().getPrice());
             String per = paiement.getAbonnement().getPeriod();
 
             SetPayEndDate sPD = new SetPayEndDate();
@@ -99,6 +122,18 @@ public class MemberServiceImp implements MemberService {
             paiement.setMember(memberForm);
 
             paymentService.addPayement(paiement);
+
+            Abonnement abonnement = paiement.getAbonnement();
+
+            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(memberForm,abonnement,paiement.getStart_date());
+
+
+            if (memberMembership != null) {
+
+                // Update MemberAbonnement status
+                memberMembership.setAbStatus("En attente");
+                memberAbonnementRepo.save(memberMembership);
+            }
         }
     }
 
@@ -123,8 +158,8 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public List<Member> getMemberByMembership(Long abId) {
-        Abonnement membership = abonnementRepo.findById(abId).get();
-        return memberRepository.findByAbonnement(membership);
+        Abonnement membership = abonnementService.getAboById(abId);
+        return memberRepository.findByMemberAbonnements_Abonnement(membership);
     }
 
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
-    void addMember(Member member, Authentication authentication, MultipartFile file);
+    void addMember(Member member, Authentication authentication, MultipartFile file,Long abonnementId);
 
     List<Member> getMemberByMembership(Long abid);
 

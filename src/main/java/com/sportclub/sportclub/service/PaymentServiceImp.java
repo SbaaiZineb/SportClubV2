@@ -66,7 +66,8 @@ paymentRepo.save(m);
 
     @Override
     public List<Paiement> getPaymentsByMember(Member member) {
-        return paymentRepo.getPaiementByMember(member);
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        return paymentRepo.findPaiementByMember(member,sort);
     }
 
     @Override

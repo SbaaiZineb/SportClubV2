@@ -133,9 +133,9 @@ object-fit: cover;border-radius: 50%"></div>
                 <div class="col-md-5">
                     <label class="form-label">Abonnement : </label>
                     <label class="fw-bold"
-                           th:text="${member.abonnement != null ? member.abonnement.nameAb : 'None'}"></label>
+                           th:text="${member.getCurrentAbonnement() != null ? member.getCurrentAbonnement().nameAb : 'None'}"></label>
                     <input type="hidden" class="form-control" id="abonnement" name="abonnement"
-                           th:value="${member.abonnement != null ? member.abonnement.id : ''}">
+                           th:value="${member.getCurrentAbonnement() != null ? member.getCurrentAbonnement().id : ''}">
 
                 </div>
                 <div class="col-md-7">

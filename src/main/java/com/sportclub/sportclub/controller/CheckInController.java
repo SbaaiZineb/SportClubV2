@@ -81,8 +81,14 @@ public class CheckInController {
             model.addAttribute("today", LocalDate.now());
            // List<CheckIn> checkIns = checkInService.getCheckInByDate(localDate);
 
+            List<CheckIn> filteredCheckIns = new ArrayList<>();
             List<CheckIn> checkIns = checkInService.getAllCheckIns();
-            model.addAttribute("checkin", checkIns);
+            for (CheckIn checkIn:checkIns){
+                if(checkIn.getMember()!=null){
+                    filteredCheckIns.add(checkIn);
+                }
+            }
+            model.addAttribute("checkin", filteredCheckIns);
             return "checkIn";
         } catch (Exception e) {
             return "error";

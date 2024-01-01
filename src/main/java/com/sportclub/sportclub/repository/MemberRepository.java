@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    @Query("SELECT m, COUNT(u) FROM Member  u JOIN u.abonnement m GROUP BY m")
+    @Query("SELECT m, COUNT(u) FROM Member u JOIN u.memberAbonnements ma JOIN ma.abonnement m GROUP BY m")
     List<Object[]> countUsersByMembership();
-    long countByAbonnement(Abonnement abonnement);
+
+    long countByMemberAbonnements_Abonnement(Abonnement abonnement);
     Page<Member> findByNameContains(String mc, Pageable pageable);
     List<Member> findByLnameContainsIgnoreCase(String s);
     List<Member> findByCinContainsIgnoreCase(String cin);
 
     List<Member> findByTeleContains(String tele);
-    List<Member> findByAbonnement(Abonnement membership);
+    List<Member> findByMemberAbonnements_Abonnement(Abonnement membership);
     @Query("select count(p) = 1 from Member p where p.email= ?1")
     Boolean findExistByEmail(String email);
 

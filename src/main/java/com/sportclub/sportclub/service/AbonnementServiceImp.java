@@ -28,7 +28,7 @@ public class AbonnementServiceImp implements AbonnementService {
 
     @Override
     public Page<Abonnement> findByAboName(String ac, Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "id"));
 
         return abonnementRepo.findByNameAbContains(ac, pageable);
     }

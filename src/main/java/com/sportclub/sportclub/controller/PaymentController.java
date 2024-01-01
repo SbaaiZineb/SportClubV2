@@ -2,42 +2,34 @@ package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.*;
-import com.sportclub.sportclub.repository.GymRepo;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.TemplateEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import javax.swing.*;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
@@ -52,6 +44,10 @@ public class PaymentController {
     MemberService memberService;
     @Autowired
     GymService gymService;
+    @Autowired
+    AbonnementService abonnementService;
+    @Autowired
+    MemberAbonnementRepo memberAbonnementRepo;
 
     @GetMapping("/payments")
     public String getPayment(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
@@ -129,6 +125,18 @@ public class PaymentController {
         member.setStatus("Active");
         memberService.updateMember(member);
         paymentService.updatePayment(paiement);
+
+        Abonnement abonnement = paiement.getAbonnement();
+
+        MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member,abonnement,paiement.getStart_date());
+
+
+        if (memberAbonnement != null) {
+
+            // Update MemberAbonnement status
+            memberAbonnement.setAbStatus("Active");
+            memberAbonnementRepo.save(memberAbonnement);
+        }
         redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
 
         if (userRole.equals("EMPLOYEE")) {
@@ -228,6 +236,19 @@ public class PaymentController {
             Paiement paiement = paymentService.getPaymentById(id);
             paiement.setStatus("Annulée");
             paymentService.updatePayment(paiement);
+
+            Abonnement abonnement = paiement.getAbonnement();
+
+            MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(paiement.getMember(),abonnement,paiement.getStart_date());
+
+
+            if (memberAbonnement != null) {
+
+                // Update MemberAbonnement status
+                memberAbonnement.setAbStatus("Annulé");
+                memberAbonnementRepo.save(memberAbonnement);
+            }
+
 
         } catch (Exception e) {
             System.out.println("Something is wrong !! " + e);

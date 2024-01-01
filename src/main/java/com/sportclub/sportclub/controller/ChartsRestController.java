@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.CheckInService;
@@ -8,6 +9,7 @@ import com.sportclub.sportclub.service.CoachCheckInService;
 import com.sportclub.sportclub.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,8 @@ public class ChartsRestController {
     @Autowired
     AbonnementService abonnementService;
     @Autowired
+    MemberAbonnementRepo memberAbonnementRepo;
+    @Autowired
     MemberRepository memberRepository;
     @Autowired
     CheckInService checkInService;
@@ -41,7 +45,7 @@ public class ChartsRestController {
         // Assuming you have a membershipService to fetch the statistics
         List<Abonnement> memberships = abonnementService.getAllAbos();
         for (Abonnement membership : memberships) {
-            long userCount = memberRepository.countByAbonnement(membership);
+            long userCount = memberRepository.countByMemberAbonnements_Abonnement(membership);
             statistics.put(membership.getNameAb(), (int) userCount);
         }
 
@@ -103,4 +107,22 @@ public class ChartsRestController {
 
         return ResponseEntity.ok(statistics);
     }
+
+    // Subscription statistics
+   /* @GetMapping("/subStatistics")
+    public ResponseEntity<Map<Month, Long>> getSubscriptionStatisticsForYear(@RequestParam int year) {
+        Map<Month, Long> statistics = new HashMap<>();
+
+        // Retrieve subscriptions for the entire year
+        List<MemberAbonnement> subscriptions = memberAbonnementRepo.findByBookedDateYear(year);
+
+        // Iterate through each subscription
+        for (MemberAbonnement memberAbonnement : subscriptions) {
+            LocalDate bookedDate = memberAbonnement.getBookedDate();
+            Month month = bookedDate.getMonth();
+            statistics.merge(month, 1L, Long::sum);
+        }
+
+        return new ResponseEntity<>(statistics, HttpStatus.OK);
+    }*/
 }

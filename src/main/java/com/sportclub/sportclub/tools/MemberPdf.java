@@ -65,13 +65,14 @@ public class MemberPdf {
             table.addCell(user.getEmail());
             table.addCell(String.valueOf(user.getTele()));
             table.addCell(user.getAdress());
-            if (user.getAbonnement()!=null){
-                table.addCell(user.getAbonnement().getNameAb());
-
-            }else {
-                table.addCell("");
-
-            }        }
+//            if (user.getAbonnement()!=null){
+//                table.addCell(user.getAbonnement().getNameAb());
+//
+//            }else {
+//                table.addCell("");
+//
+//            }
+            }
     }
 
     public void export(HttpServletResponse response) throws DocumentException, IOException {

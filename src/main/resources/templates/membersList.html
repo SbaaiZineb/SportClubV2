@@ -64,7 +64,7 @@
                 <th>Sexe</th>
                 <th>Inscrie le</th>
                 <th>Abonnement</th>
-                <th>Statue</th>
+                <th>Status</th>
                 <th th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"
                     colspan="2">Action
                 </th>
@@ -106,8 +106,8 @@
                 <td th:utext="${m.getTele()}"></td>
                 <td th:utext="${m.getGender()}"></td>
                 <td th:utext="${m.createdAt}"></td>
-                <td style="color: #4b6c91;
-  font-weight: bold;" th:utext="${m.abonnement}"></td>
+                <td style="color: #4b6c91;font-weight: bold;"
+                 th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getNameAb() : ''}"></td>
                 <td>
                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
                        th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
@@ -321,8 +321,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Abonnement :</label>
-                                        <select name="abonnement" id="abonnement" class="form-control mb-3">
-                                            <option value=""></option>
+                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3">
                                             <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
                                                     th:text="${abonnement.nameAb}"></option>
                                         </select>
