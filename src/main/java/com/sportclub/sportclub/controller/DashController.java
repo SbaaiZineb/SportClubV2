@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class DashController {
+    @Autowired
+    MemberAbonnementRepo memberAbonnementRepo;
     @Autowired
     MemberService memberService;
     @Autowired
@@ -62,6 +65,8 @@ public class DashController {
         List<CheckIn> checkIns = checkInService.getCheckInOfWeek();
         long size = checkIns.size();
         long countC = coachService.count();
+
+
         model.addAttribute("today", LocalDate.now());
         model.addAttribute("size", size);
         model.addAttribute("countC", countC);

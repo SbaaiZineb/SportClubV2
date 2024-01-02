@@ -176,7 +176,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
         return memberRepository.findByNameContains(mc, pageable);
     }
 

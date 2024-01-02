@@ -55,8 +55,15 @@ public class userProfileController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
+        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
 
-        isMembershipExpired();
+        for (MemberAbonnement memberAb:memberAbonnementList
+             ) {
+            if (isMembershipExpired(memberAb)){
+                memberAb.setAbStatus("Expiré");
+            }
+        }
+        memberAbonnementRepo.saveAll(memberAbonnementList);
 
         Member member = memberService.getMemberById(id);
         List<CheckIn> checkIns = checkInRepo.getCheckInByMember(member);
@@ -74,44 +81,38 @@ public class userProfileController {
         return "userProfile";
     }
 
-    public boolean isMembershipExpired(){
-        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
+    public boolean isMembershipExpired(MemberAbonnement memberAb) {
+
 
         LocalDate currentDate = LocalDate.now();
 
-        for (MemberAbonnement memberAb:memberAbonnementList
-             ) {
-            Member member = memberAb.getMember();
-            LocalDate expirationDate = null;
-            String abPeriod = memberAb.getAbonnement().getPeriod();
-            switch (abPeriod) {
-                case "12" -> {
-                    expirationDate = memberAb.getBookedDate().plusYears(1);
+        Member member = memberAb.getMember();
+        LocalDate expirationDate = null;
+        String abPeriod = memberAb.getAbonnement().getPeriod();
+        switch (abPeriod) {
+            case "12" -> {
+                expirationDate = memberAb.getBookedDate().plusYears(1);
 
-                }
-                case "3" -> {
-                    expirationDate = memberAb.getBookedDate().plusMonths(3);
-                }
-                case "1" -> {
-                    expirationDate = memberAb.getBookedDate().plusMonths(1);
-                }
-                case "6" -> {
-                    expirationDate = memberAb.getBookedDate().plusMonths(6);
-
-                }
-                case "2" -> {
-                    expirationDate = memberAb.getBookedDate().plusMonths(2);
-                }
-                case "0" -> {
-                }
             }
-            if ((expirationDate!=null && currentDate.isAfter(expirationDate)) || (expirationDate==null && member.getNbrSessionCurrentCarnet()<= 0)){
-                return true;
+            case "3" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(3);
             }
+            case "1" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(1);
+            }
+            case "6" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(6);
 
+            }
+            case "2" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(2);
+            }
+            case "0" -> {
+            }
         }
-        return false;
+        return (expirationDate != null && currentDate.isAfter(expirationDate)) || (expirationDate == null && member.getNbrSessionCurrentCarnet() <= 0);
     }
+
     @GetMapping("/coachProfile")
     public String getCoachProfile(@RequestParam(name = "id") Long id, Model model) {
 
@@ -160,7 +161,7 @@ public class userProfileController {
             sPD.setPayEndDate(per, paiement);
             paymentService.addPayement(paiement);
 
-            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member,abonnement,paiement.getStart_date());
+            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
 
 
             if (memberMembership != null) {

@@ -10,7 +10,11 @@
     <div class="main-body">
 
 
-        <!-- /Breadcrumb -->
+        <!-- Success message for successful password update -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong th:text="${successMessage}"></strong>
+
+        </div>
 
         <div class="row">
             <div class="col-md-4 mb-3">

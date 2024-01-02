@@ -100,7 +100,7 @@
 
                                     <div class="col-auto">
                                         <div class="stat text-primary">
-                                            <i class="align-middle" data-feather="shopping-cart"></i>
+                                            <i class="align-middle" data-feather="check-circle"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -114,17 +114,47 @@
         </div>
         <div class="col-xl-6 col-xxl-7">
             <div class="card flex-fill w-100" style="height: 8.8cm !important;">
+
                 <div class="card-header">
-                    <h5 class="card-title">Le diagramme circulaire</h5>
-                    <h6 class="card-subtitle text-muted">Ce diagramme circulaire montre le nombre d'utilisations de
-                        chaque adhésion par les membres.</h6>
+                    <div class="row mb-1">
+                        <div class="col-sm-10">
+                            <h5 class="card-title">Les statistiques des abonnements</h5>
+
+                        </div>
+                            <div class="col-sm-2">
+                                <div>
+                                    <select id="viewType" onchange="displayChart6()">
+                                        <option value="byYear">Mensuelle</option>
+                                        <option value="by6Months">Semestriel</option>
+                                    </select>
+                                </div>
+                            </div>
+                    </div>
+                    <div th:class="row">
+                        <div class="col-sm-8">
+                            <label for="selectedYear" style="font-weight: bold;
+  color: #30639f;">Sélectionner l'année :</label>
+                            <select id="selectedYear" name="year" onchange="fetchDataAndGenerateChart()">
+
+                                <option th:each="year : ${#numbers.sequence(2000, 2100)}" th:value="${year}" th:text="${year}">2024</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div><label style="font-weight: bold;
+  color: #30639f;">Total annuel :   </label><span style="font-weight: bold; margin-left: 2rem;font-size: medium;" id="totalSubscriptions" th:text="${totalSubscriptions}"></span></div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-body">
-                    <div class="chart">
-                        <canvas id="membershipChart"></canvas>
-                        <div id="legend" style="float: right;margin: 10px;"></div>
+                    <div class="chart chart-sm text-center">
+
+                        <canvas id="chartjs-bar"></canvas>
+                        <canvas id="chartjs-bar-6" ></canvas>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -156,7 +186,7 @@
                     <th>Id</th>
                     <th>Adhérent</th>
 
-<!--                    <th>Cin</th>-->
+                    <!--                    <th>Cin</th>-->
                     <th>Tele</th>
                     <th>Inscrie le</th>
                     <th>Abonnement</th>
@@ -190,10 +220,10 @@
                     <td th:utext="${m.getEmail()}"></td>-->
 
 
-<!--                    <td th:utext="${m.getCin()}"></td>-->
+                    <!--                    <td th:utext="${m.getCin()}"></td>-->
                     <td th:utext="${m.getTele()}"></td>
                     <td th:utext="${m.createdAt}"></td>
-                    <td  th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getNameAb() : ''}"></td>
+                    <td th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getNameAb() : ''}"></td>
                     <td>
                         <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
                            th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
@@ -208,21 +238,14 @@
         <div class="col-md-5" style="margin-top: 13px">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Graphique à barres</h5>
-                    <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrements
-                        effectués chaque jour de cette semaine.</h6>  <input type="date" id="selectedDate"
-                                                                             name="selectedDate" th:value="${today}"
-                                                                             style="float: right;
-padding: 5px;
-color: #3b7ddd;
-border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
-background: transparent;margin-top: -17px">
+                    <h5 class="card-title">Les statistiques des adhésions</h5>
+                    <h6 class="card-subtitle text-muted">Ce diagramme circulaire montre le nombre d'utilisations de
+                        chaque adhésion par les membres.</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart chart-sm text-center">
-
-                        <canvas id="chartjs-bar"></canvas>
-
+                    <div class="chart">
+                        <canvas id="membershipChart"></canvas>
+                        <div id="legend" style="float: right;margin: 10px;"></div>
                     </div>
                 </div>
             </div>
@@ -233,74 +256,242 @@ background: transparent;margin-top: -17px">
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const selectedDateInput = document.getElementById("selectedDate");
+            document.getElementById("selectedYear").value = new Date().getFullYear();
+           fetchDataAndGenerateChart();
 
-            // Function to fetch data and generate chart
-            function fetchDataAndGenerateChart(date) {
-                fetch('/checkInStatistic?selectedDate=' + date)
-                    .then(response => response.json())
-                    .then(data => {
-                        const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
-                        const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
+        });
+        /*<![CDATA[*/
+        function fetchDataAndGenerateChart(){
+            var selectedYear = document.getElementById("selectedYear").value;
+            fetch('/subStatistics?year=' + selectedYear)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched data:', data);
 
-                        new Chart(document.getElementById("chartjs-bar"), {
-                            type: "bar",
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    label: "Check-ins",
-                                    backgroundColor: "#30639f",
-                                    borderColor: "#30639f",
-                                    hoverBackgroundColor: window.theme.primary,
-                                    hoverBorderColor: window.theme.primary, data: checkInCount,
-                                    barPercentage: .75,
-                                    categoryPercentage: .5
-                                }]
+                    const months = [
+                        "janv.", "févr.", "mars", "avril",
+                        "mai", "juin", "juil.", "août",
+                        "sept.", "oct.", "nov.", "déc."
+                    ];
+
+                    const labels = months.map(month => month);
+                    const subscriptionCount = labels.map(month => data[month] || 0);
+                    console.log('Labels:', labels);
+                    console.log('Subscription Count:', subscriptionCount);
+                    const totalSubscriptions = subscriptionCount.reduce((acc, count) => acc + count, 0);
+                    console.log("Total :",totalSubscriptions);
+                    document.getElementById("totalSubscriptions").innerText = totalSubscriptions;
+                    new Chart(document.getElementById("chartjs-bar"), {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Abonnements",
+                                backgroundColor: "#30639f",
+                                borderColor: "#30639f",
+                                hoverBackgroundColor: window.theme.primary,
+                                hoverBorderColor: window.theme.primary,
+                                data: subscriptionCount,
+                                barPercentage: .75,
+                                categoryPercentage: .5
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: false
                             },
-                            options: {
-                                maintainAspectRatio: false,
-                                legend: {
-                                    display: false
-                                },
-                                scales: {
-                                    yAxes: [{
-                                        gridLines: {
+                            scales: {
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    stacked: false,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }],
+                                xAxes: [{
+                                    stacked: false,
+                                    gridLines: {
+                                        color: "transparent"
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            /*]]>*/
+        }
+
+        /*<![CDATA[*/
+        function fetchDataAndGenerate6Months() {
+            var selectedYear = document.getElementById("selectedYear").value;
+
+            // Fetch data for the selected year
+            fetch('/subStatistics?year=' + selectedYear)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched data:', data);
+
+                    // Extract the data for each 6 months
+                    const months = [
+                        ["janv.", "févr.", "mars", "avril", "mai", "juin"],
+                        ["juil.", "août", "sept.", "oct.", "nov.", "déc."]
+                    ];
+
+                    // Display the total subscriptions for each 6 months
+                    const totalSubscriptions = months.map(subset => {
+                        const subsetData = subset.map(month => data[month] || 0);
+                        const subsetTotal = subsetData.reduce((acc, count) => acc + count, 0);
+                        console.log(`Total for ${subset.join('-')}: ${subsetTotal}`);
+                        return subsetTotal;
+                    });
+
+                    // Display the total subscriptions for the selected year
+                    const overallTotal = totalSubscriptions.reduce((acc, total) => acc + total, 0);
+                    console.log("Overall Total:", overallTotal);
+                    document.getElementById("totalSubscriptions").innerText = overallTotal;
+
+                    // Create a new Chart.js instance for the 6-month chart
+                    new Chart(document.getElementById("chartjs-bar-6"), {
+                        type: "bar",
+                        data: {
+                            labels: ["Jan-Jun", "Juil-Dec"],
+                            datasets: [{
+                                label: "Abonnements",
+                                backgroundColor: ["#30639f", "#30639f"],
+                                borderColor: ["#30639f", "#30639f"],
+                                hoverBackgroundColor: [window.theme.primary, window.theme.primary],
+                                hoverBorderColor: [window.theme.primary, window.theme.primary],
+                                data: totalSubscriptions,
+                                barPercentage: .75,
+                                categoryPercentage: .5
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    stacked: false,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }],
+                                xAxes: [{
+                                    stacked: false,
+                                    gridLines: {
+                                        color: "transparent"
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+
+
+        function displayChart6() {
+            var viewType = document.getElementById("viewType").value;
+
+            if (viewType === "byYear") {
+                // Show the yearly chart and hide the 6-month chart
+                document.getElementById("chartjs-bar").style.display = "block";
+                document.getElementById("chartjs-bar-6").style.display = "none";
+            } else if (viewType === "by6Months") {
+                // Show the 6-month chart and hide the yearly chart
+                document.getElementById("chartjs-bar").style.display = "none";
+                document.getElementById("chartjs-bar-6").style.display = "block";
+
+                // Fetch and display 6-month data
+                fetchDataAndGenerate6Months();
+            }
+        }
+
+        // Initial chart display based on the default view type
+        displayChart6();
+
+        /* const selectedDateInput = document.getElementById("selectedDate");
+
+                    // Function to fetch data and generate chart
+                    function fetchDataAndGenerateChart(date) {
+                        fetch('/checkInStatistic?selectedDate=' + date)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Fetched data :",data);
+                                const labels = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+                                const checkInCount = labels.map(day => data[day.toLowerCase()] || 0);
+
+                                new Chart(document.getElementById("chartj-bar"), {
+                                    type: "bar",
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: "Check-ins",
+                                            backgroundColor: "#30639f",
+                                            borderColor: "#30639f",
+                                            hoverBackgroundColor: window.theme.primary,
+                                            hoverBorderColor: window.theme.primary, data: checkInCount,
+                                            barPercentage: .75,
+                                            categoryPercentage: .5
+                                        }]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        legend: {
                                             display: false
                                         },
-                                        stacked: false,
-                                        ticks: {
-                                            stepSize: 1
+                                        scales: {
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display: false
+                                                },
+                                                stacked: false,
+                                                ticks: {
+                                                    stepSize: 1
+                                                }
+                                            }],
+                                            xAxes: [{
+                                                stacked: false,
+                                                gridLines: {
+                                                    color: "transparent"
+                                                }
+                                            }]
                                         }
-                                    }],
-                                    xAxes: [{
-                                        stacked: false,
-                                        gridLines: {
-                                            color: "transparent"
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
 
-            // Function to handle date change event
-            function handleDateChange() {
-                const selectedDate = selectedDateInput.value;
-                console.log("Selected date:", selectedDate);
-                fetchDataAndGenerateChart(selectedDate);
-            }
+                    // Function to handle date change event
+                    function handleDateChange() {
+                        const selectedDate = selectedDateInput.value;
+                        console.log("Selected date:", selectedDate);
+                        fetchDataAndGenerateChart(selectedDate);
+                    }
 
-            // Attach event listener to date input
-            selectedDateInput.addEventListener("change", handleDateChange);
+                    // Attach event listener to date input
+                    selectedDateInput.addEventListener("change", handleDateChange);
 
-            // Fetch data and generate chart on page load
-            const initialDate = selectedDateInput.value; // Get the initial date value
-            fetchDataAndGenerateChart(initialDate);
-        });
+                    // Fetch data and generate chart on page load
+                    const initialDate = selectedDateInput.value; // Get the initial date value
+                    fetchDataAndGenerateChart(initialDate);*/
 
     </script>
 

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -105,12 +106,14 @@ public class ProfilController {
     return "profile";
     }
     @PostMapping("/passwordUpdate")
-    public String updatePassword(@RequestParam(name = "id") Long id,@RequestParam(name = "password") String password){
+    public String updatePassword(@RequestParam(name = "id") Long id, @RequestParam(name = "password") String password, RedirectAttributes redirectAttributes){
     UserApp user=adminService.getAdminById(id);
     try {
         user.setPassword(passwordEncoder.encode(password));
         adminService.updateAdmin(user);
         System.out.println("OK!!!!!!!!!!!!!!");
+        redirectAttributes.addFlashAttribute("successMessage", "Mot de passe actualisé avec succès!");
+
     }catch (Exception e){
         System.out.println("something wrong !!!!!!!!!!!");
     }

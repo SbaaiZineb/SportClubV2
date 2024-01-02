@@ -71,7 +71,7 @@ public class Member extends UserApp {
 
         for (MemberAbonnement memberAbonnement : memberAbonnements) {
             LocalDate bookedDate = memberAbonnement.getBookedDate();
-            if (bookedDate != null && !bookedDate.isAfter(currentDate)) {
+            if ((bookedDate != null && !bookedDate.isAfter(currentDate)) && (memberAbonnement.getAbStatus()!=null) && ((memberAbonnement.getAbStatus().equals("Active")) || (memberAbonnement.getAbStatus().equals("En attente")))) {
                 // Check if the bookedDate is not after current date
                 if (currentAbonnement == null || bookedDate.isAfter(currentAbonnement.getBookedDate())) {
                     currentAbonnement = memberAbonnement;

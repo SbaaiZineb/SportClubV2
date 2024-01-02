@@ -109,20 +109,27 @@ public class ChartsRestController {
     }
 
     // Subscription statistics
-   /* @GetMapping("/subStatistics")
-    public ResponseEntity<Map<Month, Long>> getSubscriptionStatisticsForYear(@RequestParam int year) {
-        Map<Month, Long> statistics = new HashMap<>();
+    @GetMapping("/subStatistics")
+    public ResponseEntity<Map<String, Integer>> getSubscriptionStatisticsForYear(@RequestParam(name = "year") int year) {
+        Map<String, Integer> statistics = new HashMap<>();
 
         // Retrieve subscriptions for the entire year
         List<MemberAbonnement> subscriptions = memberAbonnementRepo.findByBookedDateYear(year);
 
-        // Iterate through each subscription
+
         for (MemberAbonnement memberAbonnement : subscriptions) {
             LocalDate bookedDate = memberAbonnement.getBookedDate();
             Month month = bookedDate.getMonth();
-            statistics.merge(month, 1L, Long::sum);
+
+
+            String monthName = month.getDisplayName(TextStyle.SHORT, Locale.FRENCH);
+
+            // Increment the count for the specific month in the statistics map
+            statistics.put(monthName, statistics.getOrDefault(monthName, 0) + 1);
+
         }
 
-        return new ResponseEntity<>(statistics, HttpStatus.OK);
-    }*/
+        return ResponseEntity.ok(statistics);
+    }
+
 }

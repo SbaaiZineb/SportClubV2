@@ -65,13 +65,13 @@ public class MemberPdf {
             table.addCell(user.getEmail());
             table.addCell(String.valueOf(user.getTele()));
             table.addCell(user.getAdress());
-//            if (user.getAbonnement()!=null){
-//                table.addCell(user.getAbonnement().getNameAb());
-//
-//            }else {
-//                table.addCell("");
-//
-//            }
+          if (user.getCurrentAbonnement()!=null){
+                table.addCell(user.getCurrentAbonnement().getNameAb());
+
+            }else {
+                table.addCell("");
+
+            }
             }
     }
 
