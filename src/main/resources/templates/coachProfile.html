@@ -254,7 +254,11 @@ background: transparent;margin-top: -17px">
                           },
                           stacked: false,
                           ticks: {
-                            stepSize: 1
+                            beginAtZero: true,
+                            stepSize: 5, // Set your desired step size
+                            callback: function (value) {
+                              return value.toLocaleString(); // Format the tick labels as needed
+                            }
                           }
                         }],
                         xAxes: [{

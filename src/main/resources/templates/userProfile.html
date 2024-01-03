@@ -9,13 +9,13 @@
 <div layout:fragment="content" class="container">
     <div class="main-body">
 
-
+        <a class="btn btn-outline-primary mb-2" data-th-id="${user.getId()}" th:href="@{/profilPdf(id=${user.getId()})}"><i data-feather="printer"></i></a>
         <div class="row gutters-sm">
             <div class="col-md-3">
                 <div class="card h-100" style="background-color: #3f6693; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-<!--                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>-->
+                            <!--                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>-->
 
                             <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 195px;
 height: 195px;
@@ -30,7 +30,9 @@ object-fit: cover;"
                                        th:if="${user.status == 'Active'}" th:utext="${user.getStatus()}"></p>
                                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
                                        th:if="${user.status == 'Inactive'}" th:utext="${user.getStatus()}"></p>
-                                    <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}" th:utext="${'Nomber de sessions restantes :  '+user.getNbrSessionCurrentCarnet()}"></p>
+                                    <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;"
+                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
+                                       th:utext="${'Nomber de sessions restantes :  '+user.getNbrSessionCurrentCarnet()}"></p>
                                 </div>
 
 
@@ -42,17 +44,17 @@ object-fit: cover;"
 
 
             <div class="col-md-9 idd" th:id="${user.id}">
-                    <input type="hidden" name="id" th:value="${user.id}" >
-                    <input type="hidden" name="pic" th:value="${user.pic}">
-                    <input type="hidden" name="roles" th:value="${user.roles.role_id}">
-                    <input type="hidden" name="password" th:value="${user.password}">
-                    <img th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
-                         th:src="@{'images/'+${user.pic}}">
-                    <style>
-                        .hidden {
-                            display: none;
-                        }
-                    </style>
+                <input type="hidden" name="id" th:value="${user.id}">
+                <input type="hidden" name="pic" th:value="${user.pic}">
+                <input type="hidden" name="roles" th:value="${user.roles.role_id}">
+                <input type="hidden" name="password" th:value="${user.password}">
+                <img th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
+                     th:src="@{'images/'+${user.pic}}">
+                <style>
+                    .hidden {
+                        display: none;
+                    }
+                </style>
 
                 <div class="card mb-3 h-100"
                      style="background-color: #598edb26; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
@@ -155,7 +157,7 @@ object-fit: cover;"
 
 
                                 <div class="row mt-1">
-                                    <div class="col-md-7">
+                                    <div class="col-md-5">
                                         <div class="row me-1">
                                             <div class=" d-flex align-items-center">
                                                 <h6 class="mb-0">Adresse :</h6>
@@ -165,6 +167,15 @@ object-fit: cover;"
                                         </div>
                                     </div>
                                     <div class="col-md-5">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">État de santé :</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getHealth()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
                                         <div class="row me-1">
                                             <div class=" d-flex align-items-center">
                                                 <h6 class="mb-0">Le sexe :</h6>
@@ -446,18 +457,21 @@ object-fit: cover;"
                     <th>Status</th>
                 </tr>
 
-                <tr th:if="${!memberships.isEmpty()}" th:each="membership :${memberships}" style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                <tr th:if="${!memberships.isEmpty()}" th:each="membership :${memberships}"
+                    style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
                     <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getAbonnement().getId()}"></td>
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getAbonnement().getNameAb()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;"
+                        th:utext="${membership.getAbonnement().getNameAb()}"></td>
                     <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getAbonnement().getPeriod() == '0' ? user.getNbrSessionCurrentCarnet() : membership.getAbonnement().getPeriod()+' mois' }"></td>
-                   <td>
-                       <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>
-                       <p class="badge bg-warning m-0" th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
-                       <p class="badge bg-danger m-0" th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
-                       <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'En attente'}">En attente</p>
+                    <td style="color: #646fd5;font-weight: bold;"
+                        th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
+                    <td>
+                        <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>
+                        <p class="badge bg-warning m-0" th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
+                        <p class="badge bg-danger m-0" th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
+                        <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'En attente'}">En attente</p>
 
-                   </td>
+                    </td>
                 </tr>
 
             </table>
@@ -513,14 +527,15 @@ background: transparent;margin-top: -17px">
 
                 <tr th:each="p:${payments}" th:id="${p.id}" onclick="getPaymentDetails($(this).attr('id'))"
                     style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
-                    <td style="color: #646fd5;font-weight: bold;"  th:utext="${p.getId()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getId()}"></td>
                     <td class="fw-bold" th:utext="${p.abonnement}"></td>
 
                     <td th:utext="${p.getAbonnement().price}+' DH'"></td>
-                    <td style="color: #646fd5;font-weight: bold;"  th:utext="${p.getStart_date()}"></td>
-                    <td style="color: #646fd5;font-weight: bold;"  th:utext="${p.getEnd_date() == null ? 'Carnet '+ p.getAbonnement().getNbrSeance() : p.getEnd_date() }"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getStart_date()}"></td>
+                    <td style="color: #646fd5;font-weight: bold;"
+                        th:utext="${p.getEnd_date() == null ? 'Carnet '+ p.getAbonnement().getNbrSeance() : p.getEnd_date() }"></td>
                     <td th:utext="${p.payedBy}"></td>
-                    <td style="color: #646fd5;font-weight: bold;"  th:utext="${p.payedAt}"></td>
+                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.payedAt}"></td>
                     <td class="text-center">
                         <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
                         <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
@@ -560,7 +575,8 @@ background: transparent;margin-top: -17px">
 
         </div>
         <!-- Payment details Modal -->
-        <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsLabel"
+        <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog"
+             aria-labelledby="paymentDetailsLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -623,7 +639,11 @@ background: transparent;margin-top: -17px">
                                         },
                                         stacked: false,
                                         ticks: {
-                                            stepSize: 1
+                                            beginAtZero: true,
+                                            stepSize: 5, // Set your desired step size
+                                            callback: function (value) {
+                                                return value.toLocaleString(); // Format the tick labels as needed
+                                            }
                                         }
                                     }],
                                     xAxes: [{
@@ -668,7 +688,7 @@ background: transparent;margin-top: -17px">
             }
         });
 
-        function getPaymentDetails(id){
+        function getPaymentDetails(id) {
             var paymentDetailsModal = $('#paymentDetails');
             console.log("Clicked");
             $.get("/paymentDetails?id=" + id, function (data) {

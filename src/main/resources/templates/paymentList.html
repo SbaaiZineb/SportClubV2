@@ -9,6 +9,7 @@
 </head>
 <body>
 <div layout:fragment="content">
+
     <!-- Success message for successful payment -->
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
         <strong th:text="${successMessage}"></strong>
@@ -20,7 +21,7 @@
                 <div class="input-group-prepend bg-transparent">
                     <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                 </div>
-                <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                <input type="text" class="form-control bg-transparent " name="keyword"
                        th:value="${keyword}" placeholder="Chercher par tele">
             </div>
         </form>
@@ -38,7 +39,8 @@
 
             <th>Action</th>
         </tr>
-        <tr th:each="p:${paymentList}" class="paymentId" th:id="${p.id}" onclick="getPaymentDetails($(this).attr('id'))" >
+        <tr th:each="p:${paymentList}" class="paymentId" th:id="${p.id}"
+            onclick="getPaymentDetails($(this).attr('id'))">
 
             <td th:utext="${p.getId()}"></td>
             <td th:utext="${p.abonnement}"></td>
@@ -53,13 +55,17 @@
                 <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
                 <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
             </td>
-            <td >
-                <a onclick="event.stopPropagation()" th:class="${p.getStatus() == 'Payé' or p.getStatus() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}"
+            <td>
+                <a onclick="event.stopPropagation()"
+                   th:class="${p.getStatus() == 'Payé' or p.getStatus() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}"
+                   data-th-id="${p.getId()}"
                    data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
 
-                <a onclick="event.stopPropagation()" th:if="${p.getStatus() == 'Payé'}" href="#" class="btn btn-light text-dark inv"
+                <a onclick="event.stopPropagation()" th:if="${p.getStatus() == 'Payé'}" href="#"
+                   class="btn btn-light text-dark inv"
                    data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}">Recu</a>
-                <a onclick="event.stopPropagation()" title="Annuler le paiement " th:if="${p.getStatus() == 'Impayé'}" th:href="@{/payments/cancel(payId=${p.getId()})}"><i
+                <a onclick="event.stopPropagation()" title="Annuler le paiement " th:if="${p.getStatus() == 'Impayé'}"
+                   th:href="@{/payments/cancel(payId=${p.getId()})}"><i
                         class="bi bi-x-circle" style="color: red;
 font-size: 22px;
   margin-left: 1rem;"></i></a>
@@ -108,7 +114,7 @@ font-size: 22px;
             </div>
         </div>
     </div>
-<!--     Invoice Modal-->
+    <!--     Invoice Modal-->
     <!--<div class="modal fade" id="invoice" tabindex="-1" role="dialog" aria-labelledby="invoiceLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -131,7 +137,8 @@ font-size: 22px;
     </div>-->
 
     <!-- Payment details Modal -->
-    <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsLabel"
+    <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog"
+         aria-labelledby="paymentDetailsLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -145,6 +152,41 @@ font-size: 22px;
 
                 </div>
 
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Les statistiques des paiements</h5>
+
+
+                <div class="row mb-4 ">
+                    <div class="col-sm-9">
+                        <label for="selectedYear" style="font-weight: bold;
+  color: #30639f;">Sélectionner l'année :</label>
+                        <select id="selectedYear" name="year" onchange="fetchDataAndGenerateChart()" style="padding: 5px 8px 4px 9px;
+  background-color: #b9c6d1;
+  border: none;
+}">
+
+                            <option th:each="year : ${#numbers.sequence(2010, 2100)}" th:value="${year}"
+                                    th:text="${year}">2024
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <div><label style="font-weight: bold;
+  color: #30639f;">Total annuel : </label><span style="font-weight: bold; margin-left: 2rem;font-size: medium;"
+                                                id="totalPayments" th:text="${totalPayments}"></span></div>
+                    </div>
+                </div>
+                <div class="chart chart-sm text-center">
+
+                    <canvas id="payment-chart"></canvas>
+
+                </div>
             </div>
         </div>
     </div>
@@ -199,7 +241,7 @@ font-size: 22px;
 
         })
 
-        function getPaymentDetails(id){
+        function getPaymentDetails(id) {
             var paymentDetailsModal = $('#paymentDetails');
             console.log("Clicked");
             $.get("/paymentDetails?id=" + id, function (data) {
@@ -209,18 +251,95 @@ font-size: 22px;
 
         }
 
-    /* $('#invoice').on('show.bs.modal', function () {
+        /* $('#invoice').on('show.bs.modal', function () {
 
-             $(".inv").click(function () {
-                 var id = $(this).attr('id');
+                 $(".inv").click(function () {
+                     var id = $(this).attr('id');
 
-                 $.get("/invoice?id=" + id, function (data) {
-                     $('#invoice').find('.modal-body').html(data);
+                     $.get("/invoice?id=" + id, function (data) {
+                         $('#invoice').find('.modal-body').html(data);
+                     })
                  })
-             })
 
 
-         })*/
+             })*/
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("selectedYear").value = new Date().getFullYear();
+            fetchDataAndGenerateChart();
+
+        });
+
+        function fetchDataAndGenerateChart() {
+            var selectedYear = document.getElementById("selectedYear").value;
+            fetch('/paymentStatistics?year=' + selectedYear)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched data:', data);
+
+                    const months = [
+                        "janv.", "févr.", "mars", "avril",
+                        "mai", "juin", "juil.", "août",
+                        "sept.", "oct.", "nov.", "déc."
+                    ];
+
+                    const labels = months.map(month => month);
+                    const revenue = labels.map(month => data[month] || 0);
+
+                    console.log('Labels:', labels);
+                    console.log('Revenue:', revenue);
+
+                    const totalPayments = revenue.reduce((acc, count) => acc + count, 0);
+                    console.log("Total :", totalPayments);
+                    document.getElementById("totalPayments").innerText = totalPayments;
+                    new Chart(document.getElementById("payment-chart"), {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Revenue " + selectedYear,
+                                backgroundColor: "#30639f",
+                                borderColor: "#30639f",
+                                hoverBackgroundColor: window.theme.primary,
+                                hoverBorderColor: window.theme.primary,
+                                data: revenue,
+                                barPercentage: .75,
+                                categoryPercentage: .5
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    stacked: false,
+                                    ticks: {
+                                        beginAtZero: true,
+                                        stepSize: 1000, // Set your desired step size
+                                        callback: function (value) {
+                                            return value.toLocaleString(); // Format the tick labels as needed
+                                        }
+                                    }
+                                }],
+                                xAxes: [{
+                                    stacked: false,
+                                    gridLines: {
+                                        color: "transparent"
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            /*]]>*/
+        }
     </script>
 
 </div>

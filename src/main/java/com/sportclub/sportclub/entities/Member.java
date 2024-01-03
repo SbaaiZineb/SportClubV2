@@ -28,6 +28,7 @@ public class Member extends UserApp {
     //Number of sessions based on the current Carnet
     private int nbrSessionCurrentCarnet;
 
+    private String health;
 
     public Member(String pic, String name, String lname, String adress, String cin, LocalDate dob, String tele, String email, String password, String gender) {
         super(pic, name, lname, adress, cin, dob, tele, email, password);

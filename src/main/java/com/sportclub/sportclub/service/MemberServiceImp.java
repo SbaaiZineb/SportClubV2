@@ -22,9 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MemberServiceImp implements MemberService {
@@ -114,7 +112,7 @@ public class MemberServiceImp implements MemberService {
             paiement.setStart_date(localDate);
             paiement.setStatus("Impayé");
             paiement.setAbonnement(abonnementService.getAboById(abonnementId));
-            paiement.setTotalAmount(paiement.getAbonnement().getPrice());
+            paiement.setMontant(paiement.getAbonnement().getPrice());
             String per = paiement.getAbonnement().getPeriod();
 
             SetPayEndDate sPD = new SetPayEndDate();
@@ -249,5 +247,69 @@ public class MemberServiceImp implements MemberService {
     @Override
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
+    }
+
+    //Update the member's statue
+    public void updateMemberStatues() {
+        try {
+
+            List<Paiement> allPayments = paymentService.getAllPayment();
+
+            for (Paiement payment : allPayments) {
+
+                Member member = payment.getMember();
+                if (member != null) {
+
+                    boolean hasActivePayment = memberHasActivePay(member);
+
+
+                    if (!hasActivePayment) {
+                        member.setStatus("Inactive");
+                    } else {
+                        member.setStatus("Active");
+                    }
+                    updateMember(member);
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("Something is off " + e);
+        }
+    }
+
+    public boolean memberHasActivePay(Member member) {
+        LocalDate currentDate = LocalDate.now();
+        List<Paiement> payments = paymentService.getPaymentsByMember(member);
+        int nbrSession = member.getNbrSessionCurrentCarnet();
+        if (payments != null && !payments.isEmpty()) {
+
+            // Sort the payments list by payment date and id in descending order
+            payments.sort(Comparator
+                    .comparing(Paiement::getStart_date)
+                    .thenComparing(Paiement::getId, Comparator.reverseOrder()));
+            Paiement latestPayment;
+
+            if (payments.size() == 1) {
+                // If there's only one payment, directly access it
+                latestPayment = payments.get(0);
+                System.out.println("member  :"+latestPayment.getMember().getName()+" payment id :"+latestPayment.getId());
+
+            } else {
+                // If there are multiple payments, access the last one
+                latestPayment = payments.get(payments.size() - 1);
+                System.out.println("member  :"+latestPayment.getMember().getName()+" payment id :"+latestPayment.getId());
+            }
+
+            for (Paiement payment : payments) {
+
+                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatus().equals("Payé")) || (latestPayment != null && "Payé".equals(latestPayment.getStatus()) && nbrSession > 0)) {
+                    //If there is an active payment for the member return true
+                    return true;
+                }
+            }
+        }
+        //If not
+        return false;
+
     }
 }

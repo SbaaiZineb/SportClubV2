@@ -123,7 +123,10 @@
                         </div>
                             <div class="col-sm-2">
                                 <div>
-                                    <select id="viewType" onchange="displayChart6()">
+                                    <select id="viewType" onchange="displayChart6()"  style="padding: 5px 8px 5px 9px;
+  background-color: #b9c6d1;
+  border: none;
+}">
                                         <option value="byYear">Mensuelle</option>
                                         <option value="by6Months">Semestriel</option>
                                     </select>
@@ -134,9 +137,12 @@
                         <div class="col-sm-8">
                             <label for="selectedYear" style="font-weight: bold;
   color: #30639f;">Sélectionner l'année :</label>
-                            <select id="selectedYear" name="year" onchange="fetchDataAndGenerateChart()">
+                            <select id="selectedYear" name="year" onchange="fetchDataAndGenerateChart()" style="padding: 5px 8px 4px 9px;
+  background-color: #b9c6d1;
+  border: none;
+}">
 
-                                <option th:each="year : ${#numbers.sequence(2000, 2100)}" th:value="${year}" th:text="${year}">2024</option>
+                                <option th:each="year : ${#numbers.sequence(2010, 2100)}" th:value="${year}" th:text="${year}">2024</option>
                             </select>
                         </div>
                         <div class="col-sm-4">
@@ -258,6 +264,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("selectedYear").value = new Date().getFullYear();
            fetchDataAndGenerateChart();
+           fetchDataAndGenerate6Months();
 
         });
         /*<![CDATA[*/
@@ -281,12 +288,13 @@
                     const totalSubscriptions = subscriptionCount.reduce((acc, count) => acc + count, 0);
                     console.log("Total :",totalSubscriptions);
                     document.getElementById("totalSubscriptions").innerText = totalSubscriptions;
+                    fetchDataAndGenerate6Months();
                     new Chart(document.getElementById("chartjs-bar"), {
                         type: "bar",
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: "Abonnements",
+                                label: "Abonnements "+selectedYear,
                                 backgroundColor: "#30639f",
                                 borderColor: "#30639f",
                                 hoverBackgroundColor: window.theme.primary,
@@ -308,7 +316,11 @@
                                     },
                                     stacked: false,
                                     ticks: {
-                                        stepSize: 1
+                                        beginAtZero: true,
+                                        stepSize: 50, // Set your desired step size
+                                        callback: function (value) {
+                                            return value.toLocaleString(); // Format the tick labels as needed
+                                        }
                                     }
                                 }],
                                 xAxes: [{
@@ -362,7 +374,7 @@
                         data: {
                             labels: ["Jan-Jun", "Juil-Dec"],
                             datasets: [{
-                                label: "Abonnements",
+                                label: "Abonnements "+selectedYear,
                                 backgroundColor: ["#30639f", "#30639f"],
                                 borderColor: ["#30639f", "#30639f"],
                                 hoverBackgroundColor: [window.theme.primary, window.theme.primary],
@@ -384,7 +396,11 @@
                                     },
                                     stacked: false,
                                     ticks: {
-                                        stepSize: 1
+                                        beginAtZero: true,
+                                        stepSize: 50, // Set your desired step size
+                                        callback: function (value) {
+                                            return value.toLocaleString(); // Format the tick labels as needed
+                                        }
                                     }
                                 }],
                                 xAxes: [{

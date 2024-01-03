@@ -37,4 +37,5 @@ public interface MemberService {
     Boolean checkCinExist(String cin);
 
     List<Member> getMemberByCin(String cin);
+    public void updateMemberStatues();
 }

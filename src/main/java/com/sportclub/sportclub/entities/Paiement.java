@@ -21,8 +21,7 @@ public class Paiement {
     private LocalDate end_date;
     private String status;
     private String payedBy;
-    private double totalAmount;
-    private double amountPaid;
+    private double montant;
 
     @OneToMany(mappedBy = "paiement", cascade = CascadeType.ALL)
     private List<Cheque> cheques;

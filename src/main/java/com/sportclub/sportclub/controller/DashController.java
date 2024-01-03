@@ -46,7 +46,7 @@ public class DashController {
     public String getDash(Model model) {
         memberService.ifPicIsEmpty(adminService.getAllAdmins(), memberService.getAllMembers(), coachService.getAllCoachs());
 
-        updateMemberStatues();
+        memberService.updateMemberStatues();
         List<Paiement> paiementList = paymentService.getAllPayment();
         double totalPrice = 0.0;
 
@@ -107,53 +107,7 @@ public class DashController {
         return ResponseEntity.ok(totalPrice);
     }
 
-    //Update the member's statue
-    public void updateMemberStatues() {
-        try {
 
-            List<Paiement> allPayments = paymentService.getAllPayment();
-
-            for (Paiement payment : allPayments) {
-
-                Member member = payment.getMember();
-                if (member != null) {
-
-                    boolean hasActivePayment = memberHasActivePay(member);
-
-
-                    if (!hasActivePayment) {
-                        member.setStatus("Inactive");
-                    } else {
-                        member.setStatus("Active");
-                    }
-                    memberService.updateMember(member);
-                }
-
-            }
-        } catch (Exception e) {
-            System.out.println("Something is off " + e);
-        }
-    }
-
-    public boolean memberHasActivePay(Member member) {
-        LocalDate currentDate = LocalDate.now();
-        List<Paiement> payments = paymentService.getPaymentsByMember(member);
-        int nbrSession = member.getNbrSessionCurrentCarnet();
-        if (payments != null) {
-
-
-            for (Paiement payment : payments) {
-
-                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatus().equals("Payé")) || (nbrSession > 0 && payment.getStatus().equals("Payé"))) {
-                    //If there is an active payment for the member return true
-                    return true;
-                }
-            }
-        }
-            //If not
-            return false;
-
-    }
 
 /*@GetMapping("/memberShipStatistic")
     public String membership(Model model){

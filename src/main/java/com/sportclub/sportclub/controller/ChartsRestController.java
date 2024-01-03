@@ -3,6 +3,7 @@ package com.sportclub.sportclub.controller;
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
+import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.AbonnementService;
 import com.sportclub.sportclub.service.CheckInService;
 import com.sportclub.sportclub.service.CoachCheckInService;
@@ -36,6 +37,8 @@ public class ChartsRestController {
     CoachCheckInService coachCheckInService;
     @Autowired
     CoachService coachService;
+    @Autowired
+    PaymentRepo paymentRepo;
 
     @GetMapping("/memberShipStatistic")
     public ResponseEntity<Map<String, Integer>> membership(Model model) {
@@ -131,5 +134,27 @@ public class ChartsRestController {
 
         return ResponseEntity.ok(statistics);
     }
+@GetMapping("/paymentStatistics")
+public ResponseEntity<Map<String, Integer>> getPaymentStatistic(@RequestParam(name = "year") int year) {
+    Map<String, Integer> statistics = new HashMap<>();
+
+    // Retrieve payment for the entire year
+    List<Paiement> paiements = paymentRepo.findByPayedAtYear(year);
+
+
+    for (Paiement paiement : paiements) {
+        LocalDate payedAt = paiement.getPayedAt();
+        Month month = payedAt.getMonth();
+        double montant = paiement.getMontant();
+
+
+        String monthName = month.getDisplayName(TextStyle.SHORT, Locale.FRENCH);
+
+        // Increment the count for the specific month in the statistics map
+        int currentRevenue = statistics.getOrDefault(monthName, 0);
+        statistics.put(monthName, currentRevenue + (int) montant);    }
+
+    return ResponseEntity.ok(statistics);
+}
 
 }

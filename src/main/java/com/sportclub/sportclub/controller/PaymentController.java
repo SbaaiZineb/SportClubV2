@@ -195,7 +195,7 @@ public class PaymentController {
     public String convertToBase64(Path imagePath) throws IOException {
         try {
             // Check if the filename is not empty
-            if (!imagePath.getFileName().toString().isEmpty()) {
+            if (imagePath.getFileName()!=null && !imagePath.getFileName().toString().isEmpty()) {
                 // Check if the file exists
                 if (Files.exists(imagePath)) {
                     byte[] imageBytes = Files.readAllBytes(imagePath);

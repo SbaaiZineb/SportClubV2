@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.controller;
 
 
+import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.CheckInRepo;
 import com.sportclub.sportclub.repository.CoachCheckInRepo;
@@ -8,6 +9,7 @@ import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,14 +23,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Controller
 
 public class userProfileController {
+    @Autowired
+    TemplateEngine templateEngine;
 
     @Autowired
     MemberAbonnementRepo memberAbonnementRepo;
@@ -55,6 +68,7 @@ public class userProfileController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
+        memberService.updateMemberStatues();
         List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
 
         for (MemberAbonnement memberAb:memberAbonnementList
@@ -154,7 +168,7 @@ public class userProfileController {
             paiement.setMember(member);
             paiement.setStart_date(LocalDate.now());
             paiement.setAbonnement(abonnement);
-            paiement.setTotalAmount(abonnement.getPrice());
+            paiement.setMontant(abonnement.getPrice());
             paiement.setStatus("Impayé");
             String per = paiement.getAbonnement().getPeriod();
             SetPayEndDate sPD = new SetPayEndDate();
@@ -181,4 +195,65 @@ public class userProfileController {
         return "redirect:/membersList/userProfile?id=" + userId;
     }
 
+    @GetMapping("/profilPdf")
+    public void profilPdf(HttpServletResponse response, @RequestParam(name = "id") Long id) throws DocumentException, IOException {
+        Member member = memberService.getMemberById(id);
+        Context context = new Context();
+
+
+        String imageFilename = member.getPic();
+        if (imageFilename!=null && !imageFilename.isEmpty()) {
+
+            imageFilename = imageFilename.trim();
+            // Convert the image to base64 and add it to the context
+
+            Path imagePath = Paths.get("uploads", imageFilename);
+            String base64Image = convertToBase64(imagePath);
+
+            context.setVariable("base64Image", base64Image);
+        }
+        context.setVariable("user", member);
+
+        String htmlContent = templateEngine.process("ProfilePdf", context);
+
+        // Create a ByteArrayOutputStream to hold the PDF content
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Use Flying Saucer to convert HTML to PDF
+        ITextRenderer renderer = new ITextRenderer();
+
+        renderer.setDocumentFromString(htmlContent);
+        renderer.layout();
+        renderer.createPDF(outputStream);
+
+        // Set the response headers for PDF download
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=member"+member.getName()+"_"+member.getLname()+".pdf");
+
+        // Write the PDF content to the response output stream
+        outputStream.writeTo(response.getOutputStream());
+        outputStream.flush();
+        outputStream.close();
+
+
+    }
+    public String convertToBase64(Path imagePath) throws IOException {
+        try {
+            // Check if the filename is not empty
+            if (imagePath.getFileName()!=null && !imagePath.getFileName().toString().isEmpty()) {
+                // Check if the file exists
+                if (Files.exists(imagePath)) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    return Base64.getEncoder().encodeToString(imageBytes);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

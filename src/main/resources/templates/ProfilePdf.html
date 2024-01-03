@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Profil d'dhérent </title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 4px;
+            font-size: 14px; /* Adjust font size */
+        }
+
+        h2 {
+            color: #3f6693;
+        }
+
+        .profile-container {
+            width: 80%;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        img {
+            float: right;
+            width: 35%;
+            height: auto;
+            margin-left: 20px;
+            margin-right: 0;
+        }
+
+        .profile-section {
+            border: 1px solid #e0e7f4;
+            padding: 10px;
+            border-radius: 5px;
+            width: 60%;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .profile-section h2 {
+            color: #3f6693;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid #e0e7f4;
+            padding: 4px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e0e7f4;
+        }
+
+        .header {
+            background-color: #3f6693;
+            color: whitesmoke;
+            padding: 3px;
+            margin-top: 10px; /* Adjust margin top */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2 style=" color: whitesmoke!important;">Adhérent Profil</h2>
+</div>
+
+<div class="profile-container">
+    <img th:if="${user.pic}" th:src="'data:image/png;base64,' + ${base64Image}" alt="Image"/>
+    <div class="profile-section">
+        <h2>Informations Personnelles</h2>
+        <p><strong>Nom:</strong> <span th:text="${user.name}"></span></p>
+        <p><strong>Prénom:</strong> <span th:text="${user.lname}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>CIN:</strong> <span th:text="${user.cin}"></span></p>
+        <p><strong>Téléphone:</strong> <span th:text="${user.tele}"></span></p>
+        <p><strong>Deuxième Téléphone:</strong> <span th:text="${user.secondTele}"></span></p>
+        <p><strong>Profession:</strong> <span th:text="${user.profession}"></span></p>
+        <p><strong>Situation Familiale:</strong> <span th:text="${user.famSituation}"></span></p>
+        <p><strong>Date de Naissance:</strong> <span  th:text="${user.dob}"></span></p>
+        <p><strong>Adresse:</strong> <span th:text="${user.adress}"></span></p>
+        <p><strong>Assurance Santé:</strong> <span th:text="${user.health}"></span></p>
+    </div>
+</div>
+<div class="header">
+    <h2 style=" color: whitesmoke!important;">Les adhésions d'adhérent</h2>
+</div>
+<table class="table table-centered table-hover table-responsive mt-3">
+    <tr style="background-color: #e0e7f46b!important;">
+        <th>ID d'abonnement</th>
+        <th>Nom d'abonnement</th>
+        <th>Montant</th>
+        <th>Nomber des seances/Period</th>
+        <th>Status</th>
+    </tr>
+
+    <tr th:if="${!user.getMemberAbonnements().isEmpty()}" th:each="membership :${user.getMemberAbonnements()}"
+        style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+        <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getAbonnement().getId()}"></td>
+        <td style="color: #646fd5;font-weight: bold;"
+            th:utext="${membership.getAbonnement().getNameAb()}"></td>
+        <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
+        <td style="color: #646fd5;font-weight: bold;"
+            th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
+        <td>
+            <p th:if="${membership.getAbStatus() == 'Active'}">Active</p>
+            <p th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
+            <p th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
+            <p th:if="${membership.getAbStatus()  == 'En attente'}">En attente</p>
+
+        </td>
+    </tr>
+
+</table>
+<div class="header">
+    <h2 style=" color: whitesmoke!important;">Historique des paiements</h2>
+</div>
+
+<table>
+    <tr>
+        <th>ID de paiement</th>
+        <th>Type d'abonnement</th>
+        <th>Montant</th>
+        <th>Date de début</th>
+        <th>Nombre des séances/Fin date</th>
+        <th>Payé par</th>
+        <th>Payé le</th>
+        <th>Status</th>
+    </tr>
+
+    <tr th:each="p:${user.getPaiement()}" th:id="${p.id}">
+        <td th:utext="${p.getId()}"></td>
+        <td th:utext="${p.abonnement}"></td>
+        <td th:utext="${p.getAbonnement().price} + ' DH'"></td>
+        <td th:utext="${p.getStart_date()}"></td>
+        <td th:utext="${p.getEnd_date() == null ? 'Carnet ' + p.getAbonnement().getNbrSeance() : p.getEnd_date()}"></td>
+        <td th:utext="${p.payedBy}"></td>
+        <td th:utext="${p.payedAt}"></td>
+        <td>
+            <span th:if="${p.getStatus() == 'Payé'}">Payé</span>
+            <span th:if="${p.getStatus() == 'Impayé'}">Impayé</span>
+            <span th:if="${p.getStatus() == 'Annulée'}">Annulée</span>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
