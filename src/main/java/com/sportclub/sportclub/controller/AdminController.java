@@ -47,8 +47,7 @@ public class AdminController {
 
         model.addAttribute("user", new UserApp());
 
-        List<Role> roles = roleService.findAllRoles();
-        model.addAttribute("roles", roles);
+
 
       /*  for (User user:adminService.getAllAdmins()
              ) {
@@ -95,6 +94,7 @@ public class AdminController {
 
         String password = admin.getPassword();
         admin.setPassword(passwordEncoder.encode(password));
+        admin.setRoles(roleService.getRoleByid(1L));
        /* String name = admin.getLname();
         String lname = admin.getLname();
         String email = admin.getEmail();
@@ -133,12 +133,15 @@ public class AdminController {
         model.addAttribute("userForm", new UserApp());
         List<UserApp> searchResults = new ArrayList<>();
 
-        if ("cin".equals(searchBy)) {
-            searchResults = adminService.getByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = adminService.getByTele(keyword);
-        } else if (keyword.isEmpty()) {
-            searchResults = adminService.getAllAdmins();
+        if (!keyword.isEmpty()){
+            if ("cin".equals(searchBy)) {
+                searchResults = adminService.getByCin(keyword);
+            } else if ("tele".equals(searchBy)) {
+                searchResults = adminService.getByTele(keyword);
+            }
+        }
+        else {
+            return "redirect:/adminList";
         }
 
         model.addAttribute("users", searchResults);

@@ -11,12 +11,12 @@
 
 <div layout:fragment="content">
   <div class="search-field d-none d-md-block">
-    <form th:action="@{sportList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+    <form th:action="@{/sportList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
       <div class="input-group mb-3">
         <div class="input-group-prepend bg-transparent">
           <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
         </div>
-        <input type="text" class="form-control bg-transparent border-0" name="sport"
+        <input type="text" class="form-control " name="sport"
                th:value="${keyword}" placeholder="Chercher">
       </div>
     </form>

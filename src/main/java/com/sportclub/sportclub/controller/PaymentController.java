@@ -68,18 +68,21 @@ public class PaymentController {
 
     }
 
-    @RequestMapping(path = {"/payments/search"})
-    public String search(Model model, String keyword) {
+    @GetMapping("/payments/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("payment", new Paiement());
+        List<Paiement> searchResults;
 
-        Paiement paiement = new Paiement();
-        model.addAttribute("payment", paiement);
-        List<Paiement> list;
-        if (keyword != null) {
-            list = paymentRepo.findByMemberTeleContains(keyword);
+        if (!keyword.isEmpty()) {
+            searchResults = paymentRepo.findByMemberTeleContains(keyword);
+
         } else {
-            list = paymentService.getAllPayment();
+            return "redirect:/payments";
         }
-        model.addAttribute("paymentList", list);
+
+        model.addAttribute("paymentList", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "paymentList";
     }
 
@@ -106,7 +109,7 @@ public class PaymentController {
 
         for (Cheque cheque : paiement.getCheques()) {
 
-            cheque.setNamePayor(paiement.getMember().getName()+" "+paiement.getMember().getLname());
+            cheque.setNamePayor(paiement.getMember().getName() + " " + paiement.getMember().getLname());
             cheque.setPaiement(paiement);
 
             System.out.println("Cheque Number: " + cheque.getNumCheque());
@@ -128,7 +131,7 @@ public class PaymentController {
 
         Abonnement abonnement = paiement.getAbonnement();
 
-        MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member,abonnement,paiement.getStart_date());
+        MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
 
 
         if (memberAbonnement != null) {
@@ -157,7 +160,7 @@ public class PaymentController {
 
         context.setVariable("gym", gym);
         String imageFilename = gym.getLogo();
-        if (imageFilename!=null && !imageFilename.isEmpty()) {
+        if (imageFilename != null && !imageFilename.isEmpty()) {
 
             imageFilename = imageFilename.trim();
             // Convert the image to base64 and add it to the context
@@ -195,7 +198,7 @@ public class PaymentController {
     public String convertToBase64(Path imagePath) throws IOException {
         try {
             // Check if the filename is not empty
-            if (imagePath.getFileName()!=null && !imagePath.getFileName().toString().isEmpty()) {
+            if (imagePath.getFileName() != null && !imagePath.getFileName().toString().isEmpty()) {
                 // Check if the file exists
                 if (Files.exists(imagePath)) {
                     byte[] imageBytes = Files.readAllBytes(imagePath);
@@ -227,7 +230,7 @@ public class PaymentController {
 
     @RequestMapping(value = "/payments/cancel", method = {RequestMethod.GET, RequestMethod.POST})
 
-    public String cancelPayment(@RequestParam(name = "payId") Long id,Authentication authentication) {
+    public String cancelPayment(@RequestParam(name = "payId") Long id, Authentication authentication) {
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
@@ -239,7 +242,7 @@ public class PaymentController {
 
             Abonnement abonnement = paiement.getAbonnement();
 
-            MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(paiement.getMember(),abonnement,paiement.getStart_date());
+            MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(paiement.getMember(), abonnement, paiement.getStart_date());
 
 
             if (memberAbonnement != null) {
@@ -261,10 +264,10 @@ public class PaymentController {
 
 
     @GetMapping("/paymentDetails")
-    public String paymentDetails(@RequestParam(name = "id") Long paymentId, Model model){
+    public String paymentDetails(@RequestParam(name = "id") Long paymentId, Model model) {
 
         Paiement payment = paymentService.getPaymentById(paymentId);
-        model.addAttribute("payment",payment);
+        model.addAttribute("payment", payment);
 
         return "paymentDetails";
     }

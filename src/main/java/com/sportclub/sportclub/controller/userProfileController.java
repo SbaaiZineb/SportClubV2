@@ -73,7 +73,7 @@ public class userProfileController {
 
         for (MemberAbonnement memberAb:memberAbonnementList
              ) {
-            if (isMembershipExpired(memberAb)){
+            if (isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")){
                 memberAb.setAbStatus("Expiré");
             }
         }

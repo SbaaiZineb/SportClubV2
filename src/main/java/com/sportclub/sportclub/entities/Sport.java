@@ -6,15 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data@AllArgsConstructor@NoArgsConstructor
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Sport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-private String nom;
-@Lob
-private String descrption;
-private String pic;
+    private String nom;
+    @Lob
+    private String descrption;
+    private String pic;
 
 }

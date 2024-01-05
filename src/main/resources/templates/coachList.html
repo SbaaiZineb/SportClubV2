@@ -8,12 +8,13 @@
 <body>
 
 <div layout:fragment="content">
-    <div class="row" style=" margin: auto; width: 50%;">
-        <!-- Success message for successful add  -->
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong th:text="${successMessage}"></strong>
+    <!-- Success message for successful add  -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
 
-        </div>
+    </div>
+    <div class="row" style=" margin: auto; width: 50%;">
+
         <form th:action="@{/coachList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="row mb-3">
 
@@ -216,7 +217,7 @@
                                                     th:text="${sport.nom}"></option>
                                         </select></div>
                                 </div>
-                                <div class="row">
+                                <!--<div class="row">
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
                                             <label class="form-label">Mot de passe:</label>
@@ -232,7 +233,7 @@
                                                    onkeyup="validateInput()" required/>
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
                                 <style>
                                     .input-border {
                                         border: 1px solid gray;

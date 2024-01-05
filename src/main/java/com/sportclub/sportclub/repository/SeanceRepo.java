@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface SeanceRepo extends JpaRepository<Seance,Long> {
     Page<Seance> findByClassNameContains(String s, Pageable pageable);
-    List<Seance> findByClassNameContains(String s);
+    List<Seance> findByClassNameContainsIgnoreCase(String s);
     List<Seance> findByCoach(Coach coach);
     List<Seance> findByStartDate(LocalDate date);
     Page<Seance> findSeanceByCoachEmail(String email,Pageable pageable);

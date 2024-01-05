@@ -16,4 +16,5 @@ public interface AbonnementService {
     Abonnement getAboById(Long  id);
     void updateAbonnement(Abonnement abonnement);
     List<Abonnement> getAllAbos();
+    List<Abonnement> getByAbName(String keyword);
 }

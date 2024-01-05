@@ -10,6 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.awt.*;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 public class MemberPdf {
     private List<Member> listUsers;
@@ -80,6 +83,16 @@ public class MemberPdf {
         PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
+
+        // Add today's date at the top left of the PDF
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = new Date();
+        String formattedDate = dateFormat.format(today);
+
+        Font dateFont = new Font(Font.HELVETICA, 12, Font.NORMAL, Color.BLACK);
+        Paragraph dateParagraph = new Paragraph("Date: " + formattedDate, dateFont);
+        dateParagraph.setAlignment(Element.ALIGN_LEFT);
+        document.add(dateParagraph);
 
         Font font = new Font(Font.HELVETICA, 16, Font.BOLD, Color.GRAY);
         Paragraph title = new Paragraph("Liste des adhérents", font);

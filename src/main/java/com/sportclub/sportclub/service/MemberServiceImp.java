@@ -65,7 +65,11 @@ public class MemberServiceImp implements MemberService {
 
         memberForm.setStatus("Inactive");
         String password = memberForm.getPassword();
-        memberForm.setPassword(passwordEncoder.encode(password));
+
+        if (password!=null){
+            memberForm.setPassword(passwordEncoder.encode(password));
+
+        }
 
         List<Role> roles = roleService.findAllRoles();
 
@@ -87,7 +91,6 @@ public class MemberServiceImp implements MemberService {
 
             memberForm.getMemberAbonnements().add(memberAbonnement);
             memberForm.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
-
 
 
         }
@@ -123,7 +126,7 @@ public class MemberServiceImp implements MemberService {
 
             Abonnement abonnement = paiement.getAbonnement();
 
-            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(memberForm,abonnement,paiement.getStart_date());
+            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(memberForm, abonnement, paiement.getStart_date());
 
 
             if (memberMembership != null) {
@@ -174,7 +177,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),Sort.by(Sort.Direction.DESC, "id"));
         return memberRepository.findByNameContains(mc, pageable);
     }
 
@@ -281,35 +284,26 @@ public class MemberServiceImp implements MemberService {
         LocalDate currentDate = LocalDate.now();
         List<Paiement> payments = paymentService.getPaymentsByMember(member);
         int nbrSession = member.getNbrSessionCurrentCarnet();
+
         if (payments != null && !payments.isEmpty()) {
+            payments.sort(Comparator.comparing(Paiement::getId, Comparator.reverseOrder()));
 
-            // Sort the payments list by payment date and id in descending order
-            payments.sort(Comparator
-                    .comparing(Paiement::getStart_date)
-                    .thenComparing(Paiement::getId, Comparator.reverseOrder()));
-            Paiement latestPayment;
+            Paiement latestPayment = payments.get(0);  // The first one after sorting is the latest
 
-            if (payments.size() == 1) {
-                // If there's only one payment, directly access it
-                latestPayment = payments.get(0);
-                System.out.println("member  :"+latestPayment.getMember().getName()+" payment id :"+latestPayment.getId());
-
-            } else {
-                // If there are multiple payments, access the last one
-                latestPayment = payments.get(payments.size() - 1);
-                System.out.println("member  :"+latestPayment.getMember().getName()+" payment id :"+latestPayment.getId());
-            }
+            System.out.println("member: " + latestPayment.getMember().getName() + ", payment id: " + latestPayment.getId());
 
             for (Paiement payment : payments) {
-
-                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && payment.getStatus().equals("Payé")) || (latestPayment != null && "Payé".equals(latestPayment.getStatus()) && nbrSession > 0)) {
-                    //If there is an active payment for the member return true
+                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && "Payé".equals(payment.getStatus()))
+                        || (latestPayment != null && "Payé".equals(latestPayment.getStatus()) && nbrSession > 0)) {
+                    // If there is an active payment for the member
                     return true;
                 }
             }
         }
-        //If not
-        return false;
 
+        // If not
+        return false;
     }
+
+
 }

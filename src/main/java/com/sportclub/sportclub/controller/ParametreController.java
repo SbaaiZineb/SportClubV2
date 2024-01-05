@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +36,15 @@ public class ParametreController {
     @GetMapping("/parametre")
 
     public String getPara( Long id, Model model) {
+        List<Role> roleList = new ArrayList<>();
         id=1L;
         List<Role> roles=gymService.getRoles();
-        model.addAttribute("roles",roles);
+        for (Role role:roles){
+            if (role.getRole_id()!=1L){
+                roleList.add(role);
+            }
+        }
+        model.addAttribute("roles",roleList);
         Gym gym=gymService.getById(id);
         Role roleForm = new Role();
         model.addAttribute("roleForm", roleForm);

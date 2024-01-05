@@ -6,7 +6,7 @@
     <meta charset="utf-8">
 
 
-    <title>Chart</title>
+    <title>Home</title>
 
 </head>
 
@@ -86,8 +86,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h1 id="totalPrice" class="mt-1 mb-3" style="color: #284d82;"
-                                    th:utext="${price+' '+'DH'}"></h1>
+                                <h1 id="totalPrice" class="mt-1 mb-3" style="color: #284d82;"></h1>
 
                             </div>
                         </div>
@@ -121,17 +120,17 @@
                             <h5 class="card-title">Les statistiques des abonnements</h5>
 
                         </div>
-                            <div class="col-sm-2">
-                                <div>
-                                    <select id="viewType" onchange="displayChart6()"  style="padding: 5px 8px 5px 9px;
+                        <div class="col-sm-2">
+                            <div>
+                                <select id="viewType" onchange="displayChart6()" style="padding: 5px 8px 5px 9px;
   background-color: #b9c6d1;
   border: none;
 }">
-                                        <option value="byYear">Mensuelle</option>
-                                        <option value="by6Months">Semestriel</option>
-                                    </select>
-                                </div>
+                                    <option value="byYear">Mensuelle</option>
+                                    <option value="by6Months">Semestriel</option>
+                                </select>
                             </div>
+                        </div>
                     </div>
                     <div th:class="row">
                         <div class="col-sm-8">
@@ -142,12 +141,15 @@
   border: none;
 }">
 
-                                <option th:each="year : ${#numbers.sequence(2010, 2100)}" th:value="${year}" th:text="${year}">2024</option>
+                                <option th:each="year : ${#numbers.sequence(2010, 2100)}" th:value="${year}"
+                                        th:text="${year}">2024
+                                </option>
                             </select>
                         </div>
                         <div class="col-sm-4">
                             <div><label style="font-weight: bold;
-  color: #30639f;">Total annuel :   </label><span style="font-weight: bold; margin-left: 2rem;font-size: medium;" id="totalSubscriptions" th:text="${totalSubscriptions}"></span></div>
+  color: #30639f;">Total annuel : </label><span style="font-weight: bold; margin-left: 2rem;font-size: medium;"
+                                                id="totalSubscriptions" th:text="${totalSubscriptions}"></span></div>
                         </div>
                     </div>
 
@@ -156,7 +158,7 @@
                     <div class="chart chart-sm text-center">
 
                         <canvas id="chartjs-bar"></canvas>
-                        <canvas id="chartjs-bar-6" ></canvas>
+                        <canvas id="chartjs-bar-6"></canvas>
 
                     </div>
                 </div>
@@ -263,12 +265,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("selectedYear").value = new Date().getFullYear();
-           fetchDataAndGenerateChart();
-           fetchDataAndGenerate6Months();
+            fetchDataAndGenerateChart();
+            fetchDataAndGenerate6Months();
 
         });
+
         /*<![CDATA[*/
-        function fetchDataAndGenerateChart(){
+        function fetchDataAndGenerateChart() {
             var selectedYear = document.getElementById("selectedYear").value;
             fetch('/subStatistics?year=' + selectedYear)
                 .then(response => response.json())
@@ -286,7 +289,7 @@
                     console.log('Labels:', labels);
                     console.log('Subscription Count:', subscriptionCount);
                     const totalSubscriptions = subscriptionCount.reduce((acc, count) => acc + count, 0);
-                    console.log("Total :",totalSubscriptions);
+                    console.log("Total :", totalSubscriptions);
                     document.getElementById("totalSubscriptions").innerText = totalSubscriptions;
                     fetchDataAndGenerate6Months();
                     new Chart(document.getElementById("chartjs-bar"), {
@@ -294,7 +297,7 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: "Abonnements "+selectedYear,
+                                label: "Abonnements " + selectedYear,
                                 backgroundColor: "#30639f",
                                 borderColor: "#30639f",
                                 hoverBackgroundColor: window.theme.primary,
@@ -374,7 +377,7 @@
                         data: {
                             labels: ["Jan-Jun", "Juil-Dec"],
                             datasets: [{
-                                label: "Abonnements "+selectedYear,
+                                label: "Abonnements " + selectedYear,
                                 backgroundColor: ["#30639f", "#30639f"],
                                 borderColor: ["#30639f", "#30639f"],
                                 hoverBackgroundColor: [window.theme.primary, window.theme.primary],
@@ -417,7 +420,6 @@
                     console.error('Error:', error);
                 });
         }
-
 
 
         function displayChart6() {
@@ -597,7 +599,7 @@
                     url: `/totalPrice?selectedDate=${date}`,
                     type: "GET",
                     success: function (data) {
-                        $("#totalPrice").text(data);
+                        $("#totalPrice").text(data +" DH");
 
                     },
                     error: function () {

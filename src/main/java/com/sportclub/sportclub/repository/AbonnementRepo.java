@@ -13,5 +13,6 @@ public interface AbonnementRepo extends JpaRepository<Abonnement,Long> {
 
     Abonnement findByNameAb(String membershipType);
     List<Abonnement> findByNameAbContains(String name);
+    List<Abonnement> findByNameAbContainsIgnoreCase(String keyword);
 
 }

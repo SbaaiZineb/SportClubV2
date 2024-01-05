@@ -55,22 +55,23 @@ public class CoachController {
     @GetMapping("/coachList")
     @PreAuthorize("hasAuthority('ADMIN')")
 
-    public String getCoachs(Model model , @RequestParam(name = "page",defaultValue = "0") int page,
-                             @RequestParam(name = "size",defaultValue = "5") int size,
-                             @RequestParam(name = "keyword",defaultValue = "") String kw
+    public String getCoachs(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
+                            @RequestParam(name = "size", defaultValue = "5") int size,
+                            @RequestParam(name = "keyword", defaultValue = "") String kw
     ) {
-        Page<Coach> pageCoach = coachService.findByCoachName(kw, PageRequest.of(page,size));
-        model.addAttribute("listCoach",pageCoach.getContent());
-        model.addAttribute("pages",new int[pageCoach.getTotalPages()]);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("keyword",kw);
+        Page<Coach> pageCoach = coachService.findByCoachName(kw, PageRequest.of(page, size));
+        model.addAttribute("listCoach", pageCoach.getContent());
+        model.addAttribute("pages", new int[pageCoach.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
         Coach CoachForm = new Coach();
         model.addAttribute("CoachForm", CoachForm);
-        List<Sport> sports=sportService.getAllSports();
-        model.addAttribute("sports",sports);
+        List<Sport> sports = sportService.getAllSports();
+        model.addAttribute("sports", sports);
         return "coachList";
 
     }
+
     @PostMapping("/deleteCoachs")
     @PreAuthorize("hasAuthority('ADMIN') ")
 
@@ -80,8 +81,8 @@ public class CoachController {
         for (Long cellId : selectedCells) {
 
 
-            List<Seance> seances=seanceService.getSeanceByCoach(cellId);
-            for (Seance seance:seances) {
+            List<Seance> seances = seanceService.getSeanceByCoach(cellId);
+            for (Seance seance : seances) {
                 seance.setCoach(null);
             }
 
@@ -99,12 +100,14 @@ public class CoachController {
         model.addAttribute("CoachForm", new Coach());
         List<Coach> searchResults = new ArrayList<>();
 
-        if ("cin".equals(searchBy)) {
-            searchResults = coachService.getCoachByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = coachService.getCoachByTele(keyword);
-        }else if(keyword.isEmpty()){
-            searchResults = coachService.getAllCoachs();
+        if (!keyword.isEmpty()) {
+            if ("cin".equals(searchBy)) {
+                searchResults = coachService.getCoachByCin(keyword);
+            } else if ("tele".equals(searchBy)) {
+                searchResults = coachService.getCoachByTele(keyword);
+            }
+        } else {
+            return "redirect:/coachList";
         }
 
         model.addAttribute("listCoach", searchResults);
@@ -123,23 +126,26 @@ public class CoachController {
     }
 
     @PostMapping("/addCoach")
-    public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()) return "error";
-        if (!file.isEmpty()){
+    public String addCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) return "error";
+        if (!file.isEmpty()) {
             c.setPic(file.getOriginalFilename());
             fileStorageService.save(file);
-        }else {
+        } else {
             c.setPic("default-user.png");
         }
 
 
-        String password= c.getPassword();
-        c.setPassword(passwordEncoder.encode(password));
-        List<Role> roles=roleService.findAllRoles();
+        String password = c.getPassword();
+        if (password!=null){
+            c.setPassword(passwordEncoder.encode(password));
 
-        for (Role role:roles
+        }
+        List<Role> roles = roleService.findAllRoles();
+
+        for (Role role : roles
         ) {
-            if (role.getRoleName().equals("COACH")){
+            if (role.getRoleName().equals("COACH")) {
 
                 c.setRoles(role);
             }
@@ -151,6 +157,7 @@ public class CoachController {
 
         return "redirect:/coachList";
     }
+
     /*@RequestMapping(value = {"/addCoach"}, method = RequestMethod.POST)
     public String saveCoach(Model model,
                                @ModelAttribute("CoachForm") Coach CoachForm) {
@@ -174,36 +181,37 @@ public class CoachController {
         return "coachList";
     }*/
     @GetMapping("/deleteCoach")
-    public String deleteCoach(@RequestParam(name = "id") Long id,String keyword, int page){
-        List<Seance> seances=seanceService.getSeanceByCoach(id);
-        List<CheckInCoach> checkInCoach= coachCheckInRepo.getCheckInByCoach(coachService.getCoachById(id));
-        for (Seance seance:seances) {
+    public String deleteCoach(@RequestParam(name = "id") Long id, String keyword, int page) {
+        List<Seance> seances = seanceService.getSeanceByCoach(id);
+        List<CheckInCoach> checkInCoach = coachCheckInRepo.getCheckInByCoach(coachService.getCoachById(id));
+        for (Seance seance : seances) {
             seance.setCoach(null);
 
         }
-        for (CheckInCoach checkIn:checkInCoach
-             ) {
+        for (CheckInCoach checkIn : checkInCoach
+        ) {
             checkIn.setCoach(null);
         }
         Coach coach = coachService.getCoachById(id);
         coachService.deleteCoach(id);
         fileStorageService.deleteFile(coach.getPic());
-        return "redirect:/coachList?page="+page+"&keyword="+keyword;
+        return "redirect:/coachList?page=" + page + "&keyword=" + keyword;
     }
+
     @GetMapping("/editCoach")
     @PreAuthorize("hasAuthority('ADMIN')")
 
-    public String editCoach(@RequestParam(name = "id") Long id, Model model){
-        Coach coach=coachService.getCoachById(id);
-        List<Sport> sports=sportService.getAllSports();
-        model.addAttribute("sports",sports);
-        model.addAttribute("coach",coach);
+    public String editCoach(@RequestParam(name = "id") Long id, Model model) {
+        Coach coach = coachService.getCoachById(id);
+        List<Sport> sports = sportService.getAllSports();
+        model.addAttribute("sports", sports);
+        model.addAttribute("coach", coach);
         return "updateCoachModal";
     }
 
     @PostMapping("/editCoach")
-    public String editCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file){
-        if(bindingResult.hasErrors()) return "error";
+    public String editCoach(@Validated Coach c, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+        if (bindingResult.hasErrors()) return "error";
         Coach existingCoach = coachService.getCoachById(c.getId());
         if (file != null && !file.isEmpty()) {
 

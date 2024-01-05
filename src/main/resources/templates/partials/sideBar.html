@@ -83,10 +83,10 @@
                             <a class="sidebar-link" th:href="@{/adminList}">Employees</a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" th:href="@{/coachList}">Entraineur</a>
+                            <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" th:href="@{/coachList}">Entraineurs</a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" th:href="@{/membersList}">Adherent</a>
+                            <a class="sidebar-link" th:href="@{/membersList}">Adherents</a>
                         </li>
                     </ul>
                 </li>
