@@ -91,6 +91,8 @@
         <p><strong>Date de Naissance:</strong> <span  th:text="${user.dob}"></span></p>
         <p><strong>Adresse:</strong> <span th:text="${user.adress}"></span></p>
         <p><strong>Assurance Santé:</strong> <span th:text="${user.health}"></span></p>
+        <p th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"><strong>Nomber de sessions restantes :</strong> <span  th:text="${user.nbrSessionCurrentCarnet}"></span></p>
+
     </div>
 </div>
 <div class="header">
