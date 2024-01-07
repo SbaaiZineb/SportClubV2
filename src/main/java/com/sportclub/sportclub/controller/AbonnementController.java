@@ -66,18 +66,21 @@ public class AbonnementController {
         // Redirect to a success page or return a response as needed
         return "redirect:/abonnementList";
     }
-     @RequestMapping(path = {"/abonnementList/search"})
-    public String search( Model model, String ab) {
+    @GetMapping("/abonnementList/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("abonnement", new Abonnement());
+        List<Abonnement> searchResults;
 
-         Abonnement abonnement = new Abonnement();
-         model.addAttribute("abonnement", abonnement);
+        if (!keyword.isEmpty()) {
+            searchResults = abonnementService.getByAbName(keyword);
 
-        if(ab!=null) {
-            List<Abonnement> list = abonnementRepo.findByNameAbContains(ab);
-            model.addAttribute("listAb", list);
-        }else {
-            List<Abonnement> list = abonnementService.getAllAbos();
-            model.addAttribute("listAb", list);}
+        } else {
+            return "redirect:/abonnementList";
+        }
+
+        model.addAttribute("listAb", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "abList";
     }
     @GetMapping("/abonnementList/getMembers")

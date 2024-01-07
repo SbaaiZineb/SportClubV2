@@ -115,12 +115,20 @@ public class ChartsRestController {
     @GetMapping("/subStatistics")
     public ResponseEntity<Map<String, Integer>> getSubscriptionStatisticsForYear(@RequestParam(name = "year") int year) {
         Map<String, Integer> statistics = new HashMap<>();
+        List<MemberAbonnement> abonnements = new ArrayList<>();
 
         // Retrieve subscriptions for the entire year
         List<MemberAbonnement> subscriptions = memberAbonnementRepo.findByBookedDateYear(year);
+        for (MemberAbonnement subsciption:subscriptions
+        ) {
+            if (!subsciption.getAbStatus().equals("Annulé")){
+                abonnements.add(subsciption);
+            }
+
+        }
 
 
-        for (MemberAbonnement memberAbonnement : subscriptions) {
+            for (MemberAbonnement memberAbonnement : abonnements) {
             LocalDate bookedDate = memberAbonnement.getBookedDate();
             Month month = bookedDate.getMonth();
 

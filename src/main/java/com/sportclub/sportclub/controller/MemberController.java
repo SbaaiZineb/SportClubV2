@@ -115,13 +115,16 @@ public class MemberController {
         model.addAttribute("member", new Member());
         List<Member> searchResults = new ArrayList<>();
 
-        if ("cin".equals(searchBy)) {
-            searchResults = memberService.getMemberByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = memberService.getMemberByPhone(keyword);
-        }else if(keyword.isEmpty()){
-            searchResults = memberService.getAllMembers();
+        if (!keyword.isEmpty()){
+            if ("cin".equals(searchBy)) {
+                searchResults = memberService.getMemberByCin(keyword);
+            } else if ("tele".equals(searchBy)) {
+                searchResults = memberService.getMemberByPhone(keyword);
+            }
+        }else {
+            return "redirect:/membersList";
         }
+
 
         model.addAttribute("listMember", searchResults);
         model.addAttribute("keyword", keyword);

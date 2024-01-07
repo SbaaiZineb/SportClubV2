@@ -47,4 +47,9 @@ public class AbonnementServiceImp implements AbonnementService {
     public List<Abonnement> getAllAbos() {
         return abonnementRepo.findAll();
     }
+
+    @Override
+    public List<Abonnement> getByAbName(String keyword) {
+        return abonnementRepo.findByNameAbContainsIgnoreCase(keyword);
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Data@AllArgsConstructor@NoArgsConstructor
 public class Role {
-    @Id@GeneratedValue(strategy = GenerationType.AUTO)
+    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
     private String roleName;
     @OneToMany(mappedBy = "roles",fetch = FetchType.EAGER)

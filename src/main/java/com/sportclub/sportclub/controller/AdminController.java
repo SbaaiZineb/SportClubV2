@@ -84,7 +84,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String addAdmin(@Validated UserApp admin, BindingResult bindingResult, @RequestParam("file") MultipartFile file,
                            RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) return "adminList";
+        if (bindingResult.hasErrors()) return "error";
 
         if (!file.isEmpty()) {
             admin.setPic(file.getOriginalFilename());
@@ -133,12 +133,15 @@ public class AdminController {
         model.addAttribute("userForm", new UserApp());
         List<UserApp> searchResults = new ArrayList<>();
 
-        if ("cin".equals(searchBy)) {
-            searchResults = adminService.getByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = adminService.getByTele(keyword);
-        } else if (keyword.isEmpty()) {
-            searchResults = adminService.getAllAdmins();
+        if (!keyword.isEmpty()){
+            if ("cin".equals(searchBy)) {
+                searchResults = adminService.getByCin(keyword);
+            } else if ("tele".equals(searchBy)) {
+                searchResults = adminService.getByTele(keyword);
+            }
+        }
+        else {
+            return "redirect:/adminList";
         }
 
         model.addAttribute("users", searchResults);

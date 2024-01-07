@@ -71,9 +71,9 @@ public class userProfileController {
         memberService.updateMemberStatues();
         List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
 
-        for (MemberAbonnement memberAb:memberAbonnementList
-             ) {
-            if (isMembershipExpired(memberAb)){
+        for (MemberAbonnement memberAb : memberAbonnementList
+        ) {
+            if (isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")) {
                 memberAb.setAbStatus("Expiré");
             }
         }
@@ -202,7 +202,7 @@ public class userProfileController {
 
 
         String imageFilename = member.getPic();
-        if (imageFilename!=null && !imageFilename.isEmpty()) {
+        if (imageFilename != null && !imageFilename.isEmpty()) {
 
             imageFilename = imageFilename.trim();
             // Convert the image to base64 and add it to the context
@@ -228,7 +228,7 @@ public class userProfileController {
 
         // Set the response headers for PDF download
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=member"+member.getName()+"_"+member.getLname()+".pdf");
+        response.setHeader("Content-Disposition", "inline; filename=member" + member.getName() + "_" + member.getLname() + ".pdf");
 
         // Write the PDF content to the response output stream
         outputStream.writeTo(response.getOutputStream());
@@ -237,10 +237,11 @@ public class userProfileController {
 
 
     }
+
     public String convertToBase64(Path imagePath) throws IOException {
         try {
             // Check if the filename is not empty
-            if (imagePath.getFileName()!=null && !imagePath.getFileName().toString().isEmpty()) {
+            if (imagePath.getFileName() != null && !imagePath.getFileName().toString().isEmpty()) {
                 // Check if the file exists
                 if (Files.exists(imagePath)) {
                     byte[] imageBytes = Files.readAllBytes(imagePath);

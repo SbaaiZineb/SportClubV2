@@ -99,14 +99,15 @@ public class CoachController {
         model.addAttribute("CoachForm", new Coach());
         List<Coach> searchResults = new ArrayList<>();
 
-        if ("cin".equals(searchBy)) {
-            searchResults = coachService.getCoachByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = coachService.getCoachByTele(keyword);
-        }else if(keyword.isEmpty()){
-            searchResults = coachService.getAllCoachs();
+        if (!keyword.isEmpty()) {
+            if ("cin".equals(searchBy)) {
+                searchResults = coachService.getCoachByCin(keyword);
+            } else if ("tele".equals(searchBy)) {
+                searchResults = coachService.getCoachByTele(keyword);
+            }
+        } else {
+            return "redirect:/coachList";
         }
-
         model.addAttribute("listCoach", searchResults);
         model.addAttribute("keyword", keyword);
 

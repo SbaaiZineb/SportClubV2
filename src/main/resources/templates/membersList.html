@@ -7,6 +7,11 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <!-- Success message for successful Add -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
     <div class="row" style=" margin: auto; width: 50%;">
         <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="row mb-3">
@@ -42,11 +47,7 @@
             </div>
         </form>
     </div>
-    <!-- Success message for successful Add -->
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong th:text="${successMessage}"></strong>
 
-    </div>
 
     <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary "
        style="border-radius: 15px;"><i data-feather="printer"></i></a>

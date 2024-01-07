@@ -102,17 +102,22 @@ public class SeanceController {
 
     }
 
-    @RequestMapping(path = {"/seanceList/search"})
-    public String search(Model model, String seance) {
-        Seance session = new Seance();
-        model.addAttribute("seance", session);
-        if (seance != null) {
-            List<Seance> list = service.getSeanceBynName(seance);
-            model.addAttribute("listSeance", list);
+    @GetMapping("/seanceList/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("seance", new Seance());
+        List<Seance> searchResults;
+
+        if (!keyword.isEmpty()) {
+            searchResults = service.getSeanceBynName(keyword);
+
         } else {
-            List<Seance> list = service.getAllSeance();
-            model.addAttribute("listSeance", list);
+
+            return "redirect:/seanceList";
         }
+
+        model.addAttribute("listSeance", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "seanceList";
     }
 
@@ -225,19 +230,24 @@ public class SeanceController {
         return "redirect:/seanceList";
     }
 
-    // serach by coach
+    // search by coach
     @GetMapping("/sessions/search")
-    public String searchSessionsByCoach(@RequestParam("coachId") Long coachId, Model model) {
-        Seance seance = new Seance();
-        model.addAttribute("seance", seance);
-        Coach coach = coachService.getCoachById(coachId);
-        model.addAttribute("coachId", coachId);
-        List<Seance> sessions = service.getSeanceByCoach(coachId);
-        model.addAttribute("listSeance", sessions);
-        List<Coach> coaches = coachService.getAllCoachs();
-        model.addAttribute("coaches", coaches);
-        return "seanceList";
-    }
+        public String searchSessionsByCoach(@RequestParam(required = false, name = "coachId") Long coachId, Model model) {
+            Seance seance = new Seance();
+            List<Seance> sessions;
+            if (coachId != null) {
+                model.addAttribute("seance", seance);
+                model.addAttribute("coachId", coachId);
+                sessions = service.getSeanceByCoach(coachId);
+                model.addAttribute("listSeance", sessions);
+                List<Coach> coaches = coachService.getAllCoachs();
+                model.addAttribute("coaches", coaches);
+            } else {
+                return "redirect:/seanceList";
+            }
+
+            return "seanceList";
+        }
 
 
     @GetMapping("/deleteSeance")

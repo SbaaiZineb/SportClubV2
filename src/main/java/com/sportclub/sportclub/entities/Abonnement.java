@@ -18,7 +18,7 @@ import java.util.List;
 @Where(clause = "deleted=false")
 public class Abonnement {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nameAb;
     private double price;
