@@ -34,8 +34,7 @@
 
         <table class="table table-centered table-hover table-responsive ">
         <tr>
-            <th><input  type="checkbox" class="selectall" data-target="requests-all"/></th>
-            <th>ID</th>
+            <th></th>
             <th>Type d'abonnement</th>
             <th>Prix</th>
             <th>Period</th>
@@ -47,7 +46,6 @@
                 <input type="checkbox"  name="selectedab" data-target="requests-all"
                        th:value="${ab.id}" />
             </td>
-            <td th:utext="${ab.getId()}"></td>
             <td th:utext="${ab.getNameAb()}"></td>
             <td th:utext="${ab.getPrice()}+' DH'"></td>
             <td th:utext="${ab.getPeriod() == '0' ? 'Carnet' : ab.getPeriod() + ' mois'}"></td>

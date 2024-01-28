@@ -8,19 +8,33 @@
 </head>
 <body>
 <div layout:fragment="EmpContent">
+    <!-- Success message for successful Add -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
     <div class="row" style=" margin: auto; width: 50%;">
-        <form th:action="@{search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="row mb-3">
-                <div class="col-md-1">
-                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
 
-                </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="searchBy" id="tele" value="tele"
+                                       checked>
+                                <label class="form-check-label text-white" for="tele">Chercher par Téléphone</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="searchBy" value="cin">
+                                <label class="form-check-label text-white" for="cin">Chercher par CIN</label>
+                            </div>
+                        </div>
+                    </div>
 
-                    <select class="form-control select" name="searchBy">
-                        <option value="tele">Cherecher par Telephone</option>
-                        <option value="cin">Chercher par CIN</option>
-                    </select>
+
                 </div>
 
                 <div class="col-md-5">
@@ -34,7 +48,7 @@
             </div>
         </form>
     </div>
-    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><span style="font-size: 20px" class="material-symbols-sharp">
+    <a th:href="@{/membersList/export/pdf}" class="text-bg-light float-end mb-3 mx-2 btn btn-secondary " style="border-radius: 15px;"><span style="font-size: 20px" class="material-icons material-symbols-sharp">
 print
 </span></a>
     <button th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"  class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
@@ -64,7 +78,7 @@ print
                 <script>
                     function getProfile(id) {
 
-                        window.location.href = "/membersList/userProfile?id=" + id;
+                        window.location.href = "/employee/userProfile?id=" + id;
                     }
                 </script>
                 <a ></a>
@@ -96,18 +110,18 @@ print
                 <td th:utext="${m.getGender()}"></td>
                 <td th:utext="${m.createdAt}"></td>
                 <td style="color: #4b6c91;
-  font-weight: bold;" th:utext="${m.abonnement}"></td>
+  font-weight: bold;" th:utext="${m.getCurrentAbonnement()}"></td>
                 <td>
                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
                 </td>
                 <td  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation(); return confirm('Vous avez sure?')"
-                                                                                                                      th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"><span style="color: #d51d1d" class="material-symbols-sharp">
+                                                                                                                      th:href="@{/deleteMember(id=${m.id},keyword=${keyword}, page=${currentPage})}"><span style="color: #d51d1d" class="material-icons material-symbols-sharp">
 delete
 </span></a></td>
                 <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"><a onclick="event.stopPropagation()" data-th-id="${m.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn">
-                    <span class="material-symbols-sharp">
+                    <span class="material-icons material-symbols-sharp">
 edit
 </span></a></td>
 
@@ -139,7 +153,7 @@ edit
                     <div class="card align-content-center">
                         <span class="text-danger"> * Il faut le remplir</span>
                         <div class="card-body">
-                            <form id="myForm" th:action="@{/addMember}"
+                            <form id="myForm" th:action="@{/employee/addMember}"
                                   th:object="${member}" method="POST" enctype="multipart/form-data">
 
                                 <div class="row">
@@ -283,30 +297,12 @@ edit
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-outline">
-                                            <label class="form-label">Mot de passe :<span
-                                                    class="text-danger"> *</span></label>
-                                            <input class="form-control input-border" id="input1"
-                                                   onkeyup="validateInput()" type="password" th:field="*{password}"
-                                                   required/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-outline">
-                                            <label class="form-label">Confirme Mot de passe :<span
-                                                    class="text-danger"> *</span></label>
-                                            <input class="form-control input-border " id="input2" type="password"
-                                                   onkeyup="validateInput()" required/>
-                                        </div>
-                                    </div>
-                                </div>
+
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Abonnement :</label>
-                                        <select name="abonnement" id="abonnement" class="form-control mb-3">
+                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3">
                                             <option value=""></option>
                                             <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
                                                     th:text="${abonnement.nameAb}"></option>
@@ -335,9 +331,9 @@ edit
         </div>
     </div>
     <!-- Edit Member Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="editModallabel">Edit Adhérent</h3>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="monthlyRevenueReport"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="a53ab725-12bd-4881-862c-21723624e8f0">
+
+    <queryString language="jpql">
+        <![CDATA[SELECT paiement FROM Paiement paiement ]]>
+    </queryString>
+
+    <field name="id" class="java.lang.Long"/>
+    <field name="start_date" class="java.time.LocalDate"/>
+    <field name="end_date" class="java.time.LocalDate"/>
+    <field name="status" class="java.lang.String"/>
+    <field name="payedBy" class="java.lang.String"/>
+    <field name="montant" class="java.lang.Double"/>
+    <field name="payedAt" class="java.time.LocalDate"/>
+    <field name="member" class="com.sportclub.sportclub.entities.Member"/>
+    <field name="abonnement" class="com.sportclub.sportclub.entities.Abonnement"/>
+
+    <title>
+        <band height="50">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="30" uuid="bbf0417b-3c8d-43d5-8f90-1a58e5af1b9b"/>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Monthly Revenue Report]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="0" width="100" height="30" uuid="2ee9c819-7ac5-466b-bcfd-1bde4b8b63cc"/>
+                <text><![CDATA[ID]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="100" y="0" width="100" height="30" uuid="ac8d8ac6-d819-4f6d-b9d2-8b77528b00d8"/>
+                <text><![CDATA[Start Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="200" y="0" width="100" height="30" uuid="ecd6ff45-351f-40d8-8bf4-fac35f2670fc"/>
+                <text><![CDATA[End Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="300" y="0" width="100" height="30" uuid="a2d0c549-892e-40e8-bc20-e100307689cf"/>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="100" height="30" uuid="baa18441-0770-4d17-a38d-9934a1237f14"/>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="30">
+            <textField>
+                <reportElement x="0" y="0" width="100" height="30" uuid="b3f1247a-4e5f-4c7a-8372-6d267ae3a0b0"/>
+                <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="0" width="100" height="30" uuid="1f667726-808b-4120-82c5-eeba2cf1d28f"/>
+                <textFieldExpression><![CDATA[$F{start_date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="200" y="0" width="100" height="30" uuid="d98cc72f-8c2f-4f1c-8d36-b9d1d9da02bc"/>
+                <textFieldExpression><![CDATA[$F{end_date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="0" width="100" height="30" uuid="f5b89305-7ad1-42d3-b0e1-15f1d1f0ebc7"/>
+                <textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="100" height="30" uuid="0eaf7f98-cace-447c-8cc4-698fcd99949a"/>
+                <textFieldExpression><![CDATA[$F{montant}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="50">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="30" uuid="75f6d12f-4f2d-4b92-a0bf-70a3e043c5d0"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[End of Report]]></text>
+            </staticText>
+        </band>
+    </summary>
+</jasperReport>

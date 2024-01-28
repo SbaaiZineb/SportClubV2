@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="partials/employeeBar.html">
+
+<head th:insert="~{partials/employeeBar  :: EmpHeader}">
+    <meta charset="UTF-8">
+    <title>Profil</title>
+</head>
+<body>
+<div layout:fragment="EmpContent">
+
+<!--<div th:include="userProfile :: userProfile"></div>-->
+    <div class="main-body">
+        <a class="btn btn-outline-primary mb-2" data-th-id="${user.getId()}" th:href="@{/profilPdf(id=${user.getId()})}">
+
+        <span class="material-icons material-symbols-sharp">
+print
+</span></a>
+        <div class="row gutters-sm">
+            <div class="col-md-3">
+                <div class="card h-100" style="background-color: #043f5e  !important; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                    <div class="card-body" >
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <!--                            <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;" th:if="${user.getAbonnement().getPeriod()=='0'}" th:utext="${'Nomber de sessions restantes '+user.getNbrSessionCurrentCarnet()}"></p>-->
+
+                            <img th:if="${user.pic}" alt="user icon" class="rounded-circle" style="width: 195px;
+height: 195px;
+object-fit: cover;"
+                                 th:src="@{'/images/'+${user.pic}}">
+                            <div class="mt-3">
+                                <h4 class="fw-bold" style="color: whitesmoke"
+                                    th:utext="${#strings.capitalize(user.getName())}+' '+${#strings.capitalize(user.getLname())}"></h4>
+
+                                <div th:class="${user.getRoles().roleName == 'ADHERENT' ? '' : 'hide'}">
+                                    <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
+                                       th:if="${user.status == 'Active'}" th:utext="${user.getStatus()}"></p>
+                                    <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
+                                       th:if="${user.status == 'Inactive'}" th:utext="${user.getStatus()}"></p>
+                                    <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;"
+                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
+                                       th:utext="${'Nomber de sessions restantes :  '+user.getNbrSessionCurrentCarnet()}"></p>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-9 idd" th:id="${user.id}">
+                <input type="hidden" name="id" th:value="${user.id}">
+                <input type="hidden" name="pic" th:value="${user.pic}">
+                <input type="hidden" name="roles" th:value="${user.roles.role_id}">
+                <input type="hidden" name="password" th:value="${user.password}">
+                <img th:if="${user.pic}" alt="user icon" class="rounded-circle hidden"
+                     th:src="@{'images/'+${user.pic}}">
+                <style>
+                    .hidden {
+                        display: none;
+                    }
+                </style>
+
+                <div class="card mb-3 h-100"
+                     style="background-color: #043f5e  !important; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <style>
+                                            .mb-0{
+                                                color: #e5e1e1 !important;
+
+                                            }
+                                            .text-secondary{
+                                                color: #a9b2ca  !important;
+                                            }
+                                        </style>
+                                        <h6 class="mb-0">Nom :</h6>
+                                    </div>
+
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getName()}"></div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Prénom :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getLname()}">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Email :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getEmail()}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Cin :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getCin()}">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Tele :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getTele()}">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row me-1">
+                                    <div class=" d-flex align-items-center">
+                                        <h6 class="mb-0">Tele 2 :</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary input" th:utext="${user.getSecondTele()}">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="row me-1">
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Profession :</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary input" th:utext="${user.getProfession()}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row me-1">
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Situation familiale :</h6>
+                                        </div>
+                                        <div class="col-sm-5 text-secondary input" th:utext="${user.getFamSituation()}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="row me-1">
+                                        <div class=" d-flex align-items-center">
+                                            <h6 class="mb-0">Date de naissance :</h6>
+                                        </div>
+                                        <div class="col-sm-5 text-secondary input" th:utext="${user.getDob()}">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row mt-1">
+                                    <div class="col-md-5">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">Adresse :</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getAdress()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">État de santé :</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getHealth()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row me-1">
+                                            <div class=" d-flex align-items-center">
+                                                <h6 class="mb-0">Le sexe :</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary input" th:utext="${user.getGender()}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button th:if="${user.status == 'Inactive'}" class="button-43" id="abButton">
+                                    Renouvellement d'abonnement
+                                </button>
+                                <!-- HTML !-->
+                                <style>
+                                    /* CSS */
+                                    .button-43 {
+                                        background-image: linear-gradient(-180deg, #3F6693 0%, #6C88A8 100%);
+                                        border-radius: .5rem;
+                                        box-sizing: border-box;
+                                        color: #FFFFFF;
+                                        display: flex;
+                                        font-size: 16px;
+                                        justify-content: center;
+                                        padding: 1rem 1.75rem;
+                                        text-decoration: none;
+                                        width: 100%;
+                                        border: 0;
+                                        cursor: pointer;
+                                        user-select: none;
+                                        -webkit-user-select: none;
+                                        touch-action: manipulation;
+                                    }
+
+                                    .button-43:hover {
+                                        background-image: linear-gradient(-180deg, #1D95C9 0%, #17759C 100%);
+                                    }
+
+                                    @media (min-width: 768px) {
+                                        .button-43 {
+                                            padding: 1rem 2rem;
+                                        }
+                                    }</style>
+                                <style>
+                                    .col-sm-5.text-secondary.input,
+                                    .col-sm-9.text-secondary.input {
+                                        box-sizing: border-box;
+                                        -webkit-box-sizing: border-box;
+                                        -moz-box-sizing: border-box;
+                                        outline: none;
+                                        display: block;
+                                        width: 100%;
+                                        padding: 7px;
+                                        border: none;
+                                        border-bottom: 1px solid #9997ba;
+                                        background: transparent;
+                                        margin-bottom: 14px;
+                                        font: 16px Arial, Helvetica, sans-serif;
+                                        height: 45px;
+                                        margin-left: 4px;
+                                    }
+
+                                    .mb-0 {
+                                        font-weight: bold;
+                                        color: #30639f;
+                                    }
+
+                                </style>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div th:include="userProfile :: cards" ></div>
+    </div>
+
+<script>
+    function getPaymentDetails(id) {
+        var paymentDetailsModal = $('#paymentDetails');
+        console.log("Clicked");
+        $.get("/paymentDetails?id=" + id, function (data) {
+            paymentDetailsModal.find('.modal-body').html(data);
+            paymentDetailsModal.modal('show');
+        });
+
+    }
+    document.getElementById("abButton").addEventListener("click", function () {
+        var card = document.getElementById("myCard");
+
+        if (card.style.display === "none" || card.style.display === "") {
+            card.style.display = "flex"; // Show the card
+        } else {
+            card.style.display = "none"; // Hide the card
+        }
+    });
+
+</script>
+</div>
+
+
+</body>
+</html>

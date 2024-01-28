@@ -3,6 +3,7 @@ package com.sportclub.sportclub.service;
 import com.sportclub.sportclub.entities.Abonnement;
 import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Paiement;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,4 +30,6 @@ public interface PaymentService {
     List<Paiement> getPaymentsByMember(Member member);
 
     List<Paiement> getPaymentsByAbo(Abonnement abonnement);
+
+    List<Paiement> getMonthlyRevenue(LocalDate startDate,LocalDate endDate);
 }

@@ -15,7 +15,7 @@ public interface MemberAbonnementRepo extends JpaRepository<MemberAbonnement,Lon
 
     MemberAbonnement findByMemberAndAbonnementAndBookedDate(Member member,Abonnement abonnement, LocalDate bookedDate);
     List<MemberAbonnement> findByMember(Member member, Sort sort);
-
+List<MemberAbonnement> findByMember(Member member);
     @Query("SELECT ma FROM MemberAbonnement ma WHERE YEAR(ma.bookedDate) = :year")
     List<MemberAbonnement> findByBookedDateYear(@Param("year") int year);
 

@@ -252,13 +252,13 @@ public class SeanceController {
 
     @GetMapping("/deleteSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteSeance(@RequestParam(name = "id") Long id, String keyword, int page) {
+    public String deleteSeance(@RequestParam(name = "id") Long id) {
         Seance seance = service.getSeanceById(id);
         service.deletSeance(id);
         CalendarEvent event = eventRepo.findById(id).get();
 
         eventRepo.delete(event);
-        return "redirect:/seanceList?page=" + page + "&keyword=" + keyword;
+        return "redirect:/seanceList";
     }
 
     @GetMapping("/editSeance")

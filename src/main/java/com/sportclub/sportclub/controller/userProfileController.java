@@ -18,10 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -73,7 +70,7 @@ public class userProfileController {
 
         for (MemberAbonnement memberAb : memberAbonnementList
         ) {
-            if (isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")) {
+            if (memberService.isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")) {
                 memberAb.setAbStatus("Expiré");
             }
         }
@@ -91,41 +88,13 @@ public class userProfileController {
         model.addAttribute("checkins", checkIns);
         model.addAttribute("payments", paiements);
         model.addAttribute("user", member);
+        MemberAbonnement membership = new MemberAbonnement();
+        model.addAttribute("membership", membership);
 
         return "userProfile";
     }
 
-    public boolean isMembershipExpired(MemberAbonnement memberAb) {
 
-
-        LocalDate currentDate = LocalDate.now();
-
-        Member member = memberAb.getMember();
-        LocalDate expirationDate = null;
-        String abPeriod = memberAb.getAbonnement().getPeriod();
-        switch (abPeriod) {
-            case "12" -> {
-                expirationDate = memberAb.getBookedDate().plusYears(1);
-
-            }
-            case "3" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(3);
-            }
-            case "1" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(1);
-            }
-            case "6" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(6);
-
-            }
-            case "2" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(2);
-            }
-            case "0" -> {
-            }
-        }
-        return (expirationDate != null && currentDate.isAfter(expirationDate)) || (expirationDate == null && member.getNbrSessionCurrentCarnet() <= 0);
-    }
 
     @GetMapping("/coachProfile")
     public String getCoachProfile(@RequestParam(name = "id") Long id, Model model) {
@@ -143,22 +112,25 @@ public class userProfileController {
 
     }
 
-    @GetMapping("/membersList/userProfile/updateAbo")
-    public String updateMembership(@RequestParam(name = "userId") Long userId, @RequestParam(name = "abId") Long id) {
+    @PostMapping("/membersList/userProfile/addAbo")
+    public String updateMembership(@Validated @ModelAttribute("membership") MemberAbonnement memberAbonnement, @RequestParam(name = "userId") Long userId,
+                                   @RequestParam(name = "abonnementId", required = false) Long abonnementId,Authentication authentication) {
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
+
         try {
             Member member = memberService.getMemberById(userId);
-            Abonnement abonnement = abonnementService.getAboById(id);
 
-            //Add membership to the member
-            MemberAbonnement memberAbonnement = new MemberAbonnement();
 
-            memberAbonnement.setAbonnement(abonnement);
             memberAbonnement.setBookedDate(LocalDate.now());
             if (member.getMemberAbonnements() == null) {
                 member.setMemberAbonnements(new ArrayList<>());
             }
             memberAbonnement.setMember(member);
+            Abonnement abonnement=abonnementService.getAboById(abonnementId);
+            memberAbonnement.setAbonnement(abonnement);
             member.getMemberAbonnements().add(memberAbonnement);
+
             member.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
 
             memberService.updateMember(member);
@@ -186,11 +158,12 @@ public class userProfileController {
                 System.out.println(memberMembership);
                 System.out.println("Done!!!!!!!!!");
             }
-
         } catch (Exception e) {
             System.out.println("Something wrong!!! " + e);
         }
-
+        if (userRole.equals("EMPLOYEE")) {
+            return "redirect:/employee/userProfile?id="+userId;
+        }
 
         return "redirect:/membersList/userProfile?id=" + userId;
     }

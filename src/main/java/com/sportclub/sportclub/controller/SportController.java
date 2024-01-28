@@ -102,13 +102,13 @@ public class SportController {
 @Autowired
     CoachService coachService;
     @GetMapping("/deleteSport")
-    public String deleteSp(@RequestParam(name = "id") Long id,String keyword, int page){
+    public String deleteSp(@RequestParam(name = "id") Long id){
 
         Sport sport=service.getSportById(id);
         service.deleteSport(id);
 
         fileStorageService.deleteFile(sport.getPic());
-        return "redirect:/sportList?page="+page+"&keyword="+keyword;
+        return "redirect:/sportList";
     }
     @GetMapping("/editSport")
 

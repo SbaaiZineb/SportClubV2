@@ -48,7 +48,14 @@ public class AdminController {
         model.addAttribute("user", new UserApp());
 
         List<Role> roles = roleService.findAllRoles();
-        model.addAttribute("roles", roles);
+        List<Role> roleList= new ArrayList<>();
+        for (Role role:roles){
+            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))){
+                roleList.add(role);
+
+            }
+        }
+        model.addAttribute("roles", roleList);
 
       /*  for (User user:adminService.getAllAdmins()
              ) {
@@ -151,13 +158,13 @@ public class AdminController {
 
     @GetMapping("/deleteAdmin")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteAdmin(@RequestParam(name = "id") Long id, String keyword, int page) {
+    public String deleteAdmin(@RequestParam(name = "id") Long id) {
 
         UserApp admin = adminService.getAdminById(id);
         adminService.deleteAdmin(id);
         fileStorageService.deleteFile(admin.getPic());
 
-        return "redirect:/adminList?page=" + page + "&keyword=" + keyword;
+        return "redirect:/adminList";
     }
 
     @GetMapping("/editAdmin")
@@ -167,12 +174,24 @@ public class AdminController {
         model.addAttribute("pic", userApp.getPic());
         model.addAttribute("role", userApp.getRoles().getRole_id());
         model.addAttribute("id", userApp.getId());
+        List<Role> roles = roleService.findAllRoles();
+        List<Role> roleList= new ArrayList<>();
+        for (Role role:roles){
+            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))){
+                roleList.add(role);
+
+            }
+        }
+        model.addAttribute("roles", roleList);
         return "updateAdminModal";
     }
 
     @PostMapping("/editAdmin")
     public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "error";
+        // Assuming roles is a property of UserApp
+        Role selectedRole = roleService.getRoleByid(user.getRoles().getRole_id());
+        user.setRoles(selectedRole);
         UserApp existingAdmin = adminService.getAdminById(user.getId());
         if (file != null && !file.isEmpty()) {
 

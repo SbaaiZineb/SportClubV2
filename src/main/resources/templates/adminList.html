@@ -3,7 +3,7 @@
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar:: header}">
 
-    <title>Coach List</title>
+    <title>Admins</title>
 
 </head>
 <body>
@@ -249,8 +249,8 @@
                                 </div>
                                 <div class="checkbox-row" th:each="role:${roles}">
                                     <label>
-                                        <input type="checkbox" name="roles" th:value="${role.role_id}"
-                                               th:text="${role.roleName}"/>
+                                        <input type="radio" name="roles" th:value="${role.role_id}"
+                                               th:text="${role.roleName}" required/>
                                     </label>
                                     <style>
                                         .checkbox-row {

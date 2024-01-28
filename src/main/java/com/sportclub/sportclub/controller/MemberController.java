@@ -1,12 +1,10 @@
 package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Gym;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.UserApp;
+import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.CheckInRepo;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
 import com.sportclub.sportclub.tools.MemberPdf;
@@ -40,6 +38,8 @@ public class MemberController {
     @Autowired
     FileStorageService fileStorageService;
     @Autowired
+    MemberAbonnementRepo memberAbonnementRepo;
+    @Autowired
     MemberService memberService;
     AbonnementService abonnementService;
     FileStorageService storageService;
@@ -49,13 +49,14 @@ public class MemberController {
     @Autowired
     CheckInService checkInService;
     @Autowired
-            AdminService adminService;
+    AdminService adminService;
     PaymentService paymentService;
     RoleService roleService;
     FileStorageService fileService;
 
     GymService gymService;
-    public MemberController( MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService,GymService gymService) {
+
+    public MemberController(MemberService memberService, AbonnementService abonnementService, FileStorageService storageService, PaymentService paymentService, RoleService roleService, AdminRepo adminRepo, NotificationService notificationService, FileStorageService fileService, GymService gymService) {
 
         this.memberService = memberService;
         this.abonnementService = abonnementService;
@@ -111,23 +112,31 @@ public class MemberController {
     }*/
 
     @GetMapping("/membersList/search")
-    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model,Authentication authentication) {
         model.addAttribute("member", new Member());
         List<Member> searchResults = new ArrayList<>();
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
 
-        if (!keyword.isEmpty()){
+        if (!keyword.isEmpty()) {
             if ("cin".equals(searchBy)) {
                 searchResults = memberService.getMemberByCin(keyword);
             } else if ("tele".equals(searchBy)) {
                 searchResults = memberService.getMemberByPhone(keyword);
             }
-        }else {
+        } else {
+            if (userRole.equals("EMPLOYEE")) {
+                return "redirect:/employee/members";
+            }
             return "redirect:/membersList";
         }
 
 
         model.addAttribute("listMember", searchResults);
         model.addAttribute("keyword", keyword);
+        if (userRole.equals("EMPLOYEE")) {
+            return "employeeInterface/empPayments";
+        }
 
         return "membersList";
     }
@@ -143,11 +152,11 @@ public class MemberController {
     @PostMapping("/addMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
     public String addMember(@Validated @ModelAttribute("member") Member memberForm, Authentication authentication, BindingResult bindingResult,
-                            @RequestParam("file") MultipartFile file, @RequestParam(name = "abonnementId", required = false) Long abonnementId ,
-                             RedirectAttributes redirectAttributes) {
+                            @RequestParam("file") MultipartFile file, @RequestParam(name = "abonnementId", required = false) Long abonnementId,
+                            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "membersList";
 
-        memberService.addMember(memberForm,authentication,file,abonnementId);
+        memberService.addMember(memberForm, authentication, file, abonnementId);
 
 
         // Add success message to be displayed on the redirected page
@@ -172,25 +181,31 @@ public class MemberController {
 
     @GetMapping("/deleteMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
-    public String deleteMember(@RequestParam(name = "id") Long id, String keyword, int page, Authentication authentication,RedirectAttributes redirectAttributes) {
+    public String deleteMember(@RequestParam(name = "id") Long id,Authentication authentication, RedirectAttributes redirectAttributes) {
 
-        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
-       Member member=memberService.getMemberById(id);
+        Member member = memberService.getMemberById(id);
+        List<MemberAbonnement> memberAbonnements = memberAbonnementRepo.findByMember(member);
 
-                memberService.deletMember(id);
-                if (member.getPic()!=null && !member.getPic().equals("default-user.png")){
-                    fileStorageService.deleteFile(member.getPic());
 
-                }
+        memberService.deletMember(id);
+        for (MemberAbonnement m : memberAbonnements) {
+            m.setMember(null);
+            memberAbonnementRepo.save(m);
+        }
+        if (member.getPic() != null && !member.getPic().equals("default-user.png")) {
+            fileStorageService.deleteFile(member.getPic());
+
+        }
         redirectAttributes.addFlashAttribute("successMessage", "Membre supprimé avec succès!");
 
-        if (userRole.equals("EMPLOYEE")){
-            return "redirect:/employee/members?page=" + page + "&keyword="+ keyword;
+        if (userRole.equals("EMPLOYEE")) {
+            return "redirect:/employee/members";
         }
 
-        return "redirect:/membersList?page=" + page + "&keyword=" + keyword;
+        return "redirect:/membersList";
     }
 
     @GetMapping("/editMember")
@@ -207,10 +222,10 @@ public class MemberController {
     @PostMapping("/editMember")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
     public String editMember(@Validated Member member, BindingResult bindingResult, @RequestParam("file") MultipartFile file,
-                             Authentication authentication,RedirectAttributes redirectAttributes) {
+                             Authentication authentication, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "error";
 
-        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
         Member existingMember = memberService.getMemberById(member.getId());
@@ -227,7 +242,7 @@ public class MemberController {
         memberService.updateMember(member);
         redirectAttributes.addFlashAttribute("successMessage", "Membre actualisé avec succès!");
 
-        if (userRole.equals("EMPLOYEE")){
+        if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/members";
         }
         return "redirect:/membersList";
@@ -254,31 +269,37 @@ public class MemberController {
 
     @PostMapping("/deleteCells")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells,Authentication authentication,RedirectAttributes redirectAttributes) {
+    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells, Authentication authentication, RedirectAttributes redirectAttributes) {
 
-        UserApp user=adminService.loadUserByUsername(authentication.getName());
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
         // Perform the delete operation using the selected cell IDs
 
         for (Long cellId : selectedCells) {
+            Member memberById = memberService.getMemberById(cellId);
+            List<MemberAbonnement> memberAbonnements = memberAbonnementRepo.findByMember(memberById);
 
-            Member memberById =memberService.getMemberById(cellId);
+
             try {
                 memberService.deletMember(cellId);
-                if (memberById.getPic()!=null){
+                for (MemberAbonnement m : memberAbonnements) {
+                    m.setMember(null);
+                    memberAbonnementRepo.save(m);
+                }
+                if (memberById.getPic() != null) {
                     fileStorageService.deleteFile(memberById.getPic());
 
                 }
 
             } catch (Exception e) {
-                System.out.println("Something Wrong!!!!! "+e);
+                System.out.println("Something Wrong!!!!! " + e);
                 return "error";
             }
         }
         redirectAttributes.addFlashAttribute("successMessage", "Membres supprimés avec succès!");
 
         //Redirect to employee's members interface if the role of the connected user is "EMPLOYEE"
-        if (userRole.equals("EMPLOYEE")){
+        if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/members";
         }
         return "redirect:/membersList";

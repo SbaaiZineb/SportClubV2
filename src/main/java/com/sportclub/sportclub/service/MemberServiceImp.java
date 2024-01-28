@@ -8,6 +8,7 @@ import com.sportclub.sportclub.repository.AdminRepo;
 import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.tools.FileStorageService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -65,7 +66,10 @@ public class MemberServiceImp implements MemberService {
 
         memberForm.setStatus("Inactive");
         String password = memberForm.getPassword();
-        memberForm.setPassword(passwordEncoder.encode(password));
+        if (password!=null){
+            memberForm.setPassword(passwordEncoder.encode(password));
+
+        }
 
         List<Role> roles = roleService.findAllRoles();
 
@@ -298,5 +302,40 @@ public class MemberServiceImp implements MemberService {
         //If not
         return false;
 
+    }
+    public boolean isMembershipExpired(MemberAbonnement memberAb) {
+
+
+        LocalDate currentDate = LocalDate.now();
+
+        Member member = memberAb.getMember();
+        LocalDate expirationDate = null;
+        String abPeriod = memberAb.getAbonnement().getPeriod();
+        switch (abPeriod) {
+            case "12" -> {
+                expirationDate = memberAb.getBookedDate().plusYears(1);
+
+            }
+            case "3" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(3);
+            }
+            case "1" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(1);
+            }
+            case "6" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(6);
+
+            }
+            case "2" -> {
+                expirationDate = memberAb.getBookedDate().plusMonths(2);
+            }
+            case "0" -> {
+            }
+        }
+        return (expirationDate != null && currentDate.isAfter(expirationDate)) || (expirationDate == null && member.getNbrSessionCurrentCarnet() <= 0);
+    }
+    @Transactional
+    public void updateMemberAbonnement(MemberAbonnement memberAbonnement) {
+        memberAbonnementRepo.save(memberAbonnement);
     }
 }

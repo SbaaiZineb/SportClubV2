@@ -10,9 +10,14 @@
 </head>
 <body>
 <div layout:fragment="EmpContent">
-    <div class="row" style=" margin: auto; width: 50%;">
-        <form th:action="@{payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="row mb-3">
+    <!-- Success message for successful  -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
+    <div class="row" style=" margin: auto;">
+        <form th:action="@{/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+            <div class="row mb-3 " style="width: inherit;">
 
                 <div class="col-md-9">
                     <input type="text" class="form-control  border-0" name="keyword"
@@ -25,6 +30,9 @@
             </div>
         </form>
     </div>
+    <div style="  border-radius: 15px;
+    box-shadow: 2px 5px 2px rgba(152, 152, 152, 0.4);
+    background-color: #356d78 !important;">
     <table class="table table-centered table-hover table-responsive mt-3">
         <tr>
             <th>Id</th>
@@ -39,7 +47,8 @@
 
             <th colspan="2">Action</th>
         </tr>
-        <tr th:each="p:${paymentList}">
+        <tr th:each="p:${paymentList}" class="paymentId" th:id="${p.id}"
+            onclick="getPaymentDetails($(this).attr('id'))">
             <td th:utext="${p.getId()}"></td>
             <td th:utext="${p.abonnement}"></td>
             <td th:utext="${p.getMember() ?: 'member'}"></td>
@@ -54,11 +63,22 @@
                 <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
             </td>
             <td>
-                <a th:class="${p.getStatus() == 'Payé' or p.getStatus() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}"data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
-                <a th:if="${p.getStatus() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
-                <a title="Annuler le paiement " th:if="${p.getStatus() == 'Impayé'}" th:href="@{/payments/cancel(payId=${p.getId()})}"><span class="material-symbols-sharp">
+                <a onclick="event.stopPropagation()"
+                   th:class="${p.getStatus() == 'Payé' or p.getStatus() == 'Annulée' ? 'hide' : 'btn btn-info pBn'}"
+                   data-th-id="${p.getId()}"
+                   data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
+
+                <a onclick="event.stopPropagation()" th:if="${p.getStatus() == 'Payé'}" href="#"
+                   class="btn btn-light text-dark inv"
+                   data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}">Recu</a>
+                <a onclick="event.stopPropagation()" title="Annuler le paiement " th:if="${p.getStatus() == 'Impayé'}"
+                   th:href="@{/payments/cancel(payId=${p.getId()})}">
+                    <span class="material-icons material-symbols-sharp" style="color: red;
+position: absolute;
+  margin-left: 1rem;">
 cancel
-</span></a>
+</span>
+                </a>
             </td>
             <style>
                 .hide{
@@ -73,6 +93,7 @@ cancel
 
         </tr>
     </table>
+    </div>
     <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">
             <a
@@ -122,6 +143,25 @@ cancel
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Payment details Modal -->
+    <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog"
+         aria-labelledby="paymentDetailsLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="paymentDetailslabel">Les détails de paiement</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+
             </div>
         </div>
     </div>
@@ -187,6 +227,15 @@ cancel
 
 
          })*/
+        function getPaymentDetails(id) {
+            var paymentDetailsModal = $('#paymentDetails');
+            console.log("Clicked");
+            $.get("/paymentDetails?id=" + id, function (data) {
+                paymentDetailsModal.find('.modal-body').html(data);
+                paymentDetailsModal.modal('show');
+            });
+
+        }
     </script>
 
 </div>

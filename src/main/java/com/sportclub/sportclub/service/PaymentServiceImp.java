@@ -8,14 +8,27 @@ import com.sportclub.sportclub.repository.PaymentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class PaymentServiceImp implements PaymentService{
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Value("${user.home}/Downloads")
+    private String reportLocation;
+
     @Autowired
     PaymentRepo paymentRepo;
     @Autowired
@@ -74,6 +87,11 @@ paymentRepo.save(m);
     @Override
     public List<Paiement> getPaymentsByAbo(Abonnement abonnement) {
         return paymentRepo.getPaiementByAbonnement(abonnement);
+    }
+
+    @Override
+    public List<Paiement> getMonthlyRevenue(LocalDate startDate, LocalDate endDate) {
+        return null;
     }
 
 

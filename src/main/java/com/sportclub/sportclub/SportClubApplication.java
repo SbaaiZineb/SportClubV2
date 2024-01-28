@@ -66,12 +66,12 @@ public class SportClubApplication implements CommandLineRunner {
 
 
         // Check if the user with the username "admin" already exists
-        UserApp existingUser = adminService.loadUserByUsername("admin");
+        UserApp existingUser = adminService.getAdminById(1L);
 
 
         if (existingUser == null) {
             // User doesn't exist, so add it
-            UserApp newUser = new UserApp("admin", passwordEncoder().encode("admin"),admin);
+            UserApp newUser = new UserApp(1L,"admin", passwordEncoder().encode("admin"),admin);
             adminService.addAdmin(newUser);
 
         } else {

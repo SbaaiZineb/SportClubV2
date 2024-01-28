@@ -51,14 +51,14 @@
                                 <div class="media d-flex">
 
                                     <div class="media-body text-left ">
-
+<!--
                                         <p class="text-info  fw-bold pp" th:if="${s.getStartTime() gt currentTime}">A
                                             venir</p>
                                         <p class="text-danger fw-bold pf" th:if="${s.getEndTime() lt currentTime}">
                                             Fini</p>
                                         <p class="text-success fw-bold pc"
                                            th:if="${s.getStartTime() le currentTime and s.getEndTime() ge currentTime }">
-                                            En cours</p>
+                                            En cours</p>-->
                                         <h4 class="fw-bold mt-1 " style="color: #3e6fb0"
                                             th:utext="${s.getStartTime()}+'-'+${s.getEndTime()}"></h4>
                                         <span class="fw-bold" style="color: #3a4456"

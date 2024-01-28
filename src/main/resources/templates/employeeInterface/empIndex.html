@@ -12,49 +12,91 @@
 
 
 <div layout:fragment="EmpContent" class="d-flex flex-column h-100">
+    <h1 style="color: whitesmoke;font-weight: bold">Bienvenue </h1>
     <div class="row">
         <div class="col-md-8">
-            <h3 class="check-h3">Still not sure what to do here</h3>
+            <h3 class="check-h3">Les adhérents</h3>
 
-            <div class="bg-light" style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
-                <table class="table table-centered table-hover table-responsive mt-3">
+            <div class="bg-light " style="overflow-x: auto; max-height: 450px;scrollbar-width: none;margin-bottom: 2px">
+
+                <input type="text" id="cin" onkeyup="EmpSearchMember()" placeholder="Telephone">
+                <style>
+                    #cin {
+                        padding: 10px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 12px;
+                        width: 18.5cm;
+                        margin-right: auto;
+                        margin-left: 6px;
+                        margin-top: 11px;
+                    }
+
+
+                    #cin:focus {
+                        outline: none;
+                        border-color: #007bff;
+                        box-shadow: 0 0 5px #007bff;
+                    }
+                </style>
+
+                <table id="IndexTable" class="table table-centered table-hover table-responsive">
                     <tr>
-                        <th>Type d'abonnement</th>
-                        <th>CIN</th>
-                        <th>Montant a paye</th>
-                        <th>Date de debut</th>
-                        <th>Date de fin</th>
+
+                        <th>Adhérent</th>
+                        <th>Cin</th>
+                        <th>Tele</th>
+                        <th>Adhésion</th>
                         <th>Statue</th>
-
-
-                        <th colspan="2">Action</th>
+                        <th>Action</th>
                     </tr>
-                    <tr th:each="p:${payments}">
-                        <td th:utext="${p.abonnement}"></td>
-                        <td th:utext="${p.getMember().getCin()}"></td>
-                        <td th:utext="${p.getAbonnement().price}+' DH'"></td>
-                        <td th:utext="${p.getStart_date()}"></td>
-                        <td th:utext="${p.getEnd_date()}"></td>
+                    <tr th:each="m:${members}" data-th-id="${m.id}"
+                        onclick="getProfile($(this).attr('id'))">
+                        <script>
+                            function getProfile(id) {
 
-                        <td class="text-center">
-                            <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
-                            <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
-                        </td>
+                                window.location.href = "/employee/userProfile?id=" + id;
+                            }
+                        </script>
+
                         <td>
-                            <a th:class="${p.getStatus() == 'Payé' ? 'hide' : 'btn btn-info pBn'}" data-th-id="${p.getId()}" data-bs-toggle="modal" data-bs-target="#payment">Payer</a>
-                            <a th:if="${p.getStatus() == 'Payé'}" href="#" class="btn btn-light text-dark inv" data-th-id="${p.getId()}" th:href="@{/invoice(id=${p.getId()})}"  >Recu</a>
+                            <div class="user-info">
+                                <div class="user-info__img">
+                                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
+                                </div>
+                                <div class="user-info__basic">
+                                    <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
+                                    <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
+                                </div>
+                            </div>
                         </td>
-                        <style>
-                            .hide{
-                                display: none;
-                            }
-                            .show{
-                                display: block;
-                            }
-                        </style>
+
+                        <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
+                        <td th:utext="${m.getName()}"></td>
+                        <td th:utext="${m.getLname()}"></td>
+                        <td th:utext="${m.getEmail()}"></td>-->
 
 
+                        <td th:utext="${m.getCin()}"></td>
+                        <td th:utext="${m.tele}"></td>
+                        <td style="color: #04405e;font-weight: bold;" th:utext="${m.getCurrentAbonnement()}"></td>
+                        <td>
+                            <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
+                               th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
+                            <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
+                               th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
 
+                        </td>
+                        <!--                        <td><a href="" class="btn btn-success text-white" onclick="event.stopPropagation()">CheckIn</a></td>-->
+                        <td onclick="event.stopPropagation()"> <!--<div class="kebab-menu" >
+                            &lt;!&ndash; Three dots icon (Unicode character: Horizontal Ellipsis) &ndash;&gt;
+                            <div style="font-size: 24px">&#8942;</div>
+                            &lt;!&ndash; Kebab menu content &ndash;&gt;
+                            <div class="kebab-menu-content">
+                                <a href="#" onclick="editItem()">Edit</a>
+                                <a href="#" onclick="deleteItem()">Delete</a>
+                            </div>
+                        </div> --><a th:href="@{/employee/enregistrement}"  class="checkinBtn btn btn-success text-white " style="margin-left: 4px" >CheckIn</a></td>
                     </tr>
                 </table>
             </div>
@@ -100,95 +142,6 @@
         </div>
     </div>
 
-    <div class="row mt-2">
-
-        <div class="col-md-12 ">
-
-            <div class="bg-light " style="overflow-x: auto; max-height: 396px;scrollbar-width: none;margin-bottom: 2px">
-
-                <input type="text" id="cin" onkeyup="EmpSearchMember()" placeholder="CIN">
-                <style>
-                    #cin {
-                        padding: 10px;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        font-size: 12px;
-                        width: 18.5cm;
-                        margin-right: auto;
-                        margin-left: 6px;
-                        margin-top: 11px;
-                    }
-
-
-                    #cin:focus {
-                        outline: none;
-                        border-color: #007bff;
-                        box-shadow: 0 0 5px #007bff;
-                    }
-                </style>
-
-                <table id="IndexTable" class="table table-centered table-hover table-responsive">
-                    <tr>
-
-                        <th>Adhérent</th>
-                        <th>Cin</th>
-                        <th>Inscrie le</th>
-                        <th>Abonnement</th>
-                        <th>Statue</th>
-                        <th>Action</th>
-                    </tr>
-                    <tr th:each="m:${members}" data-th-id="${m.id}"
-                        onclick="getProfile($(this).attr('id'))">
-                        <script>
-                            function getProfile(id) {
-
-                                window.location.href = "/membersList/userProfile?id=" + id;
-                            }
-                        </script>
-
-                        <td>
-                            <div class="user-info">
-                                <div class="user-info__img">
-                                    <img th:if="${m.pic}" alt="user icon" th:src="@{'/images/'+${m.pic}}">
-                                </div>
-                                <div class="user-info__basic">
-                                    <h5 class="mb-0" th:utext="${m.getName()}+' '+${m.getLname()}"></h5>
-                                    <p class="text-muted mb-0" th:utext="${m.getEmail()}"></p>
-                                </div>
-                            </div>
-                        </td>
-
-                        <!--<td class="py-1"><img th:if="${m.pic}"  alt="user icon" th:src="@{'images/'+${m.pic}}"></td>
-                        <td th:utext="${m.getName()}"></td>
-                        <td th:utext="${m.getLname()}"></td>
-                        <td th:utext="${m.getEmail()}"></td>-->
-
-
-                        <td th:utext="${m.getCin()}"></td>
-                        <td th:utext="${m.createdAt}"></td>
-                        <td style="color: #04405e;font-weight: bold;" th:utext="${m.getCurrentAbonnement()}"></td>
-                        <td>
-                            <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
-                               th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
-                            <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
-                               th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
-
-                        </td>
-<!--                        <td><a href="" class="btn btn-success text-white" onclick="event.stopPropagation()">CheckIn</a></td>-->
-                        <td onclick="event.stopPropagation()"> <div class="kebab-menu" >
-                            <!-- Three dots icon (Unicode character: Horizontal Ellipsis) -->
-                            <div style="font-size: 24px">&#8942;</div>
-                            <!-- Kebab menu content -->
-                            <div class="kebab-menu-content">
-                                <a href="#" onclick="editItem()">Edit</a>
-                                <a href="#" onclick="deleteItem()">Delete</a>
-                            </div>
-                        </div> <a th:href="@{/employee/enregistrement}"  class="checkinBtn btn btn-success text-white " style="margin-left: 4px" >CheckIn</a></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
 
     <script>
         // JavaScript functions for menu actions
@@ -215,7 +168,7 @@
             filter = input.value.toUpperCase();
             table = document.getElementById("IndexTable");
             tr = table.getElementsByTagName("tr");
-            nameColumn = 1; // Index of the column where cin are
+            nameColumn = 2;
 
             for (i = 0; i < tr.length; i++) {
                 td = tr[i].getElementsByTagName("td")[nameColumn];

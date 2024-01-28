@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class MemberAbonnement {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -23,5 +23,7 @@ public class MemberAbonnement {
 
 
     private String abStatus;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
 }

@@ -3,7 +3,7 @@
       layout:decorate="partials/layout.html">
 <head th:insert="~{partials/sideBar:: header}">
 
-    <title>Paiment List</title>
+    <title>Paiements</title>
 
 
 </head>
@@ -15,17 +15,27 @@
         <strong th:text="${successMessage}"></strong>
 
     </div>
-    <div class="search-field d-none mb-1 d-md-block">
-        <form th:action="@{/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-            <div class="input-group">
-                <div class="input-group-prepend bg-transparent">
-                    <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
-                </div>
-                <input type="text" class="form-control  " name="keyword"
-                       th:value="${keyword}" placeholder="Chercher par tele">
+    <div class="row">
+        <div class="col-md-11">
+            <div class="search-field d-none mb-1 d-md-block">
+                <form th:action="@{/payments/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+                    <div class="input-group">
+                        <div class="input-group-prepend bg-transparent">
+                            <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
+                        </div>
+                        <input type="text" class="form-control  " name="keyword"
+                               th:value="${keyword}" placeholder="Chercher par tele">
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        <div class="col-md-1">
+            <a
+               class="btn btn-outline-info text-dark"
+               th:href="@{/generateMonthlyReport}" target="_blank">Rapport</a>
+        </div>
     </div>
+
     <table class="table table-centered table-hover table-responsive mt-3">
         <tr>
             <th>Id</th>

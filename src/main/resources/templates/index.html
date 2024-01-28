@@ -86,8 +86,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h1 id="totalPrice" class="mt-1 mb-3" style="color: #284d82;"
-                                    th:utext="${price+' '+'DH'}"></h1>
+                                <h1 id="totalPrice" class="mt-1 mb-3" style="color: #284d82;"></h1>
 
                             </div>
                         </div>
@@ -597,8 +596,7 @@
                     url: `/totalPrice?selectedDate=${date}`,
                     type: "GET",
                     success: function (data) {
-                        $("#totalPrice").text(data);
-
+                        $("#totalPrice").text(data +" DH");
                     },
                     error: function () {
                         console.log("Error fetching total price.");

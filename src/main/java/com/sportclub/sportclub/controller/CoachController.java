@@ -135,7 +135,10 @@ public class CoachController {
 
 
         String password= c.getPassword();
-        c.setPassword(passwordEncoder.encode(password));
+        if(password!=null){
+            c.setPassword(passwordEncoder.encode(password));
+
+        }
         List<Role> roles=roleService.findAllRoles();
 
         for (Role role:roles
@@ -175,7 +178,7 @@ public class CoachController {
         return "coachList";
     }*/
     @GetMapping("/deleteCoach")
-    public String deleteCoach(@RequestParam(name = "id") Long id,String keyword, int page){
+    public String deleteCoach(@RequestParam(name = "id") Long id){
         List<Seance> seances=seanceService.getSeanceByCoach(id);
         List<CheckInCoach> checkInCoach= coachCheckInRepo.getCheckInByCoach(coachService.getCoachById(id));
         for (Seance seance:seances) {
@@ -189,7 +192,7 @@ public class CoachController {
         Coach coach = coachService.getCoachById(id);
         coachService.deleteCoach(id);
         fileStorageService.deleteFile(coach.getPic());
-        return "redirect:/coachList?page="+page+"&keyword="+keyword;
+        return "redirect:/coachList";
     }
     @GetMapping("/editCoach")
     @PreAuthorize("hasAuthority('ADMIN')")

@@ -5,8 +5,10 @@ import com.sportclub.sportclub.entities.*;
 import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,6 +50,11 @@ public class PaymentController {
     AbonnementService abonnementService;
     @Autowired
     MemberAbonnementRepo memberAbonnementRepo;
+    @Value("${app.report.location}")
+    private String DIRECTORY;
+    private static final String DEFAULT_FILE_NAME = "totalprintreport.pdf";
+    @Autowired
+    private ServletContext servletContext;
 
     @GetMapping("/payments")
     public String getPayment(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
@@ -69,17 +76,25 @@ public class PaymentController {
     }
 
     @GetMapping("/payments/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
+    public String search(@RequestParam("keyword") String keyword, Model model, Authentication authentication) {
         model.addAttribute("payment", new Paiement());
         List<Paiement> searchResults;
 
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
         if (!keyword.isEmpty()) {
             searchResults = paymentRepo.findByMemberTeleContains(keyword);
         } else {
+            if (userRole.equals("EMPLOYEE")) {
+                return "redirect:/employee/payments";
+            }
             return "redirect:/payments";
         }
         model.addAttribute("paymentList", searchResults);
         model.addAttribute("keyword", keyword);
+        if (userRole.equals("EMPLOYEE")) {
+            return "redirect:/employee/payments";
+        }
         return "paymentList";
     }
 
@@ -128,14 +143,18 @@ public class PaymentController {
 
         Abonnement abonnement = paiement.getAbonnement();
 
-        MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
+        MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
 
 
-        if (memberAbonnement != null) {
+        if (memberMembership != null) {
 
-            // Update MemberAbonnement status
-            memberAbonnement.setAbStatus("Active");
-            memberAbonnementRepo.save(memberAbonnement);
+            // Update memberMembership status
+            memberMembership.setAbStatus("Active");
+
+            memberService.updateMemberAbonnement(memberMembership);
+
+            System.out.println(memberMembership);
+            System.out.println("Done!!!!!!!!!");
         }
         redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
 
@@ -211,6 +230,38 @@ public class PaymentController {
             return null;
         }
     }
+
+    @GetMapping("/generateMonthlyReport")
+    public void generateReport(HttpServletResponse response) throws DocumentException, IOException {
+        List<Paiement> paiements = paymentService.getAllPayment();
+        Context context = new Context();
+
+
+        context.setVariable("payments", paiements);
+
+        String htmlContent = templateEngine.process("report", context);
+
+        // Create a ByteArrayOutputStream to hold the PDF content
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Use Flying Saucer to convert HTML to PDF
+        ITextRenderer renderer = new ITextRenderer();
+
+        renderer.setDocumentFromString(htmlContent);
+        renderer.layout();
+        renderer.createPDF(outputStream);
+
+        // Set the response headers for PDF download
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=rapport.pdf");
+
+        // Write the PDF content to the response output stream
+        outputStream.writeTo(response.getOutputStream());
+        outputStream.flush();
+        outputStream.close();
+
+    }
+
 
     @Autowired
     InvoiceService invoiceService;

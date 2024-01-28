@@ -107,10 +107,10 @@ public class AbonnementController {
 
 
     @GetMapping("/deleteAbonnement")
-    public String deleteAB(@RequestParam(name = "id") Long id,String keyword, int page){
+    public String deleteAB(@RequestParam(name = "id") Long id){
 
         abonnementService.deleteAbonnement(id);
-        return "redirect:/abonnementList?page="+page+"&keyword="+keyword;
+        return "redirect:/abonnementList";
     }
     @GetMapping("/editAbonnement")
 

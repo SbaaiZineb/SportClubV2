@@ -7,9 +7,10 @@
 </head>
 <body>
 <div layout:fragment="content" class="container">
-    <div class="main-body">
+    <div class="main-body" th:fragment="userProfile">
 
-        <a class="btn btn-outline-primary mb-2" data-th-id="${user.getId()}" th:href="@{/profilPdf(id=${user.getId()})}"><i data-feather="printer"></i></a>
+        <a class="btn btn-outline-primary mb-2" data-th-id="${user.getId()}"
+           th:href="@{/profilPdf(id=${user.getId()})}"><i data-feather="printer"></i></a>
         <div class="row gutters-sm">
             <div class="col-md-3">
                 <div class="card h-100" style="background-color: #3f6693; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
@@ -62,8 +63,9 @@ object-fit: cover;"
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="row me-1">
+
                                     <div class=" d-flex align-items-center">
-                                        <h6 class="mb-0">Nom :</h6>
+                                        <h6 class="mb-0 label">Nom :</h6>
                                     </div>
 
                                     <div class="col-sm-9 text-secondary input" th:utext="${user.getName()}"></div>
@@ -186,10 +188,10 @@ object-fit: cover;"
                                     </div>
                                 </div>
 
-                                <button th:if="${user.status == 'Inactive'}" class="button-43" id="abButton">
+                                <!--<button class="button-43" id="abButton">
                                     Renouvellement d'abonnement
                                 </button>
-                                <!-- HTML !-->
+                                &lt;!&ndash; HTML !&ndash;&gt;
                                 <style>
                                     /* CSS */
                                     .button-43 {
@@ -218,7 +220,7 @@ object-fit: cover;"
                                         .button-43 {
                                             padding: 1rem 2rem;
                                         }
-                                    }</style>
+                                    }</style>-->
                                 <style>
                                     .col-sm-5.text-secondary.input,
                                     .col-sm-9.text-secondary.input {
@@ -252,452 +254,508 @@ object-fit: cover;"
             </div>
 
         </div>
-        <div class="row hide" id="myCard">
-            <div class="ag-format-container" th:each="ab : ${abos}">
-                <div class="ag-courses_box">
-                    <div class="ag-courses_item">
-                        <a th:href="@{/membersList/userProfile/updateAbo(userId=${user.id},abId=${ab.id})}"
-                           class="ag-courses-item_link" th:id="${ab.id}">
-                            <div class="ag-courses-item_bg"></div>
+        <div th:fragment="cards">
 
-                            <div class="ag-courses-item_title">
-                                <p th:utext="${ab.nameAb}"></p>
-                            </div>
-                            <div class="ag-courses-item_date-box">
 
-                                Period/Carnet:
-                                <span class="ag-courses-item_date">
+            <!--<div class="row hide" id="myCard">
+                <div class="ag-format-container" th:each="ab : ${abos}">
+                    <div class="ag-courses_box">
+                        <div class="ag-courses_item">
+                            <a th:href="@{/membersList/userProfile/updateAbo(userId=${user.id},abId=${ab.id})}"
+                               class="ag-courses-item_link" th:id="${ab.id}">
+                                <div class="ag-courses-item_bg"></div>
+
+                                <div class="ag-courses-item_title">
+                                    <p th:utext="${ab.nameAb}"></p>
+                                </div>
+                                <div class="ag-courses-item_date-box">
+
+                                    Period/Carnet:
+                                    <span class="ag-courses-item_date">
                                 <p th:utext="${ab.period == '0' ? 'Carnet ' + ab.nbrSeance : ab.period + ' mois'}"></p>
                         </span>
-                            </div>
-                            <div class="ag-courses-item_date-box">
+                                </div>
+                                <div class="ag-courses-item_date-box">
 
-                                Prix:
-                                <span class="ag-courses-item_date">
+                                    Prix:
+                                    <span class="ag-courses-item_date">
                             <p th:utext="${ab.price}+' DH'"></p>
                         </span>
-                            </div>
-                        </a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-            <style>
+                <style>
 
-                .ag-format-container {
-                    width: 1142px;
-                    margin: 0 auto;
-                }
-
-
-                body {
-                    background-color: #3f6693;
-                }
-
-                .ag-courses_box {
-                    display: -webkit-box;
-                    display: -ms-flexbox;
-                    display: block;
-                    -webkit-box-align: start;
-                    -ms-flex-align: start;
-                    align-items: flex-start;
-                    -ms-flex-wrap: wrap;
-                    flex-wrap: wrap;
-
-                    padding: 50px 0;
-                }
-
-                .ag-courses_item {
-                    margin: 0 15px 30px;
-
-                    overflow: hidden;
-
-                    border-radius: 28px;
-                }
-
-                .ag-courses-item_link {
-                    display: block;
-                    padding: 30px 20px;
-                    background-color: #3f6693;
-
-                    overflow: hidden;
-
-                    position: relative;
-                }
-
-                .ag-courses-item_link:hover,
-                .ag-courses-item_link:hover .ag-courses-item_date {
-                    text-decoration: none;
-                    color: #FFF;
-                }
-
-                .ag-courses-item_link:hover .ag-courses-item_bg {
-                    -webkit-transform: scale(10);
-                    -ms-transform: scale(10);
-                    transform: scale(10);
-                }
-
-                .ag-courses-item_title {
-                    min-height: 87px;
-                    margin: 0 0 25px;
-
-                    overflow: hidden;
-
-                    font-weight: bold;
-                    font-size: 30px;
-                    color: #FFF;
-
-                    z-index: 2;
-                    position: relative;
-                }
-
-                .ag-courses-item_date-box {
-                    font-size: 18px;
-                    color: #FFF;
-
-                    z-index: 2;
-                    position: relative;
-                }
-
-                .ag-courses-item_date {
-                    font-weight: bold;
-                    color: #f9b234;
-
-                    -webkit-transition: color .5s ease;
-                    -o-transition: color .5s ease;
-                    transition: color .5s ease
-                }
-
-                .ag-courses-item_bg {
-                    height: 128px;
-                    width: 128px;
-                    background-color: #f9b234;
-
-                    z-index: 1;
-                    position: absolute;
-                    top: -75px;
-                    right: -75px;
-
-                    border-radius: 50%;
-
-                    -webkit-transition: all .5s ease;
-                    -o-transition: all .5s ease;
-                    transition: all .5s ease;
-                }
-
-
-                @media only screen and (max-width: 767px) {
                     .ag-format-container {
-                        width: 96%;
+                        width: 1142px;
+                        margin: 0 auto;
                     }
 
-                }
 
-                @media only screen and (max-width: 639px) {
+                    body {
+                        background-color: #3f6693;
+                    }
+
+                    .ag-courses_box {
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: block;
+                        -webkit-box-align: start;
+                        -ms-flex-align: start;
+                        align-items: flex-start;
+                        -ms-flex-wrap: wrap;
+                        flex-wrap: wrap;
+
+                        padding: 50px 0;
+                    }
+
                     .ag-courses_item {
-                        flex-basis: 100%;
-                    }
+                        margin: 0 15px 30px;
 
-                    .ag-courses-item_title {
-                        min-height: 72px;
-                        line-height: 1;
+                        overflow: hidden;
 
-                        font-size: 24px;
+                        border-radius: 28px;
                     }
 
                     .ag-courses-item_link {
-                        padding: 22px 40px;
+                        display: block;
+                        padding: 30px 20px;
+                        background-color: #3f6693;
+
+                        overflow: hidden;
+
+                        position: relative;
+                    }
+
+                    .ag-courses-item_link:hover,
+                    .ag-courses-item_link:hover .ag-courses-item_date {
+                        text-decoration: none;
+                        color: #FFF;
+                    }
+
+                    .ag-courses-item_link:hover .ag-courses-item_bg {
+                        -webkit-transform: scale(10);
+                        -ms-transform: scale(10);
+                        transform: scale(10);
+                    }
+
+                    .ag-courses-item_title {
+                        min-height: 87px;
+                        margin: 0 0 25px;
+
+                        overflow: hidden;
+
+                        font-weight: bold;
+                        font-size: 30px;
+                        color: #FFF;
+
+                        z-index: 2;
+                        position: relative;
                     }
 
                     .ag-courses-item_date-box {
-                        font-size: 16px;
+                        font-size: 18px;
+                        color: #FFF;
+
+                        z-index: 2;
+                        position: relative;
                     }
 
-                }
+                    .ag-courses-item_date {
+                        font-weight: bold;
+                        color: #f9b234;
 
-                .row {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-
-                .ag-format-container {
-                    width: 33.33%; /* Three items per row (adjust as needed) */
-                    box-sizing: border-box;
-                    padding: 10px; /* Add some space between items */
-                }
-
-                /* Add media queries to control the layout on smaller screens */
-                @media (max-width: 768px) {
-                    .ag-format-container {
-                        width: 50%; /* Two items per row on smaller screens */
+                        -webkit-transition: color .5s ease;
+                        -o-transition: color .5s ease;
+                        transition: color .5s ease
                     }
 
-                    /* For a single item per row on even smaller screens */
-                    @media (max-width: 480px) {
+                    .ag-courses-item_bg {
+                        height: 128px;
+                        width: 128px;
+                        background-color: #f9b234;
+
+                        z-index: 1;
+                        position: absolute;
+                        top: -75px;
+                        right: -75px;
+
+                        border-radius: 50%;
+
+                        -webkit-transition: all .5s ease;
+                        -o-transition: all .5s ease;
+                        transition: all .5s ease;
+                    }
+
+
+                    @media only screen and (max-width: 767px) {
                         .ag-format-container {
-                            width: 100%;
+                            width: 96%;
+                        }
+
+                    }
+
+                    @media only screen and (max-width: 639px) {
+                        .ag-courses_item {
+                            flex-basis: 100%;
+                        }
+
+                        .ag-courses-item_title {
+                            min-height: 72px;
+                            line-height: 1;
+
+                            font-size: 24px;
+                        }
+
+                        .ag-courses-item_link {
+                            padding: 22px 40px;
+                        }
+
+                        .ag-courses-item_date-box {
+                            font-size: 16px;
+                        }
+
+                    }
+
+                    .row {
+                        display: flex;
+                        flex-wrap: wrap;
+                    }
+
+                    .ag-format-container {
+                        width: 33.33%; /* Three items per row (adjust as needed) */
+                        box-sizing: border-box;
+                        padding: 10px; /* Add some space between items */
+                    }
+
+                    /* Add media queries to control the layout on smaller screens */
+                    @media (max-width: 768px) {
+                        .ag-format-container {
+                            width: 50%; /* Two items per row on smaller screens */
+                        }
+
+                        /* For a single item per row on even smaller screens */
+                        @media (max-width: 480px) {
+                            .ag-format-container {
+                                width: 100%;
+                            }
                         }
                     }
-                }
 
 
-            </style>
-        </div>
-        <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
-            <div class="card-header" style="background-color: #3f6693;">
-                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les adhésions d'adhérent</h3>
-            </div>
-            <table class="table table-centered table-hover table-responsive mt-3">
-                <tr style="background-color: #e0e7f46b!important;">
-                    <th>ID d'abonnement</th>
-                    <th>Nom d'abonnement</th>
-                    <th>Montant</th>
-                    <th>Nomber des seances/Period</th>
-                    <th>Status</th>
-                </tr>
+                </style>
+            </div>-->
 
-                <tr th:if="${!memberships.isEmpty()}" th:each="membership :${memberships}"
-                    style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${membership.getAbonnement().getId()}"></td>
-                    <td style="color: #646fd5;font-weight: bold;"
-                        th:utext="${membership.getAbonnement().getNameAb()}"></td>
-                    <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
-                    <td style="color: #646fd5;font-weight: bold;"
-                        th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
-                    <td>
-                        <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>
-                        <p class="badge bg-warning m-0" th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
-                        <p class="badge bg-danger m-0" th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
-                        <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'En attente'}">En attente</p>
+            <!-- Add MemberShip Modal -->
+            <div class="modal fade bd-example-modal-lg" id="addAb" tabindex="-1" role="dialog"
+                 aria-labelledby="addAbLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="addAblabel">Ajouter une nouvelle adhésion</h3>
+                            <button type="button" class="btn btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" class="m-3" th:object="${membership}" th:action="@{/membersList/userProfile/addAbo(userId=${user.id})}">
+                                <div class="row ">
+                                    <div class="col-sm-4">
+                                        <label class="form-label">Selectionner un abonnement :</label>
 
-                    </td>
-                </tr>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3">
+                                            <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
+                                                    th:text="${abonnement.nameAb}"></option>
+                                        </select>
+                                    </div>
 
-            </table>
+                                </div>
 
-        </div>
-        <div class="row mt-4">
-            <div class="card" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); margin-bottom: 0">
-                <div class="card-header">
-                    <h5 class="card-title">Nombre d'enregistrements</h5>
-                    <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrements
-                        effectués par ce adherent chaque mois.</h6>
+                                <div class="row mt-2">
+                                    <div class="col-sm-6">
+                                        <label for="startDateId">La date de debut :</label>
+                                        <input style="margin-left: 10px;" type="date" name="startDate" id="startDateId" th:field="*{startDate}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="endDateId">La date de fin :</label>
+                                        <input style="margin-left: 10px;" type="date" name="endDate" id="endDateId" th:field="*{endDate}">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary mt-4" type="submit">Ajouter</button>
+                            </form>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="chart chart-sm text-center">
-                        <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
+            </div>
+            <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                <div class="card-header" style="background-color: #3f6693;">
+                    <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke" class="float-start">Les
+                        adhésions d'adhérent</h3>
+                    <button class="btn btn-light text-info float-end" id="addBtn" data-bs-toggle="modal"
+                            data-bs-target="#addAb">Ajouter adhésion
+                    </button>
+                </div>
+                <table class="table table-centered table-hover table-responsive mt-3">
+                    <tr style="background-color: #e0e7f46b!important;">
+                        <th>ID d'abonnement</th>
+                        <th>Nom d'abonnement</th>
+                        <th>Montant</th>
+                        <th>Nomber des seances/Period</th>
+                        <th>Status</th>
+                    </tr>
+
+                    <tr th:if="${!memberships.isEmpty()}" th:each="membership :${memberships}"
+                        style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                        <td style="color: #646fd5;font-weight: bold;"
+                            th:utext="${membership.getAbonnement().getId()}"></td>
+                        <td style="color: #646fd5;font-weight: bold;"
+                            th:utext="${membership.getAbonnement().getNameAb()}"></td>
+                        <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
+                        <td style="color: #646fd5;font-weight: bold;"
+                            th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
+                        <td>
+                            <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>
+                            <p class="badge bg-warning m-0" th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
+                            <p class="badge bg-danger m-0" th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
+                            <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'En attente'}">En
+                                attente</p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+            <div class="row mt-4" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                <div class="card" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); margin-bottom: 0">
+                    <div class="card-header">
+                        <h5 class="card-title">Nombre d'enregistrements</h5>
+                        <h6 class="card-subtitle text-muted">Ce Graphique à barres afficher le nombre d'enregistrements
+                            effectués par ce adherent chaque mois.</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart chart-sm text-center">
+                            <input type="date" id="selectedDate" name="selectedDate" th:value="${today}" style="float: right;
 padding: 5px;
 color: #3b7ddd;
 border-top-style: none;border-right-style: none;border-bottom: 1px solid #134793;border-left-style: none;
 background: transparent;margin-top: -17px">
-                        <canvas id="chartjs-bar"></canvas>
+                            <canvas id="chartjs-bar"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="card mt-4"
+                 style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                <style>
+                    .hide {
+                        display: none;
+                    }
+                </style>
+                <div class="card-header" style="background-color: #3f6693;">
+                    <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Historique des
+                        paiements</h3>
+                </div>
+
+                <table class="table table-centered table-hover table-responsive mt-3">
+
+                    <tr style="background-color: #e0e7f46b!important;">
+                        <th>ID de paiment</th>
+                        <th>Type d'abonnement</th>
+                        <th>Montant</th>
+                        <th>Date de debut</th>
+                        <th>Nomber des seances/Fin date</th>
+                        <th>Payer par</th>
+                        <th>Payer le</th>
+                        <th></th>
+                    </tr>
+
+                    <tr th:each="p:${payments}" th:id="${p.id}" onclick="getPaymentDetails($(this).attr('id'))"
+                        style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                        <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getId()}"></td>
+                        <td class="fw-bold" th:utext="${p.abonnement}"></td>
+
+                        <td th:utext="${p.getAbonnement().price}+' DH'"></td>
+                        <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getStart_date()}"></td>
+                        <td style="color: #646fd5;font-weight: bold;"
+                            th:utext="${p.getEnd_date() == null ? 'Carnet '+ p.getAbonnement().getNbrSeance() : p.getEnd_date() }"></td>
+                        <td th:utext="${p.payedBy}"></td>
+                        <td style="color: #646fd5;font-weight: bold;" th:utext="${p.payedAt}"></td>
+                        <td class="text-center">
+                            <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
+                            <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
+                            <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
+                        </td>
+
+
+                    </tr>
+                </table>
+
+            </div>
+
+
+            <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                <div class="card-header" style="background-color: #3f6693;">
+                    <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
+                </div>
+                <table class="table table-centered table-hover table-responsive mt-3">
+                    <tr style="background-color: #e0e7f46b!important;">
+                        <th>ID de seance</th>
+                        <th>Seance</th>
+                        <th>La date d'enregistrement</th>
+                        <th>Le temps d'enregistrement</th>
+                    </tr>
+
+                    <tr th:each="check:${checkins}"
+                        style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
+                        <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId()}"></td>
+                        <td style="font-weight: bold" th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></td>
+
+                        <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
+                        <td style="color: #646fd5;font-weight: bold;"
+                            th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <!-- Payment details Modal -->
+            <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog"
+                 aria-labelledby="paymentDetailsLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="paymentDetailslabel">Les détails de paiement</h3>
+                            <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
 
                     </div>
                 </div>
             </div>
-
-
         </div>
-
-        <div class="card mt-4"
-             style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
-            <style>
-                .hide {
-                    display: none;
-                }
-            </style>
-            <div class="card-header" style="background-color: #3f6693;">
-                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Historique des
-                    paiements</h3>
-            </div>
-
-            <table class="table table-centered table-hover table-responsive mt-3">
-
-                <tr style="background-color: #e0e7f46b!important;">
-                    <th>ID de paiment</th>
-                    <th>Type d'abonnement</th>
-                    <th>Montant</th>
-                    <th>Date de debut</th>
-                    <th>Nomber des seances/Fin date</th>
-                    <th>Payer par</th>
-                    <th>Payer le</th>
-                    <th></th>
-                </tr>
-
-                <tr th:each="p:${payments}" th:id="${p.id}" onclick="getPaymentDetails($(this).attr('id'))"
-                    style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getId()}"></td>
-                    <td class="fw-bold" th:utext="${p.abonnement}"></td>
-
-                    <td th:utext="${p.getAbonnement().price}+' DH'"></td>
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.getStart_date()}"></td>
-                    <td style="color: #646fd5;font-weight: bold;"
-                        th:utext="${p.getEnd_date() == null ? 'Carnet '+ p.getAbonnement().getNbrSeance() : p.getEnd_date() }"></td>
-                    <td th:utext="${p.payedBy}"></td>
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${p.payedAt}"></td>
-                    <td class="text-center">
-                        <p class="badge bg-success m-0" th:if="${p.getStatus() == 'Payé'}">Payé</p>
-                        <p class="badge bg-danger m-0" th:if="${p.getStatus() == 'Impayé'}">Impayé</p>
-                        <p class="badge bg-warning m-0" th:if="${p.getStatus() == 'Annulée'}">Annulée</p>
-                    </td>
-
-
-                </tr>
-            </table>
-
-        </div>
-
-
-        <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
-            <div class="card-header" style="background-color: #3f6693;">
-                <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
-            </div>
-            <table class="table table-centered table-hover table-responsive mt-3">
-                <tr style="background-color: #e0e7f46b!important;">
-                    <th>ID de seance</th>
-                    <th>Seance</th>
-                    <th>La date d'enregistrement</th>
-                    <th>Le temps d'enregistrement</th>
-                </tr>
-
-                <tr th:each="check:${checkins}"
-                    style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getId()}"></td>
-                    <td style="font-weight: bold" th:utext="${check.getSession()?.getClassName() ?: 'seance'}"></td>
-
-                    <td style="color: #646fd5;font-weight: bold;" th:utext="${check.getCheckinDate()}"></td>
-                    <td style="color: #646fd5;font-weight: bold;"
-                        th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
-
-                </tr>
-            </table>
-
-        </div>
-        <!-- Payment details Modal -->
-        <div class="modal fade bd-example-modal-lg" id="paymentDetails" tabindex="-1" role="dialog"
-             aria-labelledby="paymentDetailsLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title" id="paymentDetailslabel">Les détails de paiement</h3>
-                        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
-
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const selectedDateInput = document.getElementById("selectedDate");
+    <div th:fragment="script">
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const selectedDateInput = document.getElementById("selectedDate");
 
-            function getQueryParamValue(param) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(param);
-            }
+                function getQueryParamValue(param) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(param);
+                }
 
-            // Function to fetch data and generate chart
-            function fetchDataAndGenerateChart(date, memberId) {
-                fetch('/checkInMember?selectedDate=' + date + '&id=' + memberId)
-                    .then(response => response.json())
-                    .then(data => {
-                        const labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-                        const checkInCount = labels.map(month => data[month.toLowerCase()] || 0);
+                // Function to fetch data and generate chart
+                function fetchDataAndGenerateChart(date, memberId) {
+                    fetch('/checkInMember?selectedDate=' + date + '&id=' + memberId)
+                        .then(response => response.json())
+                        .then(data => {
+                            const labels = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+                            const checkInCount = labels.map(month => data[month.toLowerCase()] || 0);
 
-                        new Chart(document.getElementById("chartjs-bar"), {
-                            type: "bar",
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    label: "Check-ins",
-                                    backgroundColor: "#30639f",
-                                    borderColor: "#30639f",
-                                    hoverBackgroundColor: window.theme.primary,
-                                    hoverBorderColor: window.theme.primary,
-                                    data: checkInCount,
-                                    barPercentage: .75,
-                                    categoryPercentage: .5
-                                }]
-                            },
-                            options: {
-                                maintainAspectRatio: false,
-                                legend: {
-                                    display: false
-                                },
-                                scales: {
-                                    yAxes: [{
-                                        gridLines: {
-                                            display: false
-                                        },
-                                        stacked: false,
-                                        ticks: {
-                                            beginAtZero: true,
-                                            stepSize: 5, // Set your desired step size
-                                            callback: function (value) {
-                                                return value.toLocaleString(); // Format the tick labels as needed
-                                            }
-                                        }
-                                    }],
-                                    xAxes: [{
-                                        stacked: false,
-                                        gridLines: {
-                                            color: "transparent"
-                                        }
+                            new Chart(document.getElementById("chartjs-bar"), {
+                                type: "bar",
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: "Check-ins",
+                                        backgroundColor: "#30639f",
+                                        borderColor: "#30639f",
+                                        hoverBackgroundColor: window.theme.primary,
+                                        hoverBorderColor: window.theme.primary,
+                                        data: checkInCount,
+                                        barPercentage: .75,
+                                        categoryPercentage: .5
                                     }]
+                                },
+                                options: {
+                                    maintainAspectRatio: false,
+                                    legend: {
+                                        display: false
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            gridLines: {
+                                                display: false
+                                            },
+                                            stacked: false,
+                                            ticks: {
+                                                beginAtZero: true,
+                                                stepSize: 5, // Set your desired step size
+                                                callback: function (value) {
+                                                    return value.toLocaleString(); // Format the tick labels as needed
+                                                }
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            stacked: false,
+                                            gridLines: {
+                                                color: "transparent"
+                                            }
+                                        }]
+                                    }
                                 }
-                            }
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                         });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
+                }
 
-            // Function to handle date change event
-            function handleDateChange() {
-                const selectedDate = selectedDateInput.value;
-                console.log("Selected date:", selectedDate);
-                const memberId = getQueryParamValue('id');
-                fetchDataAndGenerateChart(selectedDate, memberId);
-            }
+                // Function to handle date change event
+                function handleDateChange() {
+                    const selectedDate = selectedDateInput.value;
+                    console.log("Selected date:", selectedDate);
+                    const memberId = getQueryParamValue('id');
+                    fetchDataAndGenerateChart(selectedDate, memberId);
+                }
 
-            // Attach event listener to date input
-            selectedDateInput.addEventListener("change", handleDateChange);
+                // Attach event listener to date input
+                selectedDateInput.addEventListener("change", handleDateChange);
 
-            // Fetch data and generate chart on page load
-            const initialDate = selectedDateInput.value;
-            const initialMemberId = getQueryParamValue('id');
-            fetchDataAndGenerateChart(initialDate, initialMemberId);
-        });
-
-        document.getElementById("abButton").addEventListener("click", function () {
-            var card = document.getElementById("myCard");
-
-            if (card.style.display === "none" || card.style.display === "") {
-                card.style.display = "flex"; // Show the card
-            } else {
-                card.style.display = "none"; // Hide the card
-            }
-        });
-
-        function getPaymentDetails(id) {
-            var paymentDetailsModal = $('#paymentDetails');
-            console.log("Clicked");
-            $.get("/paymentDetails?id=" + id, function (data) {
-                paymentDetailsModal.find('.modal-body').html(data);
-                paymentDetailsModal.modal('show');
+                // Fetch data and generate chart on page load
+                const initialDate = selectedDateInput.value;
+                const initialMemberId = getQueryParamValue('id');
+                fetchDataAndGenerateChart(initialDate, initialMemberId);
             });
 
-        }
-    </script>
+            document.getElementById("abButton").addEventListener("click", function () {
+                var card = document.getElementById("myCard");
+
+                if (card.style.display === "none" || card.style.display === "") {
+                    card.style.display = "flex"; // Show the card
+                } else {
+                    card.style.display = "none"; // Hide the card
+                }
+            });
+
+            function getPaymentDetails(id) {
+                var paymentDetailsModal = $('#paymentDetails');
+                console.log("Clicked");
+                $.get("/paymentDetails?id=" + id, function (data) {
+                    paymentDetailsModal.find('.modal-body').html(data);
+                    paymentDetailsModal.modal('show');
+                });
+
+            }
+        </script>
+    </div>
 </div>
 </body>
 </html>

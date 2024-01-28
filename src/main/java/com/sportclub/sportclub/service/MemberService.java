@@ -38,4 +38,6 @@ public interface MemberService {
 
     List<Member> getMemberByCin(String cin);
     public void updateMemberStatues();
+    public boolean isMembershipExpired(MemberAbonnement memberAb);
+    public void updateMemberAbonnement(MemberAbonnement memberAbonnement);
 }

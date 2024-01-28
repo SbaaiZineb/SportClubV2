@@ -39,8 +39,8 @@ public class Abonnement {
 
     private List<MemberAbonnement> memberAbonnements;
 
-
-
+    @Lob
+    private String notes;
 
     @Override
     public String toString() {

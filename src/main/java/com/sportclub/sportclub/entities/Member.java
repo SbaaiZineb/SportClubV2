@@ -52,6 +52,8 @@ public class Member extends UserApp {
         super(name, lname, adress, cin, dob, tele, roles, email, password);
         this.gender = gender;
     }
+    @Lob
+    private String notes;
 
     @Temporal(value = TemporalType.DATE)
     private LocalDate createdAt;
