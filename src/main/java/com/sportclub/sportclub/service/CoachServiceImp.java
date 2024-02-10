@@ -69,4 +69,9 @@ public class CoachServiceImp implements CoachService {
     public List<Coach> getCoachByTele(String tele) {
         return coachRepository.findByTeleContains(tele);
     }
+
+    @Override
+    public List<Coach> findByKeyword(String keyword) {
+        return coachRepository.findByKeyword(keyword);
+    }
 }

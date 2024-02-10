@@ -61,6 +61,8 @@ public class EmployeeController {
 
     @GetMapping("/")
     public String getEmpIndex(Model model) {
+        memberService.updateMembershipStatus();
+        memberService.updateMemberStatues();
         Member member = new Member();
         model.addAttribute("member", member);
 
@@ -81,6 +83,7 @@ public class EmployeeController {
         model.addAttribute("members", members);
         List<CheckIn> checkIns = checkInService.getAllCheckIns();
         model.addAttribute("checkin", checkIns);
+
         return "employeeInterface/empIndex";
     }
 
@@ -119,14 +122,55 @@ public class EmployeeController {
     public String addMemberByEmp(@Validated @ModelAttribute("member") Member member, Authentication authentication,
                                  @RequestParam("file") MultipartFile file,
                                  @RequestParam(name = "abonnementId", required = false) Long abonnementId,
-                                 RedirectAttributes redirectAttributes) {
+                                 @RequestParam(value = "startDate", required = false) LocalDate startDate,
+                                 @RequestParam(value = "endDate", required = false) LocalDate endDate, RedirectAttributes redirectAttributes) {
 
 
-        memberService.addMember(member, authentication, file, abonnementId);
+        memberService.addMember(member, authentication, file, abonnementId, startDate, endDate);
 
         redirectAttributes.addFlashAttribute("successMessage", "Membre ajouté avec succès!");
 
         return "redirect:/employee/members";
+    }
+
+    @GetMapping("/members/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("member", new Member());
+        List<Member> searchResults;
+
+        try {
+            if (!keyword.isEmpty()) {
+                searchResults = memberService.searchMembers(keyword);
+                model.addAttribute("listMember", searchResults);
+                System.out.println("members : "+searchResults);
+
+            } else {
+
+                return "redirect:/employee/members";
+
+            }
+        } catch (Exception e) {
+            System.out.println("Exception : " + e);
+        }
+        model.addAttribute("keyword", keyword);
+
+        return "employeeInterface/empMembersList";
+    }
+    @GetMapping("/payments/search")
+    public String searchPayment(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("payment", new Paiement());
+        List<Paiement> searchResults;
+
+        if (!keyword.isEmpty()) {
+            searchResults = paymentRepo.findByMemberTeleContainsOrMemberCinContainsIgnoreCase(keyword,keyword);
+        } else {
+                return "redirect:/employee/payments";
+
+        }
+        model.addAttribute("paymentList", searchResults);
+        model.addAttribute("keyword", keyword);
+            return "redirect:/employee/payments";
+
     }
 
     @GetMapping("/enregistrement")
@@ -141,25 +185,15 @@ public class EmployeeController {
         return "employeeInterface/empCheckIns";
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
-        model.addAttribute("member", new Member());
-        List<Member> searchResults = new ArrayList<>();
+  /*  @PostMapping("/payments/pay")
+    public String pay(@Validated Paiement paiement, BindingResult bindingResult,
+                      RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) return "error";
+        paymentService.payer(paiement);
+        redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
 
-        if ("cin".equals(searchBy)) {
-            searchResults = memberService.getMemberByCin(keyword);
-        } else if ("tele".equals(searchBy)) {
-            searchResults = memberService.getMemberByPhone(keyword);
-        } else if (keyword.isEmpty()) {
-            return "redirect:/employee/members";
-        }
-
-        model.addAttribute("listMember", searchResults);
-        model.addAttribute("keyword", keyword);
-
-        return "employeeInterface/empMembersList";
-    }
-
+        return "redirect:/employee/payments";
+    }*/
     @GetMapping("/payments")
     public String getPaymentPage(Model model, @RequestParam(name = "page", defaultValue = "0") int page,
                                  @RequestParam(name = "size", defaultValue = "5") int size,
@@ -176,70 +210,12 @@ public class EmployeeController {
         return "employeeInterface/empPayments";
     }
 
-    @RequestMapping(path = {"payments/search"})
-    public String search(Model model, String keyword) {
 
-        Paiement paiement = new Paiement();
-        model.addAttribute("payment", paiement);
-        List<Paiement> list;
-        if (keyword != null) {
-            list = paymentRepo.findByMemberTeleContains(keyword);
-        } else {
-            list = paymentService.getAllPayment();
-        }
-        model.addAttribute("paymentList", list);
-        return "employeeInterface/empPayments";
-    }
-
-    @PostMapping("payments/pay")
-    public String pay(@Validated Paiement paiement, BindingResult bindingResult,Authentication authentication,RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) return "error";
-
-        UserApp user = adminService.loadUserByUsername(authentication.getName());
-        String userRole = user.getRoles().getRoleName();
-
-        paiement.setPayedAt(LocalDate.now());
-        paiement.setStatus("Payé");
-        paiement.setPayedBy("CASH");
-        Member member = paiement.getMember();
-        member.setStatus("Active");
-        memberService.updateMember(member);
-        paymentService.updatePayment(paiement);
-        Abonnement abonnement = paiement.getAbonnement();
-
-        MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
-
-
-        if (memberMembership != null) {
-
-            // Update memberMembership status
-            memberMembership.setAbStatus("Active");
-
-            memberService.updateMemberAbonnement(memberMembership);
-
-            System.out.println(memberMembership);
-            System.out.println("Done!!!!!!!!!");
-        }
-        redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
-
-
-        return "redirect:/employee/payments";
-
-    }
     @GetMapping("/userProfile")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
-
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
+        memberService.updateMembershipStatus();
         memberService.updateMemberStatues();
-        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
-
-        for (MemberAbonnement memberAb : memberAbonnementList
-        ) {
-            if (memberService.isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")) {
-                memberAb.setAbStatus("Expiré");
-            }
-        }
-        memberAbonnementRepo.saveAll(memberAbonnementList);
 
         Member member = memberService.getMemberById(id);
         List<CheckIn> checkIns = checkInRepo.getCheckInByMember(member);
@@ -253,6 +229,8 @@ public class EmployeeController {
         model.addAttribute("checkins", checkIns);
         model.addAttribute("payments", paiements);
         model.addAttribute("user", member);
+        MemberAbonnement membership = new MemberAbonnement();
+        model.addAttribute("memberAbonnement", membership);
 
         return "employeeInterface/empUserProfil";
     }

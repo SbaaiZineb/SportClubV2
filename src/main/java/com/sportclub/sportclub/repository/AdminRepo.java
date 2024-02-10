@@ -1,6 +1,7 @@
 package com.sportclub.sportclub.repository;
 
 import com.sportclub.sportclub.entities.Coach;
+import com.sportclub.sportclub.entities.Member;
 import com.sportclub.sportclub.entities.Role;
 
 import com.sportclub.sportclub.entities.UserApp;
@@ -32,5 +33,12 @@ public interface AdminRepo extends JpaRepository<UserApp,Long> {
     @Query("select count(p) = 1 from UserApp p where p.cin= ?1")
     Boolean findExistByCin(String cin);
     Page<UserApp> findByRolesRoleNameContains(String role, Pageable pageable);
+    @Query("SELECT m FROM UserApp m JOIN m.roles r " +
+            "WHERE r.roleName IN ('ADMIN', 'EMPLOYEE')" +
+            "AND (lower(m.name) LIKE lower(concat('%', :keyword, '%')) " +
+            "OR lower(m.lname) LIKE lower(concat('%', :keyword, '%')) " +
+            "OR lower(m.tele) LIKE lower(concat('%', :keyword, '%')) " +
+            "OR lower(m.cin) LIKE lower(concat('%', :keyword, '%')))")
+    List<UserApp> findAdminByKeyword(@Param("keyword") String keyword);
 
 }

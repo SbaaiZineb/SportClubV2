@@ -6,12 +6,15 @@ import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,13 +43,50 @@ public class DashController {
     @Autowired
     AdminService adminService;
 
+    @RequestMapping("/404")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handle404Error() {
+        return "404";
+    }
     @GetMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')  or hasAuthority('COACH')")
 
     public String getDash(Model model) {
+        LocalDate currentDate = LocalDate.now();
         memberService.ifPicIsEmpty(adminService.getAllAdmins(), memberService.getAllMembers(), coachService.getAllCoachs());
 
+        //Membership status check and update
+        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
+
+        for (MemberAbonnement memberAb : memberAbonnementList
+        ) {
+            if (memberAb != null) {
+
+                LocalDate startDate = memberAb.getStartDate();
+                LocalDate endDate = memberAb.getEndDate();
+
+                boolean isWithinValidPeriod = (endDate != null) && (
+                        (startDate.isBefore(currentDate) || startDate.isEqual(currentDate)) &&
+                                (endDate.isAfter(currentDate) || endDate.isEqual(currentDate)));
+
+                boolean isUnlimitedMembership = (endDate == null) &&
+                        (!currentDate.isBefore(startDate)) &&
+                                memberAb.getNbrSessionCarnet() >= 0;
+
+                if (!memberAb.getAbStatus().equals("Annulé")) {
+                    if (memberService.isMembershipExpired(memberAb)) {
+                        memberAb.setAbStatus("Expiré");
+
+                    } else if (memberAb.getAbStatus().equals("Programmé") && (isWithinValidPeriod || isUnlimitedMembership)) {
+                        System.out.println("Membership ------------>>> "+memberAb);
+                        memberAb.setAbStatus("Active");
+                    }
+                }
+            }
+        }
+        memberAbonnementRepo.saveAll(memberAbonnementList);
         memberService.updateMemberStatues();
+
         List<Paiement> paiementList = paymentService.getAllPayment();
         double totalPrice = 0.0;
 

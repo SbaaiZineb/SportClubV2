@@ -23,7 +23,7 @@ public class Paiement {
     private String payedBy;
     private double montant;
 
-    @OneToMany(mappedBy = "paiement", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paiement")
     private List<Cheque> cheques;
 
     @JsonFormat(pattern = "YYYY-MM-dd")
@@ -33,4 +33,14 @@ public class Paiement {
     private Member member;
     @OneToOne
     private Abonnement abonnement;
+
+    @Override
+    public String toString() {
+        return "Paiement{" +
+                "id=" + id +
+                ", payedBy='" + payedBy + '\'' +
+                ", payedAt=" + payedAt +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

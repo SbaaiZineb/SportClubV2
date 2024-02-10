@@ -90,12 +90,9 @@ object-fit: cover;border-radius: 50%"></div>
                 <label class="form-label">Role:</label>
                 <div th:each="role : ${roles}">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                               th:id="'role-' + ${role.role_id}"
-                               name="roles"
-                               th:value="${role.role_id}"
-                               th:checked="${role.role_id == userApp.roles.role_id}"/>
-                        <label class="form-check-label" th:for="'role-' + ${role.role_id}" th:text="${role.roleName}"></label>
+                        <input type="radio" name="roles" th:value="${role.role_id}"
+                               th:text="${role.roleName}" th:checked="${role.role_id == userApp.roles.role_id}" required/>
+
                     </div>
                 </div>
 
@@ -105,5 +102,6 @@ object-fit: cover;border-radius: 50%"></div>
         </form>
 
     </div></div>
+
 </body>
 </html>

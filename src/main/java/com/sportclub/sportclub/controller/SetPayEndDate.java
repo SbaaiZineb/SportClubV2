@@ -27,6 +27,7 @@ public class SetPayEndDate {
                 LocalDate end = paiement.getStart_date().plusMonths(2);
                 paiement.setEnd_date(end);
             }
+
             case "0" -> {
                 paiement.setEnd_date(null);
             }

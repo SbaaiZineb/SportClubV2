@@ -4,6 +4,9 @@
     <meta charset="UTF-8"/>
     <title>Report</title>
     <style>
+        .fw-bold{
+            font-weight: bold;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -17,7 +20,7 @@
         }
 
         th {
-            background-color: #4a6075;
+            background-color: #5c7188;
             color: #fff;
         }
 
@@ -27,21 +30,39 @@
     </style>
 </head>
 <body>
+<p th:utext="'Periode : De '+${fromDate}+ ' à '+${toDate}"></p>
 <div class="header">
     <strong style="text-align: center"><h2>Rapport</h2></strong>
 </div>
 <table>
     <thead>
     <tr>
-        <th>Month</th>
+        <th>Abonnement</th>
+        <th>Adhérent</th>
+        <th>Cin</th>
+        <th>Date de debut</th>
+        <th>Date de fin</th>
         <th>Montant</th>
 
     </tr>
     </thead>
     <tbody>
     <tr th:each="payment :${payments}">
-        <td th:utext="${payment.getPayedAt()}"></td>
-        <td th:utext="${payment.getMontant()}"></td>
+        <td th:utext="${payment.abonnement}"></td>
+        <td th:utext="${payment.getMember()}"></td>
+        <td th:utext="${payment.getMember().getCin()}"></td>
+        <td th:utext="${payment.getStart_date()}"></td>
+        <td th:utext="${payment.getEnd_date()}"></td>
+        <td th:utext="${payment.getMontant()}+' DH'"></td>
+
+    </tr>
+    <tr>
+        <td class="fw-bold">Total</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td th:utext="${total}+' DH'" class="fw-bold"></td>
     </tr>
     </tbody>
 </table>

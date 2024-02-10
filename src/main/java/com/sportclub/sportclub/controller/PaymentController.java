@@ -2,6 +2,7 @@ package com.sportclub.sportclub.controller;
 
 import com.lowagie.text.DocumentException;
 import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.ChequeRepo;
 import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import com.sportclub.sportclub.service.*;
@@ -43,6 +44,8 @@ public class PaymentController {
     @Autowired
     PaymentRepo paymentRepo;
     @Autowired
+    ChequeRepo chequeRepo;
+    @Autowired
     MemberService memberService;
     @Autowired
     GymService gymService;
@@ -76,25 +79,18 @@ public class PaymentController {
     }
 
     @GetMapping("/payments/search")
-    public String search(@RequestParam("keyword") String keyword, Model model, Authentication authentication) {
+    public String search(@RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("payment", new Paiement());
         List<Paiement> searchResults;
 
-        UserApp user = adminService.loadUserByUsername(authentication.getName());
-        String userRole = user.getRoles().getRoleName();
         if (!keyword.isEmpty()) {
-            searchResults = paymentRepo.findByMemberTeleContains(keyword);
+            searchResults = paymentRepo.findByMemberTeleContainsOrMemberCinContainsIgnoreCase(keyword,keyword);
         } else {
-            if (userRole.equals("EMPLOYEE")) {
-                return "redirect:/employee/payments";
-            }
             return "redirect:/payments";
         }
         model.addAttribute("paymentList", searchResults);
         model.addAttribute("keyword", keyword);
-        if (userRole.equals("EMPLOYEE")) {
-            return "redirect:/employee/payments";
-        }
+
         return "paymentList";
     }
 
@@ -119,42 +115,59 @@ public class PaymentController {
                       RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "error";
 
-        for (Cheque cheque : paiement.getCheques()) {
+        if (paiement.getPayedBy().equals("Cheque")) {
+            for (Cheque cheque : paiement.getCheques()) {
+                if (cheque != null) {
 
-            cheque.setNamePayor(paiement.getMember().getName() + " " + paiement.getMember().getLname());
-            cheque.setPaiement(paiement);
+                    cheque.setNamePayor(paiement.getMember().getName() + " " + paiement.getMember().getLname());
+                    cheque.setPaiement(paiement);
 
-            System.out.println("Cheque Number: " + cheque.getNumCheque());
-            System.out.println("Cheque Amount: " + cheque.getChequeMontant());
-            System.out.println("Cheque Date: " + cheque.getChequeDate());
-            System.out.println("----------------------");
+                    System.out.println("Cheque Number: " + cheque.getNumCheque());
+                    System.out.println("Cheque Amount: " + cheque.getChequeMontant());
+                    System.out.println("Cheque Date: " + cheque.getChequeDate());
+                    System.out.println("----------------------");
+
+                    chequeRepo.save(cheque);
+                }
+
+            }
         }
 
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
-
         paiement.setPayedAt(LocalDate.now());
         paiement.setStatus("Payé");
-        Member member = paiement.getMember();
-        member.setStatus("Active");
-        memberService.updateMember(member);
         paymentService.updatePayment(paiement);
 
-        Abonnement abonnement = paiement.getAbonnement();
-
-        MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
+        MemberAbonnement memberMembership = memberAbonnementRepo.findByPaiement(paiement);
+        System.out.println(memberMembership + "!!!!!!!!!");
 
 
         if (memberMembership != null) {
+            LocalDate currentDate = LocalDate.now();
+            LocalDate startDate = memberMembership.getStartDate();
+            LocalDate endDate = memberMembership.getEndDate();
 
+            boolean isWithinValidPeriod = endDate != null && (currentDate.isEqual(startDate) ||
+                    (currentDate.isAfter(startDate) && currentDate.isBefore(endDate) || currentDate.isEqual(endDate)));
+
+            boolean isUnlimitedMembership = endDate == null &&
+                    (startDate.isBefore(currentDate) || startDate.isEqual(currentDate)) &&
+                    memberMembership.getNbrSessionCarnet() >= 0;
             // Update memberMembership status
-            memberMembership.setAbStatus("Active");
+            if (isWithinValidPeriod || isUnlimitedMembership) {
+
+                memberMembership.setAbStatus("Active");
+                System.out.println("Active!!!!!!!!"+memberMembership);
+
+            } else if (startDate.isAfter(currentDate) && memberMembership.getNbrSessionCarnet() >= 0){
+                memberMembership.setAbStatus("Programmé");
+                System.out.println("Program!!!!!!!!!!"+memberMembership);
+            }
 
             memberService.updateMemberAbonnement(memberMembership);
 
-            System.out.println(memberMembership);
-            System.out.println("Done!!!!!!!!!");
         }
         redirectAttributes.addFlashAttribute("successMessage", "Paiement effectué avec succès!");
 
@@ -232,10 +245,22 @@ public class PaymentController {
     }
 
     @GetMapping("/generateMonthlyReport")
-    public void generateReport(HttpServletResponse response) throws DocumentException, IOException {
-        List<Paiement> paiements = paymentService.getAllPayment();
+    public void generateReport(@RequestParam(name = "fromDate") LocalDate startDate,
+                               @RequestParam(name = "toDate") LocalDate endDate,HttpServletResponse response) throws DocumentException, IOException {
+        List<Paiement> paiements = paymentService.getMonthlyRevenue(startDate,endDate);
+        System.out.println("Start Date :"+startDate);
+        System.out.println("End Date : "+endDate);
+        System.out.println(paiements);
+        double total = 0;
+        for (Paiement payment:paiements
+             ) {
+             double price = payment.getMontant();
+             total +=price;
+        }
         Context context = new Context();
-
+        context.setVariable("total",total);
+        context.setVariable("fromDate",startDate);
+        context.setVariable("toDate",endDate);
 
         context.setVariable("payments", paiements);
 
@@ -288,9 +313,8 @@ public class PaymentController {
             paiement.setStatus("Annulée");
             paymentService.updatePayment(paiement);
 
-            Abonnement abonnement = paiement.getAbonnement();
 
-            MemberAbonnement memberAbonnement = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(paiement.getMember(), abonnement, paiement.getStart_date());
+            MemberAbonnement memberAbonnement = memberAbonnementRepo.findByPaiement(paiement);
 
 
             if (memberAbonnement != null) {

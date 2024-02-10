@@ -25,5 +25,11 @@ public class MemberAbonnement {
     private String abStatus;
     private LocalDate startDate;
     private LocalDate endDate;
+    private double montant;
+    @OneToOne
+    private Paiement paiement;
+    private int nbrSessionCarnet;
+
+
 
 }

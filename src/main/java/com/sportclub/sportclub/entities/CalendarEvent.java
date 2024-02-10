@@ -18,11 +18,11 @@ public class CalendarEvent {
 
     private Long id;
     private String title;
-    @JsonFormat(pattern = "YYYY-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate start;
-    @JsonFormat(pattern = "YYYY-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startRecur;
-    @JsonFormat(pattern = "YYYY-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endRecur;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;

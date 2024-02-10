@@ -21,11 +21,50 @@
         max-width: 900px;
         margin: 0 auto;
     }
+
 </style>
 <body>
 <div layout:fragment="content">
     <div id='calendar' th:id="calendar"></div>
 
+    <!-- Event Modal -->
+   <!-- <div id="eventModal" class="eventModal">
+        <style>
+            .eventModal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                padding: 20px;
+                border: 1px solid #ccc;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+        </style>
+        <h2>Ajouter un évènement</h2>
+        <div class="card">
+            <div class="card-body">
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <input type="text" id="eventTitle" name="title" placeholder="Event Title"/>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <input type="date" id="eventStart" name="start" placeholder="Event Start"/>
+
+                    </div>
+                    <div class="col-md-6">
+                        <input type="date" id="eventEnd"  name="endRecur" placeholder="Event End"/>
+
+                    </div>
+                </div>
+                <button onclick="addEvent()" class="btn btn-outline-info mt-3 float-end">Ajouter</button>
+            </div>
+        </div>
+    </div>-->
     <!--
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -43,45 +82,91 @@
             });
 
         });*/
+        var calendar;
+
         document.addEventListener('DOMContentLoaded', function () {
-
             var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-
                 locale: 'fr',
                 headerToolbar: {
                     left: 'prev,next',
                     center: 'title',
-
-                    right: 'dayGridWeek,dayGridMonth' // user can switch between the two
+                    right: 'dayGridWeek,dayGridMonth'
                 },
                 editable: true,
-
                 events: '/getSessions',
-
-
                 eventColor: '#106972',
-                eventBackgroundColor:'rgb(18, 125, 136)',
-                eventDisplay:'block',
-                displayEventEnd:true,
+                eventBackgroundColor: 'rgb(18, 125, 136)',
+                eventDisplay: 'block',
+                displayEventEnd: true,
                 eventRender: function (info) {
-                    // Find the latest added event
                     var events = calendar.getEvents();
                     var latestEvent = events[events.length - 1];
-
-                    // Customize the color for the latest added event
                     if (info.event.id === latestEvent.id) {
                         info.el.style.backgroundColor = 'red';
                     }
                 }
 
-
             });
 
+
             calendar.render();
+
+
+       /*     calendarEl.addEventListener('click', function (e) {
+                // Check if the clicked element is a date cell
+                if (e.target.classList.contains('fc-daygrid-day') || e.target.classList.contains('fc-daygrid-day-number')) {
+                    var date = calendar.getDate(); // Reset to the current date
+                    var selectedDate = e.target.getAttribute('data-date') || e.target.getAttribute('data-date');
+                    if (selectedDate) {
+                        calendar.gotoDate(selectedDate);
+                        showEventModal(calendar.getDate());
+                    }
+                    showEventModal(date);
+                }
+            });*/
+
         });
+
+      /*  function showEventModal(date) {
+            var defaultDateTime = date.toISOString().slice(0, 16);
+            document.getElementById('eventStart').value = defaultDateTime;
+            document.getElementById('eventEnd').value = defaultDateTime;
+            document.getElementById('eventModal').style.display = 'block';
+        }
+
+        window.addEvent = function () {
+            var title = document.getElementById('eventTitle').value;
+            var start = document.getElementById('eventStart').value;
+            var end = document.getElementById('eventEnd').value;
+
+            var eventData = {
+                title: title,
+                start: start,
+                startRecur: start,
+                endRecur: end
+            };
+            console.log('Request Payload:', eventData);
+            // Send the event data to the backend
+            fetch('/addEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(eventData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    console.log(eventData);
+
+                    // Hide the event modal
+                    document.getElementById('eventModal').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });        };*/
     </script>
 </div>
 

@@ -48,9 +48,9 @@ public class AdminController {
         model.addAttribute("user", new UserApp());
 
         List<Role> roles = roleService.findAllRoles();
-        List<Role> roleList= new ArrayList<>();
-        for (Role role:roles){
-            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))){
+        List<Role> roleList = new ArrayList<>();
+        for (Role role : roles) {
+            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))) {
                 roleList.add(role);
 
             }
@@ -121,37 +121,38 @@ public class AdminController {
 
     @PostMapping("/deleteAdmins")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+    public String deleteCells(@RequestParam(value = "selectedCells",required = false) Long[] selectedCells, RedirectAttributes redirectAttributes) {
         // Perform the delete operation using the selected cell IDs
+        if (selectedCells != null && selectedCells.length > 0) {
 
-        for (Long cellId : selectedCells) {
-            UserApp admin = adminService.getAdminById(cellId);
-            adminService.deleteAdmin(cellId);
+            for (Long cellId : selectedCells) {
+                UserApp admin = adminService.getAdminById(cellId);
+                adminService.deleteAdmin(cellId);
 
-            fileStorageService.deleteFile(admin.getPic());
+                fileStorageService.deleteFile(admin.getPic());
 
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Employee supprimés avec succès!");
+        } else {
+            // No checkboxes were selected, handle accordingly (e.g., show an error message)
+            redirectAttributes.addFlashAttribute("errorMessage", "Aucune cellule sélectionnée pour suppression.");
         }
         // Redirect to a success page or return a response as needed
         return "redirect:/adminList";
     }
 
     @GetMapping("/adminList/search")
-    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+    public String search(@RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("userForm", new UserApp());
-        List<UserApp> searchResults = new ArrayList<>();
+        List<UserApp> searchResults;
 
-        if (!keyword.isEmpty()){
-            if ("cin".equals(searchBy)) {
-                searchResults = adminService.getByCin(keyword);
-            } else if ("tele".equals(searchBy)) {
-                searchResults = adminService.getByTele(keyword);
-            }
-        }
-        else {
+        if (!keyword.isEmpty()) {
+            searchResults = adminService.searchAdmin(keyword);
+            model.addAttribute("users", searchResults);
+        } else {
             return "redirect:/adminList";
         }
 
-        model.addAttribute("users", searchResults);
         model.addAttribute("keyword", keyword);
         return "adminList";
     }
@@ -175,9 +176,9 @@ public class AdminController {
         model.addAttribute("role", userApp.getRoles().getRole_id());
         model.addAttribute("id", userApp.getId());
         List<Role> roles = roleService.findAllRoles();
-        List<Role> roleList= new ArrayList<>();
-        for (Role role:roles){
-            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))){
+        List<Role> roleList = new ArrayList<>();
+        for (Role role : roles) {
+            if ((role.getRoleName().equals("ADMIN")) || (role.getRoleName().equals("EMPLOYEE"))) {
                 roleList.add(role);
 
             }
@@ -187,11 +188,14 @@ public class AdminController {
     }
 
     @PostMapping("/editAdmin")
-    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult, @RequestParam("file") MultipartFile file) {
+    public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult,
+                            @RequestParam("roles") Long roleId,@RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "error";
-        // Assuming roles is a property of UserApp
-        Role selectedRole = roleService.getRoleByid(user.getRoles().getRole_id());
-        user.setRoles(selectedRole);
+        System.out.println("Selected Role Id : -----> "+roleId);
+
+        Role selectedRole = roleService.getRoleByid(roleId);
+        System.out.println("Selected Role : -----> "+selectedRole);
+
         UserApp existingAdmin = adminService.getAdminById(user.getId());
         if (file != null && !file.isEmpty()) {
 
@@ -203,6 +207,7 @@ public class AdminController {
                 user.setPic(existingAdmin.getPic());
             }
         }
+        user.setRoles(selectedRole);
         adminService.updateAdmin(user);
         return "redirect:/adminList";
     }

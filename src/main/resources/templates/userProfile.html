@@ -32,8 +32,8 @@ object-fit: cover;"
                                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
                                        th:if="${user.status == 'Inactive'}" th:utext="${user.getStatus()}"></p>
                                     <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;"
-                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
-                                       th:utext="${'Nomber de sessions restantes :  '+user.getNbrSessionCurrentCarnet()}"></p>
+                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
+                                       th:utext="${'Nomber de sessions restantes :  '+user.getCurrentAbonnement().getNbrSessionCarnet()}"></p>
                                 </div>
 
 
@@ -256,200 +256,6 @@ object-fit: cover;"
         </div>
         <div th:fragment="cards">
 
-
-            <!--<div class="row hide" id="myCard">
-                <div class="ag-format-container" th:each="ab : ${abos}">
-                    <div class="ag-courses_box">
-                        <div class="ag-courses_item">
-                            <a th:href="@{/membersList/userProfile/updateAbo(userId=${user.id},abId=${ab.id})}"
-                               class="ag-courses-item_link" th:id="${ab.id}">
-                                <div class="ag-courses-item_bg"></div>
-
-                                <div class="ag-courses-item_title">
-                                    <p th:utext="${ab.nameAb}"></p>
-                                </div>
-                                <div class="ag-courses-item_date-box">
-
-                                    Period/Carnet:
-                                    <span class="ag-courses-item_date">
-                                <p th:utext="${ab.period == '0' ? 'Carnet ' + ab.nbrSeance : ab.period + ' mois'}"></p>
-                        </span>
-                                </div>
-                                <div class="ag-courses-item_date-box">
-
-                                    Prix:
-                                    <span class="ag-courses-item_date">
-                            <p th:utext="${ab.price}+' DH'"></p>
-                        </span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <style>
-
-                    .ag-format-container {
-                        width: 1142px;
-                        margin: 0 auto;
-                    }
-
-
-                    body {
-                        background-color: #3f6693;
-                    }
-
-                    .ag-courses_box {
-                        display: -webkit-box;
-                        display: -ms-flexbox;
-                        display: block;
-                        -webkit-box-align: start;
-                        -ms-flex-align: start;
-                        align-items: flex-start;
-                        -ms-flex-wrap: wrap;
-                        flex-wrap: wrap;
-
-                        padding: 50px 0;
-                    }
-
-                    .ag-courses_item {
-                        margin: 0 15px 30px;
-
-                        overflow: hidden;
-
-                        border-radius: 28px;
-                    }
-
-                    .ag-courses-item_link {
-                        display: block;
-                        padding: 30px 20px;
-                        background-color: #3f6693;
-
-                        overflow: hidden;
-
-                        position: relative;
-                    }
-
-                    .ag-courses-item_link:hover,
-                    .ag-courses-item_link:hover .ag-courses-item_date {
-                        text-decoration: none;
-                        color: #FFF;
-                    }
-
-                    .ag-courses-item_link:hover .ag-courses-item_bg {
-                        -webkit-transform: scale(10);
-                        -ms-transform: scale(10);
-                        transform: scale(10);
-                    }
-
-                    .ag-courses-item_title {
-                        min-height: 87px;
-                        margin: 0 0 25px;
-
-                        overflow: hidden;
-
-                        font-weight: bold;
-                        font-size: 30px;
-                        color: #FFF;
-
-                        z-index: 2;
-                        position: relative;
-                    }
-
-                    .ag-courses-item_date-box {
-                        font-size: 18px;
-                        color: #FFF;
-
-                        z-index: 2;
-                        position: relative;
-                    }
-
-                    .ag-courses-item_date {
-                        font-weight: bold;
-                        color: #f9b234;
-
-                        -webkit-transition: color .5s ease;
-                        -o-transition: color .5s ease;
-                        transition: color .5s ease
-                    }
-
-                    .ag-courses-item_bg {
-                        height: 128px;
-                        width: 128px;
-                        background-color: #f9b234;
-
-                        z-index: 1;
-                        position: absolute;
-                        top: -75px;
-                        right: -75px;
-
-                        border-radius: 50%;
-
-                        -webkit-transition: all .5s ease;
-                        -o-transition: all .5s ease;
-                        transition: all .5s ease;
-                    }
-
-
-                    @media only screen and (max-width: 767px) {
-                        .ag-format-container {
-                            width: 96%;
-                        }
-
-                    }
-
-                    @media only screen and (max-width: 639px) {
-                        .ag-courses_item {
-                            flex-basis: 100%;
-                        }
-
-                        .ag-courses-item_title {
-                            min-height: 72px;
-                            line-height: 1;
-
-                            font-size: 24px;
-                        }
-
-                        .ag-courses-item_link {
-                            padding: 22px 40px;
-                        }
-
-                        .ag-courses-item_date-box {
-                            font-size: 16px;
-                        }
-
-                    }
-
-                    .row {
-                        display: flex;
-                        flex-wrap: wrap;
-                    }
-
-                    .ag-format-container {
-                        width: 33.33%; /* Three items per row (adjust as needed) */
-                        box-sizing: border-box;
-                        padding: 10px; /* Add some space between items */
-                    }
-
-                    /* Add media queries to control the layout on smaller screens */
-                    @media (max-width: 768px) {
-                        .ag-format-container {
-                            width: 50%; /* Two items per row on smaller screens */
-                        }
-
-                        /* For a single item per row on even smaller screens */
-                        @media (max-width: 480px) {
-                            .ag-format-container {
-                                width: 100%;
-                            }
-                        }
-                    }
-
-
-                </style>
-            </div>-->
-
             <!-- Add MemberShip Modal -->
             <div class="modal fade bd-example-modal-lg" id="addAb" tabindex="-1" role="dialog"
                  aria-labelledby="addAbLabel"
@@ -462,16 +268,20 @@ object-fit: cover;"
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" class="m-3" th:object="${membership}" th:action="@{/membersList/userProfile/addAbo(userId=${user.id})}">
+                            <form method="POST" class="m-3" th:object="${memberAbonnement}"
+                                  th:action="@{/membersList/userProfile/addAbo(userId=${user.id})}">
                                 <div class="row ">
                                     <div class="col-sm-4">
                                         <label class="form-label">Selectionner un abonnement :</label>
 
                                     </div>
                                     <div class="col-sm-8">
-                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3">
+                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3"
+                                                onchange="abonnementChange()" required>
+                                            <option disabled selected >Sélectionner l'abonnement</option>
                                             <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
-                                                    th:text="${abonnement.nameAb}"></option>
+                                                    th:text="${abonnement.nameAb}"
+                                                    th:attr="data-period=${abonnement.period}, data-end-date=${abonnement.endDate},data-start-date=${abonnement.startDate}"></option>
                                         </select>
                                     </div>
 
@@ -480,11 +290,13 @@ object-fit: cover;"
                                 <div class="row mt-2">
                                     <div class="col-sm-6">
                                         <label for="startDateId">La date de debut :</label>
-                                        <input style="margin-left: 10px;" type="date" name="startDate" id="startDateId" th:field="*{startDate}">
+                                        <input style="margin-left: 10px;" type="date" name="startDate" id="startDateId"
+                                               th:field="*{startDate}" onchange="calculateEndDate()" required>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6" id="endDateDiv">
                                         <label for="endDateId">La date de fin :</label>
-                                        <input style="margin-left: 10px;" type="date" name="endDate" id="endDateId" th:field="*{endDate}">
+                                        <input style="margin-left: 10px;" type="date" name="endDate" id="endDateId"
+                                               th:field="*{endDate}">
                                     </div>
                                 </div>
                                 <button class="btn btn-primary mt-4" type="submit">Ajouter</button>
@@ -494,6 +306,30 @@ object-fit: cover;"
                     </div>
                 </div>
             </div>
+            <div th:fragment="cards">
+            <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
+                <div class="card-header" style="background-color: #3f6693;">
+                    <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke" class="float-start">
+                        Observation</h3>
+                </div>
+                <form th:action="@{/editNotes}" method="post" id="updateNotesForm">
+                    <input type="hidden" th:field="*{user.id}"/>
+                    <div class="m-3">
+                        <textarea class="text-secondary input" th:field="*{user.notes}" rows="3" cols="50"
+                                  id="notesTextarea"></textarea>
+                    </div>
+                    <div style="margin-right: 10px;">
+                        <button type="submit" class="btn btn-outline-info float-end mb-2 ">update</button>
+                    </div>
+                </form>
+                <style>
+                    #notesTextarea {
+                        width: 100%;
+                        box-sizing: border-box; /* Ensures padding and border are included in the width */
+                    }
+                </style>
+
+            </div>
             <div class="card mt-4" style="box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);">
                 <div class="card-header" style="background-color: #3f6693;">
                     <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke" class="float-start">Les
@@ -502,35 +338,78 @@ object-fit: cover;"
                             data-bs-target="#addAb">Ajouter adhésion
                     </button>
                 </div>
-                <table class="table table-centered table-hover table-responsive mt-3">
+                <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-centered table-hover table-responsive mt-3" >
                     <tr style="background-color: #e0e7f46b!important;">
-                        <th>ID d'abonnement</th>
                         <th>Nom d'abonnement</th>
                         <th>Montant</th>
                         <th>Nomber des seances/Period</th>
+                        <th>Date de debut</th>
+                        <th>Date de fin</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
 
                     <tr th:if="${!memberships.isEmpty()}" th:each="membership :${memberships}"
                         style="background-color: white;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03)!important;">
-                        <td style="color: #646fd5;font-weight: bold;"
-                            th:utext="${membership.getAbonnement().getId()}"></td>
+
                         <td style="color: #646fd5;font-weight: bold;"
                             th:utext="${membership.getAbonnement().getNameAb()}"></td>
                         <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
                         <td style="color: #646fd5;font-weight: bold;"
                             th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
                         <td>
+                            <span th:style="${membership.startDate.isAfter(today) ? 'color :green ;font-weight: bold;' : 'color: #646fd5; font-weight: bold;'}"
+                                  th:utext="${membership.getStartDate()}" id="startDateSpan"></span>
+                            <input type="date" name="startDate" id="startDate" th:value="${membership.getStartDate()}"
+                                   style="display: none">
+                        </td>
+
+
+                        <td>
+                            <span style="color: #646fd5;font-weight: bold;"
+                                  th:utext="${membership.getEndDate()}" id="endDateSpan"></span>
+                            <input type="date" name="endDate" id="endDate" th:value="${membership.getEndDate()}"
+                                   style="display: none">
+                        </td>
+                        <td>
                             <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>
                             <p class="badge bg-warning m-0" th:if="${membership.getAbStatus()  == 'Annulé'}">Annulé</p>
                             <p class="badge bg-danger m-0" th:if="${membership.getAbStatus()  == 'Expiré'}">Expiré</p>
                             <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'En attente'}">En
                                 attente</p>
+                            <p class="badge bg-info m-0" th:if="${membership.getAbStatus()  == 'Programmé'}">
+                                Programmé</p>
+
+                        </td>
+
+                        <td>
+                            <a data-th-id="${membership.id}" data-bs-toggle="modal"
+                               data-bs-target="#editDate" title="Changer les dates de debut et de fin" id="editButton" class="editButton" style="border: none; background: transparent;">
+                                <i class="bi bi-pencil-square iconE "></i></a>
 
                         </td>
                     </tr>
 
-                </table>
+                </table></div>
+                <!-- Edit end and start Dates Modal -->
+                <div class="modal fade bd-example-modal-lg" id="editDate" tabindex="-1" role="dialog"
+                     aria-labelledby="editDateLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fw-bold" id="editDatelabel">Modifier les dates</h3>
+                                <button type="button" class="btn btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="row mt-4" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
@@ -568,6 +447,7 @@ background: transparent;margin-top: -17px">
                         paiements</h3>
                 </div>
 
+                <div class="table-container" style="max-height: 400px; overflow-y: auto;">
                 <table class="table table-centered table-hover table-responsive mt-3">
 
                     <tr style="background-color: #e0e7f46b!important;">
@@ -600,7 +480,7 @@ background: transparent;margin-top: -17px">
 
 
                     </tr>
-                </table>
+                </table></div>
 
             </div>
 
@@ -609,6 +489,7 @@ background: transparent;margin-top: -17px">
                 <div class="card-header" style="background-color: #3f6693;">
                     <h3 style=" font-family: Arial, sans-serif !important;color: whitesmoke">Les enregistrements</h3>
                 </div>
+                <div class="table-container" style="max-height: 400px; overflow-y: auto;">
                 <table class="table table-centered table-hover table-responsive mt-3">
                     <tr style="background-color: #e0e7f46b!important;">
                         <th>ID de seance</th>
@@ -627,7 +508,7 @@ background: transparent;margin-top: -17px">
                             th:utext="${#temporals.format(check.getCheckinTime(),'HH:mm')}"></td>
 
                     </tr>
-                </table>
+                </table></div>
 
             </div>
             <!-- Payment details Modal -->
@@ -649,10 +530,36 @@ background: transparent;margin-top: -17px">
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     </div>
     <div th:fragment="script">
         <script>
+            function abonnementChange() {
+                console.log("clicked");
+                var selectedAbonnementId = document.getElementById("abonnementId").value;
+                var selectedAbonnementPeriod = document.querySelector('#abonnementId option:checked').getAttribute('data-period');
+                var endDateDiv = document.getElementById("endDateDiv");
+                var startDateInput = document.getElementById("startDateId");
+                var endDateInput = document.getElementById("endDateId");
+
+                if (selectedAbonnementPeriod === "0") {
+                    endDateDiv.style.display = "none";
+                    console.log("Carnet");
+                } else {
+                    endDateDiv.style.display = "block";
+                    if (selectedAbonnementPeriod === "per") {
+                        console.log("Personnalise")
+                        // Fetch the selected abonnement option
+                        var selectedAbonnementOption = document.querySelector('#abonnementId option:checked');
+
+                        // Set endDateInput value to abonnement end date
+                        endDateInput.value = selectedAbonnementOption.getAttribute('data-end-date');
+                        // Set startDate to abonnement startDate
+                        startDateInput.value = selectedAbonnementOption.getAttribute('data-start-date');
+                    }
+                }
+            }
             document.addEventListener("DOMContentLoaded", function () {
                 const selectedDateInput = document.getElementById("selectedDate");
 
@@ -735,7 +642,7 @@ background: transparent;margin-top: -17px">
                 fetchDataAndGenerateChart(initialDate, initialMemberId);
             });
 
-            document.getElementById("abButton").addEventListener("click", function () {
+           /* document.getElementById("abButton").addEventListener("click", function () {
                 var card = document.getElementById("myCard");
 
                 if (card.style.display === "none" || card.style.display === "") {
@@ -743,7 +650,7 @@ background: transparent;margin-top: -17px">
                 } else {
                     card.style.display = "none"; // Hide the card
                 }
-            });
+            });*/
 
             function getPaymentDetails(id) {
                 var paymentDetailsModal = $('#paymentDetails');
@@ -752,8 +659,26 @@ background: transparent;margin-top: -17px">
                     paymentDetailsModal.find('.modal-body').html(data);
                     paymentDetailsModal.modal('show');
                 });
-
             }
+
+
+
+        </script>
+        <!-- jQuery library -->
+        <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+        <script>
+            $('#editDate').on('show.bs.modal', function () {
+
+                $(".editButton").click(function () {
+                    console.log('Clicked');
+                    var id = $(this).attr('id');
+                    $.get("/membersList/userProfile/editDate?id=" + id, function (data) {
+                        $('#editDate').find('.modal-body').html(data);
+                    })
+                })
+            })
         </script>
     </div>
 </div>

@@ -51,7 +51,7 @@ public class UserApp extends Person {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role")
     private Role roles;
     @ManyToMany(mappedBy = "recipient")
     private List<Notification> notifications;

@@ -38,8 +38,8 @@ object-fit: cover;"
                                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;"
                                        th:if="${user.status == 'Inactive'}" th:utext="${user.getStatus()}"></p>
                                     <p class="text-secondary fw-bold mb-1" style=" color: #dfe0ef !important;"
-                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
-                                       th:utext="${'Nomber de sessions restantes :  '+user.getNbrSessionCurrentCarnet()}"></p>
+                                       th:if="${(user.getCurrentAbonnement()!=null) && (user.getCurrentAbonnement().getAbonnement().getPeriod()=='0') && (user.getStatus()=='Active')}"
+                                       th:utext="${'Nomber de sessions restantes :  '+user.getCurrentAbonnement().getNbrSessionCarnet()}"></p>
                                 </div>
 
 
@@ -202,40 +202,7 @@ object-fit: cover;"
                                     </div>
                                 </div>
 
-                                <button th:if="${user.status == 'Inactive'}" class="button-43" id="abButton">
-                                    Renouvellement d'abonnement
-                                </button>
-                                <!-- HTML !-->
-                                <style>
-                                    /* CSS */
-                                    .button-43 {
-                                        background-image: linear-gradient(-180deg, #3F6693 0%, #6C88A8 100%);
-                                        border-radius: .5rem;
-                                        box-sizing: border-box;
-                                        color: #FFFFFF;
-                                        display: flex;
-                                        font-size: 16px;
-                                        justify-content: center;
-                                        padding: 1rem 1.75rem;
-                                        text-decoration: none;
-                                        width: 100%;
-                                        border: 0;
-                                        cursor: pointer;
-                                        user-select: none;
-                                        -webkit-user-select: none;
-                                        touch-action: manipulation;
-                                    }
-
-                                    .button-43:hover {
-                                        background-image: linear-gradient(-180deg, #1D95C9 0%, #17759C 100%);
-                                    }
-
-                                    @media (min-width: 768px) {
-                                        .button-43 {
-                                            padding: 1rem 2rem;
-                                        }
-                                    }</style>
-                                <style>
+                              <style>
                                     .col-sm-5.text-secondary.input,
                                     .col-sm-9.text-secondary.input {
                                         box-sizing: border-box;
@@ -268,7 +235,7 @@ object-fit: cover;"
             </div>
 
         </div>
-        <div th:include="userProfile :: cards" ></div>
+        <div th:include="~{userProfile :: cards}" ></div>
     </div>
 
 <script>
@@ -281,15 +248,7 @@ object-fit: cover;"
         });
 
     }
-    document.getElementById("abButton").addEventListener("click", function () {
-        var card = document.getElementById("myCard");
 
-        if (card.style.display === "none" || card.style.display === "") {
-            card.style.display = "flex"; // Show the card
-        } else {
-            card.style.display = "none"; // Hide the card
-        }
-    });
 
 </script>
 </div>

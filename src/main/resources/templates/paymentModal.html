@@ -9,7 +9,7 @@
 
 
     <div class="card p-3">
-        <form id="paymentForm" th:action="@{payments/pay}" method="post" class="form-card">
+        <form id="paymentForm" th:action="@{/payments/pay}" method="post" class="form-card">
             <input type="hidden" name="id" th:value="${payment.getId()}">
             <input type="hidden" name="member" th:value="${payment.getMember().id}">
             <input type="hidden" name="abonnement" th:value="${payment.getAbonnement().id}">
@@ -31,14 +31,7 @@
                                 Chéque
                             </label>
                         </div>
-                        <div class="form-check form-check-inline mb-0 me-4 mt-3">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
-    padding: 7px;"
-                                   value="visa" id="flexRadioDefault2" th:field="${payment.payedBy}">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                Visa
-                            </label>
-                        </div>
+
                         <div class="form-check form-check-inline mb-0 me-4 mt-3">
                             <input class="form-check-input" type="radio" name="flexRadioDefault" style="width: 0px;
     padding: 7px;"
@@ -199,28 +192,12 @@
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
 
     <script>
-        $(document).ready(function () {
-            var div = document.getElementById('dd');
-
-            $('input[name="flexRadioDefault"]').on('change', function () {
-                var selectedValue = this.value; // Retrieve the selected value directly
-                alert(selectedValue);
-                console.log(selectedValue);
-                if (selectedValue === 'cash') {
-                    div.style.display = 'none'; // Hide the element
-                } else {
-                    div.style.display = ''; // Show the element (default display)
-                }
-            });
-        });
 
         function selectCheque() {
 
-            var div = document.getElementById('cashDiv');
             var chequeDiv = document.getElementById('chequeDiv')
             chequeDiv.style.display = 'block';
             console.log("Done");
-            div.style.display = 'none';
         }
 
         function selectCash() {

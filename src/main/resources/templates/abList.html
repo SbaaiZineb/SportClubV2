@@ -27,41 +27,45 @@
         </form>
     </div>
     <button class="btn btn-primary btn-rounded float-end mb-3 mx-2" data-bs-toggle="modal"
-            data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter</button>
+            data-bs-target="#exampleModal"><i class="bi bi-plus-circle me-1"></i>Ajouter
+    </button>
 
     <form th:action="@{/deleteAbs}" method="post">
-        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white" type="submit" onclick="return confirm('Vous avez sure?')" ><i class="bi bi-trash me-1"></i>Supprimer</button>
+        <button class=" float-start mb-3 btn-rounded btn mx-2 " style="background-color: #f34444;color:white"
+                type="submit" onclick="return confirm('Vous avez sure?')"><i class="bi bi-trash me-1"></i>Supprimer
+        </button>
 
         <table class="table table-centered table-hover table-responsive ">
-        <tr>
-            <th></th>
-            <th>Type d'abonnement</th>
-            <th>Prix</th>
-            <th>Period</th>
-            <th>Nombre des seances</th>
-            <th>Action</th>
-        </tr>
-        <tr th:each="ab:${listAb}">
-            <td>
-                <input type="checkbox"  name="selectedab" data-target="requests-all"
-                       th:value="${ab.id}" />
-            </td>
-            <td th:utext="${ab.getNameAb()}"></td>
-            <td th:utext="${ab.getPrice()}+' DH'"></td>
-            <td th:utext="${ab.getPeriod() == '0' ? 'Carnet' : ab.getPeriod() + ' mois'}"></td>
-            <td th:utext="${ab.getNbrSeance()}"></td>
+            <tr>
+                <th></th>
+                <th>Type d'abonnement</th>
+                <th>Prix</th>
+                <th>Period</th>
+                <th>Nombre des seances</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="ab:${listAb}">
+                <td>
+                    <input type="checkbox" name="selectedab" data-target="requests-all"
+                           th:value="${ab.id}"/>
+                </td>
+                <td th:utext="${ab.getNameAb()}"></td>
+                <td th:utext="${ab.getPrice()}+' DH'"></td>
+                <td th:utext="${ab.getPeriod() == '0' ? 'Carnet' : ab.getPeriod() + ' mois'}"></td>
+                <td th:utext="${ab.getNbrSeance()}"></td>
 
-            <td><a onclick="return confirm('Vous avez sure')"
-                   th:href="@{/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
-                    class="bi bi-trash iconT me-1"></i></a>
-                <a data-th-id="${ab.id}"  data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
-                        class="bi bi-pencil-square iconE"></i></a>
-                <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal" class="LBtn ms-1"
-                  ><i class="bi bi-eye eyecon"></i></a>
+                <td><a onclick="return confirm('Vous avez sure')"
+                       th:href="@{/deleteAbonnement(id=${ab.id},keyword=${keyword}, page=${currentPage})}"> <i
+                        class="bi bi-trash iconT me-1"></i></a>
+                    <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#editModal" class="eBtn"><i
+                            class="bi bi-pencil-square iconE"></i></a>
+                    <a data-th-id="${ab.id}" data-bs-toggle="modal" data-bs-target="#MListModal" class="LBtn ms-1"
+                    ><i class="bi bi-eye eyecon"></i></a>
 
-            </td>
-        </tr>
-        </table></form>
+                </td>
+            </tr>
+        </table>
+    </form>
 
     <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">
@@ -73,7 +77,7 @@
         </li>
     </ul>
 
-<!-- Add Membership modal -->
+    <!-- Add Membership modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -98,24 +102,40 @@
                                 <input class="form-control" type="text" th:field="*{price}" required/>
 
                                 <label class="form-label mt-3">period:<span class="text-danger"> *</span></label>
-                                <select th:field="*{period}" class="form-control mb-1" id="periodDropdown">
+                                <select th:field="*{period}" class="form-control mb-1" id="periodDropdown" required>
                                     <option value="1">1 mois</option>
                                     <option value="2">2 mois</option>
                                     <option value="3">3 mois</option>
                                     <option value="6">6 mois</option>
                                     <option value="12">12 mois</option>
                                     <option value="0">Carnet</option>
+                                    <option value="per">personnalisé</option>
 
                                 </select>
-
-                                <label class="form-label mt-2" id="nbrSeanceLabel" style="display: none;" >Nomber des seances :</label>
-                                <select name="nbrSeance" id="nbrSeance" th:field="*{nbrSeance}" style="display: none;">
+                                <div id="perDiv" class="" style="display: none">
+                                    <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                            <label for="startDateId">La date de debut :</label>
+                                            <input style="margin-top: 5px;" type="date" name="startDate"
+                                                   id="startDateId">
+                                        </div>
+                                        <div class="col-sm-6" id="endDateDiv">
+                                            <label for="endDateId">La date de fin :</label>
+                                            <input style="margin-top: 5px;" type="date" name="endDate" id="endDateId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="form-label mt-2" id="nbrSeanceLabel" style="display: none;">Nomber des
+                                    seances :</label>
+                                <select name="nbrSeance" id="nbrSeance" th:field="*{nbrSeance}" style="display: none;"
+                                        required>
                                     <option value="0">0</option>
                                     <option value="10">10</option>
                                     <option value="35">35</option>
                                     <option value="70">70</option>
                                 </select>
-
+                                <label class="form-label mi-3 mt-3">Observations :</label>
+                                <input class="form-control" type="text" id="notes" th:field="*{notes}"/>
 
                                 <input class="btn btn-primary mt-2" type="submit" value="Ajouter"/>
                             </form>
@@ -129,7 +149,7 @@
             </div>
         </div>
     </div>
-<!-- Edit Membership Modal -->
+    <!-- Edit Membership Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -141,6 +161,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
 
                 </div>
                 <div class="modal-footer">
@@ -178,6 +199,9 @@ overflow: auto;">
 
     <script>
 
+        display();
+
+
         $('#editModal').on('show.bs.modal', function () {
 
             $(".eBtn").click(function () {
@@ -190,8 +214,8 @@ overflow: auto;">
         })
         $('#MListModal').on('show.bs.modal', function () {
 
-            $(".LBtn").click(function (){
-                var id=$(this).attr('id');
+            $(".LBtn").click(function () {
+                var id = $(this).attr('id');
 
                 $.get("/abonnementList/getMembers?id=" + id, function (data) {
                     $('#MListModal').find('.modal-body').html(data);
@@ -200,25 +224,6 @@ overflow: auto;">
 
 
         })
-
-        // Make the "Nomber des séance" field appear only when selecting "Carnet"
-        const periodDropdown = document.getElementById('periodDropdown');
-        const nbrSeanceLabel = document.getElementById('nbrSeanceLabel');
-        const nbrSeanceDropdown = document.getElementById('nbrSeance');
-
-        // Event listener to the period dropdown
-        periodDropdown.addEventListener('change', function () {
-            // Check if the selected value is "Carnet"
-            if (this.value === '0') {
-                // If selected, display the nbrSeanceLabel and nbrSeanceDropdown
-                nbrSeanceLabel.style.display = 'block';
-                nbrSeanceDropdown.style.display = 'block';
-            } else {
-                // If another option is selected, hide the nbrSeanceLabel and nbrSeanceDropdown
-                nbrSeanceLabel.style.display = 'none';
-                nbrSeanceDropdown.style.display = 'none';
-            }
-        });
     </script>
 </div>
 

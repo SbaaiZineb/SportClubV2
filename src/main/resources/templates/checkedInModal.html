@@ -12,7 +12,7 @@
     <td th:utext="${m.getName()}"></td>
     <td th:utext="${m.getLname()}"></td>
     <td th:utext="${m.getCin()}"></td>
-    <td style="font-weight: bold;text-align: center;color: #1b1372" th:utext="${m.getCurrentAbonnement().getPeriod()=='0' ? m.getNbrSessionCurrentCarnet() : 'illimité'}"></td>
+    <td style="font-weight: bold;text-align: center;color: #1b1372" th:utext="${m.getCurrentAbonnement().getAbonnement().getPeriod()=='0' ? m.getCurrentAbonnement().getNbrSessionCarnet() : 'illimité'}"></td>
 
 
   </tr>

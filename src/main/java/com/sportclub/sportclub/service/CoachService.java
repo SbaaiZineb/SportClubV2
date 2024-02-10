@@ -21,4 +21,5 @@ public interface CoachService {
     List<Coach> getAllCoachs();
     List<Coach> getCoachByCin(String cin);
     List<Coach> getCoachByTele(String tele);
+    List<Coach> findByKeyword(String keyword);
 }

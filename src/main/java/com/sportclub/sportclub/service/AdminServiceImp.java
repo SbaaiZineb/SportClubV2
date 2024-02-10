@@ -125,6 +125,11 @@ public class AdminServiceImp implements AdminService {
     }
 
     @Override
+    public List<UserApp> searchAdmin(String keyword) {
+        return adminRepo.findAdminByKeyword(keyword);
+    }
+
+    @Override
     public List<UserApp> getAllAdmins() {
         return adminRepo.findAll();
     }

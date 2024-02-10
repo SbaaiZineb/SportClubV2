@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -88,6 +89,7 @@ public class MemberController {
         model.addAttribute("pages", new int[pageMember.getTotalPages()]);
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
+        model.addAttribute("today", LocalDate.now());
         Member memberForm = new Member();
         model.addAttribute("member", memberForm);
         return "membersList";
@@ -112,27 +114,26 @@ public class MemberController {
     }*/
 
     @GetMapping("/membersList/search")
-    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model,Authentication authentication) {
+    public String search(@RequestParam("keyword") String keyword, Model model, Authentication authentication) {
         model.addAttribute("member", new Member());
-        List<Member> searchResults = new ArrayList<>();
+        List<Member> searchResults;
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
+        try {
+            if (!keyword.isEmpty()) {
+                searchResults = memberService.searchMembers(keyword);
+                model.addAttribute("listMember", searchResults);
 
-        if (!keyword.isEmpty()) {
-            if ("cin".equals(searchBy)) {
-                searchResults = memberService.getMemberByCin(keyword);
-            } else if ("tele".equals(searchBy)) {
-                searchResults = memberService.getMemberByPhone(keyword);
+            } else {
+                if (userRole.equals("EMPLOYEE")) {
+                    return "redirect:/employee/members";
+                }
+                return "redirect:/membersList";
             }
-        } else {
-            if (userRole.equals("EMPLOYEE")) {
-                return "redirect:/employee/members";
-            }
-            return "redirect:/membersList";
+        } catch (Exception e) {
+            System.out.println(e + "!!!!!!!!!!!!!!!!");
         }
 
-
-        model.addAttribute("listMember", searchResults);
         model.addAttribute("keyword", keyword);
         if (userRole.equals("EMPLOYEE")) {
             return "employeeInterface/empPayments";
@@ -153,10 +154,11 @@ public class MemberController {
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
     public String addMember(@Validated @ModelAttribute("member") Member memberForm, Authentication authentication, BindingResult bindingResult,
                             @RequestParam("file") MultipartFile file, @RequestParam(name = "abonnementId", required = false) Long abonnementId,
-                            RedirectAttributes redirectAttributes) {
+                            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+                            @RequestParam(value = "endDate", required = false) LocalDate endDate, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "membersList";
 
-        memberService.addMember(memberForm, authentication, file, abonnementId);
+        memberService.addMember(memberForm, authentication, file, abonnementId, startDate, endDate);
 
 
         // Add success message to be displayed on the redirected page
@@ -181,7 +183,7 @@ public class MemberController {
 
     @GetMapping("/deleteMember")
     @PreAuthorize("hasAuthority('ADMIN')or hasAuthority('EMPLOYEE')")
-    public String deleteMember(@RequestParam(name = "id") Long id,Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String deleteMember(@RequestParam(name = "id") Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
@@ -269,35 +271,38 @@ public class MemberController {
 
     @PostMapping("/deleteCells")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String deleteCells(@RequestParam(value = "selectedCells", required = false) Long[] selectedCells, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
         // Perform the delete operation using the selected cell IDs
+        if (selectedCells != null && selectedCells.length > 0) {
+            for (Long cellId : selectedCells) {
+                Member memberById = memberService.getMemberById(cellId);
+                List<MemberAbonnement> memberAbonnements = memberAbonnementRepo.findByMember(memberById);
 
-        for (Long cellId : selectedCells) {
-            Member memberById = memberService.getMemberById(cellId);
-            List<MemberAbonnement> memberAbonnements = memberAbonnementRepo.findByMember(memberById);
 
+                try {
+                    memberService.deletMember(cellId);
+                    for (MemberAbonnement m : memberAbonnements) {
+                        m.setMember(null);
+                        memberAbonnementRepo.save(m);
+                    }
+                    if (memberById.getPic() != null) {
+                        fileStorageService.deleteFile(memberById.getPic());
 
-            try {
-                memberService.deletMember(cellId);
-                for (MemberAbonnement m : memberAbonnements) {
-                    m.setMember(null);
-                    memberAbonnementRepo.save(m);
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Something Wrong!!!!! " + e);
+                    return "error";
                 }
-                if (memberById.getPic() != null) {
-                    fileStorageService.deleteFile(memberById.getPic());
-
-                }
-
-            } catch (Exception e) {
-                System.out.println("Something Wrong!!!!! " + e);
-                return "error";
             }
+            redirectAttributes.addFlashAttribute("successMessage", "Membres supprimés avec succès!");
+        } else {
+            // No checkboxes were selected, handle accordingly (e.g., show an error message)
+            redirectAttributes.addFlashAttribute("errorMessage", "Aucune cellule sélectionnée pour suppression.");
         }
-        redirectAttributes.addFlashAttribute("successMessage", "Membres supprimés avec succès!");
-
         //Redirect to employee's members interface if the role of the connected user is "EMPLOYEE"
         if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/members";

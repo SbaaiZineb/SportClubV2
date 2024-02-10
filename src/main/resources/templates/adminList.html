@@ -14,34 +14,22 @@
         <strong th:text="${successMessage}"></strong>
 
     </div>
+    <!-- Error message for successful add -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong th:text="${errorMessage}"></strong>
+
+    </div>
     <div class="row" style=" margin: auto; width: 50%;">
 
         <form th:action="@{/adminList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="searchBy" id="tele" value="tele"
-                                       checked>
-                                <label class="form-check-label" for="tele">Chercher par Téléphone</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="searchBy" value="cin">
-                                <label class="form-check-label" for="cin">Chercher par CIN</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5">
+                <div class="col-md-11">
                     <input type="text" class="form-control " name="keyword" th:value="${keyword}"
                            placeholder="Chercher...">
 
                 </div>
                 <div class="col-md-1">
-                    <button type="submit" class="btn btn-outline-info">Search</button>
+                    <button type="submit" class="btn btn-outline-info">Chercher</button>
                 </div>
             </div>
         </form>
@@ -244,8 +232,21 @@
 
                                 <div class="mb-3 mt-3">
                                     <label class="form-label">Image</label>
-                                    <input type="file" class="form-control"
-                                           id="image" accept="image/png, image/jpeg" name="file"/>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="file" class="form-control"
+                                                   id="image" accept="image/png, image/jpeg" name="file"/>
+                                        </div>
+                                        <!--<div class="col-md-2">
+                                            <button class="btn btn-outline-info" id="start-camera" type="button"><i
+                                                    class="bi bi-camera"></i></button>
+                                        </div>
+                                        <style>
+                                            #video, #click-photo, #canvas {
+                                                display: none;
+                                            }
+                                        </style>-->
+                                    </div>
                                 </div>
                                 <div class="checkbox-row" th:each="role:${roles}">
                                     <label>
@@ -262,6 +263,21 @@
                                             margin-right: 20px;
                                         }</style>
                                 </div>
+                                <!--<div class="row mt-2">
+                                    <div class="col-md-5">
+                                        <video id="video" width="180" height="140" autoplay></video>
+
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-info" id="click-photo"
+                                                style="width: 2cm;font-size: smaller;">Capture
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <canvas id="canvas" width="170" height="130"></canvas>
+
+                                    </div>
+                                </div>-->
                                 <!--<label class="form-label">Gender:</label>
 
                                 <div class="form-check">
@@ -344,6 +360,7 @@
         }
     </script>
     <script>
+        // capturePic();
         // Call the handleInputValidation function
         document.addEventListener('DOMContentLoaded', function () {
             handleInputValidation('email', 'adminEmailExistsMessage', '/checkEmailExists?email=', 'adForm', 'submitBtn');

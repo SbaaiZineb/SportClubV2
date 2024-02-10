@@ -24,7 +24,8 @@ public class Abonnement {
     private double price;
     private int nbrSeance;
     private boolean deleted = Boolean.FALSE;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
 
 
     public Abonnement(String nameAb, double price, String period,int nbrSeance) {

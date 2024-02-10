@@ -14,36 +14,15 @@
 
     </div>
     <div class="row" style=" margin: auto; width: 50%;">
-        <form th:action="@{/membersList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
+        <form th:action="@{/employee/members/search}" method="get" class="d-flex align-items-center mb-2 h-100">
             <div class="row mb-3">
-
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="searchBy" id="tele" value="tele"
-                                       checked>
-                                <label class="form-check-label text-white" for="tele">Chercher par Téléphone</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="searchBy" value="cin">
-                                <label class="form-check-label text-white" for="cin">Chercher par CIN</label>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="col-md-5">
+                <div class="col-md-11">
                     <input type="text" class="form-control " name="keyword" th:value="${keyword}"
                            placeholder="Chercher...">
 
                 </div>
                 <div class="col-md-1">
-                    <button type="submit" class="btn btn-outline-info">Search</button>
+                    <button type="submit" class="btn btn-outline-info">Chercher</button>
                 </div>
             </div>
         </form>
@@ -110,7 +89,8 @@ print
                 <td th:utext="${m.getGender()}"></td>
                 <td th:utext="${m.createdAt}"></td>
                 <td style="color: #4b6c91;
-  font-weight: bold;" th:utext="${m.getCurrentAbonnement()}"></td>
+  font-weight: bold;" th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getAbonnement().getNameAb() : ''}"></td>
+
                 <td>
                     <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;" th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>
                     <p class="text-secondary fw-bold mb-1" style="color: #ff0606  !important;" th:if="${m.status == 'Inactive'}" th:utext="${m.status}"></p>
@@ -297,21 +277,47 @@ edit
                                     </div>
                                 </div>
 
-
-
-                                <div class="row mb-3">
+                                <div class="row mb-3 mt-2">
                                     <div class="col-md-6">
                                         <label class="form-label">Abonnement :</label>
-                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3">
-                                            <option value=""></option>
+                                        <select name="abonnementId" id="abonnementId" class="form-control mb-3"
+                                                onchange="abonnementChange()">
                                             <option th:each="abonnement :${abos}" th:value="${abonnement.id}"
-                                                    th:text="${abonnement.nameAb}"></option>
+                                                    th:text="${abonnement.nameAb}"
+                                                    th:attr="data-period=${abonnement.period}"></option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
+
                                         <label class="form-label">Image :</label>
-                                        <input type="file" class="form-control  "
-                                               id="image" accept="image/png, image/jpeg" name="file"/>
+                                        <div class="row">
+                                            <div class="col-md-12" id="file-input-container">
+                                                <input type="file" class="form-control" id="image" accept="image/png, image/jpeg" name="file"/>
+                                            </div>
+                                            <!--<div class="col-md-2">
+                                                <button class="btn btn-outline-info" id="start-camera" type="button"><i
+                                                        class="bi bi-camera"></i></button>
+                                            </div>-->
+                                        </div>
+
+                                        <style>
+                                            #video, #click-photo, #canvas {
+                                                display: none;
+                                            }
+                                        </style>
+                                    </div>
+
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-sm-6">
+                                        <label for="startDateId">La date de debut :</label>
+                                        <input style="margin-left: 10px;" type="date" name="startDate" id="startDateId"
+                                               onchange="calculateEndDate()" required>
+                                    </div>
+                                    <div class="col-sm-6" id="endDateDiv">
+                                        <label for="endDateId">La date de fin :</label>
+                                        <input style="margin-left: 10px;" type="date" name="endDate" id="endDateId">
                                     </div>
                                 </div>
 
@@ -383,22 +389,24 @@ edit
     </script>
 
     <script th:inline="javascript">
-        function validateInput() {
-            var input1 = document.getElementById('input1');
-            var input2 = document.getElementById('input2');
+        function abonnementChange() {
+            var selectedAbonnementId = document.getElementById("abonnementId").value;
+            var selectedAbonnementPeriod = document.querySelector('#abonnementId option:checked').getAttribute('data-period');
+            var endDateDiv = document.getElementById("endDateDiv");
 
-            if (input1.value === input2.value) {
-                input1.classList.remove('mismatched-border');
-                input2.classList.remove('mismatched-border');
-                input1.classList.add('matched-border');
-                input2.classList.add('matched-border');
-            } else {
-                input1.classList.remove('matched-border');
-                input2.classList.remove('matched-border');
-                input1.classList.add('mismatched-border');
-                input2.classList.add('mismatched-border');
-            }
+            endDateDiv.style.display = (selectedAbonnementPeriod === "0") ? "none" : "block";
         }
+
+        $('#editModal').on('show.bs.modal', function () {
+
+            $(".eBtn").click(function () {
+                var id = $(this).attr('id');
+                $.get("/editMember?id=" + id, function (data) {
+                    $('#editModal').find('.modal-body').html(data);
+                })
+            })
+        })
+
     </script>
 
     <script>
@@ -407,6 +415,22 @@ edit
             handleInputValidation('email', 'emailExistsMessage', '/checkEmailExists?email=', 'myForm', 'submitBtn');
             handleInputValidation('cin', 'cinExistsMessage', '/checkCinExists?cin=', 'myForm', 'submitBtn');
         });
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectAllCheckbox = document.querySelector('.selectall');
+            var checkboxes = document.querySelectorAll('.checkbox');
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+        });
+        /*]]>*/
     </script>
 
 </div>

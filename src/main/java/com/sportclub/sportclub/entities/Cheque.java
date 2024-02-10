@@ -24,4 +24,15 @@ public class Cheque {
     @ManyToOne
     @JoinColumn(name = "paiement_id")
     private Paiement paiement;
+    @Override
+    public String toString() {
+        return "Cheque{" +
+                "id=" + id +
+                ", numCheque='" + numCheque + '\'' +
+                ", chequeMontant=" + chequeMontant +
+                ", chequeDate=" + chequeDate +
+                ", namePayor='" + namePayor + '\'' +
+                // Include other fields here, excluding any collections that might cause cyclic references
+                '}';
+    }
 }

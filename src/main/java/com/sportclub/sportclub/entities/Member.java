@@ -25,8 +25,6 @@ public class Member extends UserApp {
     private String famSituation;
 
     private String secondTele;
-    //Number of sessions based on the current Carnet
-    private int nbrSessionCurrentCarnet;
 
     private String health;
 
@@ -68,20 +66,17 @@ public class Member extends UserApp {
     private List<CheckIn> checkIn;
 
 
-    public Abonnement getCurrentAbonnement() {
-        LocalDate currentDate = LocalDate.now();
+    public MemberAbonnement getCurrentAbonnement() {
         MemberAbonnement currentAbonnement = null;
 
         for (MemberAbonnement memberAbonnement : memberAbonnements) {
-            LocalDate bookedDate = memberAbonnement.getBookedDate();
-            if ((bookedDate != null && !bookedDate.isAfter(currentDate)) && (memberAbonnement.getAbStatus()!=null) && ((memberAbonnement.getAbStatus().equals("Active")) || (memberAbonnement.getAbStatus().equals("En attente")))) {
-                // Check if the bookedDate is not after current date
-                if (currentAbonnement == null || bookedDate.isAfter(currentAbonnement.getBookedDate())) {
-                    currentAbonnement = memberAbonnement;
-                }
+
+            if ("Active".equals(memberAbonnement.getAbStatus())){
+                currentAbonnement = memberAbonnement;
+//                break; // stop the loop once an "Active" status is found
             }
         }
 
-        return (currentAbonnement != null) ? currentAbonnement.getAbonnement() : null;
+        return currentAbonnement;
     }
 }

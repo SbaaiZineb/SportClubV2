@@ -228,7 +228,7 @@
                     <!--                    <td th:utext="${m.getCin()}"></td>-->
                     <td th:utext="${m.getTele()}"></td>
                     <td th:utext="${m.createdAt}"></td>
-                    <td th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getNameAb() : ''}"></td>
+                    <td th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getAbonnement().getNameAb() : ''}"></td>
                     <td>
                         <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
                            th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>

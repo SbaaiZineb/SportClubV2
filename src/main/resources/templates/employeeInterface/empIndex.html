@@ -79,7 +79,8 @@
 
                         <td th:utext="${m.getCin()}"></td>
                         <td th:utext="${m.tele}"></td>
-                        <td style="color: #04405e;font-weight: bold;" th:utext="${m.getCurrentAbonnement()}"></td>
+                        <td style="color: #04405e;font-weight: bold;" th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getAbonnement().getNameAb() : ''}"></td>
+
                         <td>
                             <p class="text-secondary fw-bold mb-1" style="color: #0cb930  !important;"
                                th:if="${m.status == 'Active'}" th:utext="${m.status}"></p>

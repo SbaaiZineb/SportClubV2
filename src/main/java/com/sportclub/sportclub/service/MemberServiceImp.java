@@ -52,92 +52,84 @@ public class MemberServiceImp implements MemberService {
     @Autowired
     RoleService roleService;
 
-    @Override
-    public void addMember(Member memberForm, Authentication authentication, MultipartFile file, Long abonnementId) {
-        LocalDate localDate = LocalDate.now();
-        memberForm.setCreatedAt(localDate);
-
-        if (!file.isEmpty()) {
-            memberForm.setPic(file.getOriginalFilename());
-            storageService.save(file);
-        } else {
-            memberForm.setPic("default-user.png");
-        }
-
-        memberForm.setStatus("Inactive");
-        String password = memberForm.getPassword();
-        if (password!=null){
-            memberForm.setPassword(passwordEncoder.encode(password));
-
-        }
-
-        List<Role> roles = roleService.findAllRoles();
-
-        for (Role role : roles) {
-            if (role.getRoleName().equals("ADHERENT")) {
-                memberForm.setRoles(role);
+        @Override
+        public void addMember(Member memberForm, Authentication authentication, MultipartFile file, Long abonnementId,
+                              LocalDate startDate,LocalDate endDate) {
+            LocalDate localDate = LocalDate.now();
+            memberForm.setCreatedAt(localDate);
+    //Set pic to the default if pic is empty
+            if (!file.isEmpty()) {
+                memberForm.setPic(file.getOriginalFilename());
+                storageService.save(file);
+            } else {
+                memberForm.setPic("default-user.png");
             }
-        }
-        MemberAbonnement memberAbonnement = new MemberAbonnement();
 
-        if (abonnementId != null) {
-            Abonnement abonnement = abonnementService.getAboById(abonnementId);
-            memberAbonnement.setAbonnement(abonnement);
-            memberAbonnement.setBookedDate(localDate);
-            if (memberForm.getMemberAbonnements() == null) {
-                memberForm.setMemberAbonnements(new ArrayList<>());
+            memberForm.setStatus("Inactive");
+            String password = memberForm.getPassword();
+            if (password != null) {
+                memberForm.setPassword(passwordEncoder.encode(password));
+
             }
-            memberAbonnement.setMember(memberForm);
 
-            memberForm.getMemberAbonnements().add(memberAbonnement);
-            memberForm.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
+            List<Role> roles = roleService.findAllRoles();
 
-
-
-        }
-        memberRepository.save(memberForm);
-
-        if (abonnementId != null) {
-            memberAbonnementRepo.save(memberAbonnement);
-
-        }
-
-        Notification notification = new Notification();
-        String username = authentication.getName();
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setMessage(username + " a ajouté un nouveau adherent");
-        List<UserApp> userApps = adminRepo.findByRolesRoleNameContains("ADMIN");
-        notification.setRecipient(userApps);
-        notification.setTitle("Nouveau Adherent");
-        notificationService.addNotification(notification);
-
-        if (abonnementId != null) {
-            Paiement paiement = new Paiement();
-            paiement.setStart_date(localDate);
-            paiement.setStatus("Impayé");
-            paiement.setAbonnement(abonnementService.getAboById(abonnementId));
-            paiement.setMontant(paiement.getAbonnement().getPrice());
-            String per = paiement.getAbonnement().getPeriod();
-
-            SetPayEndDate sPD = new SetPayEndDate();
-            sPD.setPayEndDate(per, paiement);
-            paiement.setMember(memberForm);
-
-            paymentService.addPayement(paiement);
-
-            Abonnement abonnement = paiement.getAbonnement();
-
-            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(memberForm,abonnement,paiement.getStart_date());
-
-
-            if (memberMembership != null) {
-
-                // Update MemberAbonnement status
-                memberMembership.setAbStatus("En attente");
-                memberAbonnementRepo.save(memberMembership);
+            for (Role role : roles) {
+                if (role.getRoleName().equals("ADHERENT")) {
+                    memberForm.setRoles(role);
+                }
             }
+            memberRepository.save(memberForm);
+
+
+            if (abonnementId != null) {
+                MemberAbonnement memberAbonnement = new MemberAbonnement();
+                Abonnement abonnement = abonnementService.getAboById(abonnementId);
+                Paiement paiement = new Paiement();
+                paiement.setStart_date(startDate);
+                paiement.setStatus("Impayé");
+                paiement.setAbonnement(abonnement);
+                paiement.setMontant(paiement.getAbonnement().getPrice());
+                paiement.setEnd_date(endDate);
+                paiement.setMember(memberForm);
+
+                paymentService.addPayement(paiement);
+
+                memberAbonnement.setAbonnement(abonnement);
+                memberAbonnement.setMontant(abonnement.getPrice());
+                memberAbonnement.setBookedDate(localDate);
+                memberAbonnement.setPaiement(paiement);
+                memberAbonnement.setStartDate(startDate);
+                memberAbonnement.setEndDate(endDate);
+                memberAbonnement.setNbrSessionCarnet(abonnement.getNbrSeance());
+                if (memberForm.getMemberAbonnements() == null) {
+                    memberForm.setMemberAbonnements(new ArrayList<>());
+                }
+                memberAbonnement.setMember(memberForm);
+                memberAbonnement.setAbStatus("En attente");
+
+
+                // Save the MemberAbonnement
+                memberAbonnementRepo.save(memberAbonnement);
+
+                // Add MemberAbonnement to the member's list
+                memberForm.getMemberAbonnements().add(memberAbonnement);
+
+                // Save the updated member
+                memberRepository.save(memberForm);
+
+            }
+
+            Notification notification = new Notification();
+            String username = authentication.getName();
+            notification.setTimestamp(LocalDateTime.now());
+            notification.setMessage(username + " a ajouté un nouveau adherent");
+            List<UserApp> userApps = adminRepo.findByRolesRoleNameContains("ADMIN");
+            notification.setRecipient(userApps);
+            notification.setTitle("Nouveau Adherent");
+            notificationService.addNotification(notification);
+
         }
-    }
 
     public long count() {
         return memberRepository.count();
@@ -178,7 +170,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public Page<Member> findByMemberName(String mc, Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),Sort.by(Sort.Direction.DESC, "id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
         return memberRepository.findByNameContains(mc, pageable);
     }
 
@@ -253,15 +245,13 @@ public class MemberServiceImp implements MemberService {
         return memberRepository.findAll();
     }
 
-    //Update the member's statue
+    //Update the member's status
     public void updateMemberStatues() {
         try {
 
-            List<Paiement> allPayments = paymentService.getAllPayment();
+            List<Member> members = getAllMembers();
 
-            for (Paiement payment : allPayments) {
-
-                Member member = payment.getMember();
+            for (Member member : members) {
                 if (member != null) {
 
                     boolean hasActivePayment = memberHasActivePay(member);
@@ -269,9 +259,12 @@ public class MemberServiceImp implements MemberService {
 
                     if (!hasActivePayment) {
                         member.setStatus("Inactive");
+                        System.out.println("!!!!!!!!!!!inactive!!!!!" + member.getName());
                     } else {
                         member.setStatus("Active");
+                        System.out.println("!!!!!!!!!Active !!!!!!!!!!!!!!" + member.getName());
                     }
+
                     updateMember(member);
                 }
 
@@ -282,60 +275,70 @@ public class MemberServiceImp implements MemberService {
     }
 
     public boolean memberHasActivePay(Member member) {
-        LocalDate currentDate = LocalDate.now();
-        List<Paiement> payments = paymentService.getPaymentsByMember(member);
-        int nbrSession = member.getNbrSessionCurrentCarnet();
-        if (payments != null && !payments.isEmpty()) {
-            payments.sort(Comparator.comparing(Paiement::getId, Comparator.reverseOrder()));
-            Paiement latestPayment = payments.get(0);  // The first one after sorting is the latest
+        List<MemberAbonnement> subscriptions = member.getMemberAbonnements();
+        if (subscriptions != null && !subscriptions.isEmpty()) {
 
-            System.out.println("member: " + latestPayment.getMember().getName() + ", payment id: " + latestPayment.getId());
-
-            for (Paiement payment : payments) {
-                if ((payment.getEnd_date() != null && currentDate.isBefore(payment.getEnd_date()) && "Payé".equals(payment.getStatus()))
-                        || (latestPayment != null && "Payé".equals(latestPayment.getStatus()) && nbrSession > 0)) {
+            for (MemberAbonnement sub : subscriptions) {
+                if (sub.getAbStatus().equals("Active")) {
                     // If there is an active payment for the member
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!Actiiiveee!!!!!!!!!!!!!" + sub.getStartDate() + " " + sub.getEndDate() + " " + member.getName());
                     return true;
                 }
             }
+        } else {
+            // If there are no payments
+            return false;
         }
         //If not
         return false;
 
     }
+
     public boolean isMembershipExpired(MemberAbonnement memberAb) {
 
-
         LocalDate currentDate = LocalDate.now();
+        LocalDate expirationDate = memberAb.getEndDate();
 
-        Member member = memberAb.getMember();
-        LocalDate expirationDate = null;
-        String abPeriod = memberAb.getAbonnement().getPeriod();
-        switch (abPeriod) {
-            case "12" -> {
-                expirationDate = memberAb.getBookedDate().plusYears(1);
-
-            }
-            case "3" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(3);
-            }
-            case "1" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(1);
-            }
-            case "6" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(6);
-
-            }
-            case "2" -> {
-                expirationDate = memberAb.getBookedDate().plusMonths(2);
-            }
-            case "0" -> {
-            }
-        }
-        return (expirationDate != null && currentDate.isAfter(expirationDate)) || (expirationDate == null && member.getNbrSessionCurrentCarnet() <= 0);
+        return (expirationDate != null && currentDate.isAfter(expirationDate)) || (expirationDate == null && memberAb.getNbrSessionCarnet() <= 0);
     }
+
     @Transactional
     public void updateMemberAbonnement(MemberAbonnement memberAbonnement) {
         memberAbonnementRepo.save(memberAbonnement);
+    }
+    @Override
+    public List<Member> searchMembers(String query) {
+        System.out.println(query+" it's the keyword !!!");
+        return memberRepository.findByKeyword(query);
+    }
+
+    @Override
+    public void updateMembershipStatus() {
+        LocalDate currentDate = LocalDate.now();
+        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
+
+        for (MemberAbonnement memberAb : memberAbonnementList) {
+            if (memberAb != null) {
+                LocalDate startDate = memberAb.getStartDate();
+                LocalDate endDate = memberAb.getEndDate();
+
+                boolean isWithinValidPeriod = (endDate != null) && (
+                        (startDate.isBefore(currentDate) || startDate.isEqual(currentDate)) &&
+                                (endDate.isAfter(currentDate) || endDate.isEqual(currentDate)) );
+
+                boolean isUnlimitedMembership = (endDate == null) &&
+                        (!currentDate.isBefore(startDate)) &&
+                        memberAb.getNbrSessionCarnet() >= 0;
+
+                if (!memberAb.getAbStatus().equals("Annulé")) {
+                    if (isMembershipExpired(memberAb)) {
+                        memberAb.setAbStatus("Expiré");
+                    } else if (memberAb.getAbStatus().equals("Programmé") && (isWithinValidPeriod || isUnlimitedMembership)) {
+                        memberAb.setAbStatus("Active");
+                    }
+                }
+            }
+        }
+        memberAbonnementRepo.saveAll(memberAbonnementList);
     }
 }

@@ -5,22 +5,28 @@
 
   <title>Seance List</title>
 
-
-
-
-
 </head>
 <body>
 <div layout:fragment="content">
+    <!-- Success message for successful add -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong th:text="${successMessage}"></strong>
+
+    </div>
+    <!-- Success message for successful add -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong th:text="${errorMessage}"></strong>
+
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="search-field d-none d-md-block">
                 <form th:action="@{/seanceList/search}" method="get" class="d-flex align-items-center mb-2 h-100">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend bg-transparent">
+                    <div class="input-group mb-3 bg-transparent">
+                        <div class="input-group-prepend bg-transparent ">
                             <i class="input-group-text border-0 bg-transparent pt-2 bi bi-search"></i>
                         </div>
-                        <input type="text" class="form-control bg-transparent border-0" name="keyword"
+                        <input type="text" class="form-control " name="keyword"
                                th:value="${keyword}" placeholder="Chercher">
                     </div>
                 </form>
@@ -71,7 +77,7 @@ color: #64686b;"><i class="bi bi-search"></i></button>
           </tr>
           <tr th:each="s:${listSeance}">
             <td th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''SUBADMIN'')')}">
-              <input type="checkbox" name="seanceId" data-target="requests-all"
+              <input type="checkbox" class="checkbox" name="seanceId" data-target="requests-all"
                      th:value="${s.id}" />
             </td>
             <td th:utext="${s.getId()}"></td>
@@ -237,7 +243,22 @@ color: #64686b;"><i class="bi bi-search"></i></button>
     })
 
   </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectAllCheckbox = document.querySelector('.selectall');
+            var checkboxes = document.querySelectorAll('.checkbox');
 
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+        });
+        /*]]>*/
+    </script>
 </div>
 </body>
 </html>

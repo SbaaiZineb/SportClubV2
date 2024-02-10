@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{partials/sideBar:: header}">
+    <meta charset="UTF-8">
+    <title>dates</title>
+</head>
+<body>
+<div class="card">
+    <div class="card-body">
+        <form th:action="@{/membersList/userProfile/editDate}"
+              method="POST">
+            <input type="hidden" name="id" th:value="${membership.id}"/>
+            <input type="hidden" name="abStatus" th:value="${membership.abStatus}">
+            <input type="hidden" name="bookedDate" th:value="${membership.bookedDate}">
+            <input type="hidden" name="montant" th:value="${membership.montant}">
+            <input type="hidden" name="abonnement" th:value="${membership.abonnement.id}">
+            <input type="hidden" name="member" th:value="${membership.member.id}">
+            <input type="hidden" name="nbrSessionCarnet" th:value="${membership.nbrSessionCarnet}">
+            <input type="hidden" name="paiement" th:value="${membership.paiement.id}">
+            <div class="row">
+                <div class="col-md-5">
+                    <label class="fw-bold" for="startDate">Date de debut :</label>
+                </div>
+                <div class="col-md-7">
+                    <input type="date" name="startDate" id="startDate" th:value="${membership.getStartDate()}">
+                </div>
+
+            </div>
+            <div class="row mt-3" th:if="${membership.abonnement.getPeriod()!='0'}">
+                <div class="col-md-5">
+                    <label for="endDate" class="fw-bold" >Date de Fin :</label>
+                </div>
+                <div class="col-md-7" >
+                    <input type="date" name="endDate" id="endDate" th:value="${membership.getEndDate()}">
+                </div>
+            </div>
+            <button id="submitBtn"
+                    class="btn btn-outline-info float-end mt-2">Sauvegarder
+            </button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

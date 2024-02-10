@@ -12,7 +12,7 @@
             <input type="hidden" name="pic" th:value="${member.pic}">
             <input type="hidden" name="createdAt" th:value="${member.createdAt}">
             <input type="hidden" name="status" th:value="${member.status}">
-            <input type="hidden" name="nbrSessionCurrentCarnet" th:value="${member.nbrSessionCurrentCarnet}">
+            <input type="hidden" name="memberAbonnement" th:if="${member.getCurrentAbonnement()!= null}" th:value="${member.getCurrentAbonnement().getNbrSessionCarnet()}">
 
 
             <div style=" display: flex;
@@ -135,12 +135,17 @@ object-fit: cover;border-radius: 50%"></div>
                     </div>
                 </div>
             </div>
+            <div class="row mb-1">
+                <div class="form-outline">
+                    <label class="form-label">Observations :</label>
+                    <input class="form-control" type="text" th:field="*{member.notes}"/>
+                </div></div>
             <div class="row">
                 <div class="col-md-5">
                     <label class="form-label">Abonnement : </label>
                     <label class="fw-bold"
-                           th:text="${member.getCurrentAbonnement() != null ? member.getCurrentAbonnement().nameAb : 'None'}"></label>
-                    <input type="hidden" class="form-control" id="abonnement" name="abonnement"
+                           th:text="${member.getCurrentAbonnement() != null ? member.getCurrentAbonnement().getAbonnement().getNameAb() : 'None'}"></label>
+                    <input type="hidden" class="form-control" id="abonnement" name="memberAbonnement"
                            th:value="${member.getCurrentAbonnement() != null ? member.getCurrentAbonnement().id : ''}">
 
                 </div>
@@ -165,7 +170,6 @@ object-fit: cover;border-radius: 50%"></div>
 
 
             </div>
-
             <button class="btn btn-primary mt-2" type="submit" style="width: 7rem;">Sauvegarde</button>
         </form>
 

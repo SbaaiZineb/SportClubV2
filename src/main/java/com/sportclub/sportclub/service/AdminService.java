@@ -26,4 +26,5 @@ public interface AdminService {
     public Page<UserApp> getUsersByRoles(Pageable pageable);
     List<UserApp> getByCin(String cin);
     List<UserApp> getByTele(String Tele);
+    List<UserApp> searchAdmin(String keyword);
 }

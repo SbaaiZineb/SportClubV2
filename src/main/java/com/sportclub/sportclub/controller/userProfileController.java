@@ -11,6 +11,7 @@ import com.sportclub.sportclub.service.*;
 import com.sportclub.sportclub.tools.FileStorageService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -65,16 +66,9 @@ public class userProfileController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE') or hasAuthority('COACH')")
 
     public String getMemberProfile(@RequestParam(name = "id") Long id, Model model) {
+        memberService.updateMembershipStatus();
         memberService.updateMemberStatues();
-        List<MemberAbonnement> memberAbonnementList = memberAbonnementRepo.findAll();
 
-        for (MemberAbonnement memberAb : memberAbonnementList
-        ) {
-            if (memberService.isMembershipExpired(memberAb) && !memberAb.getAbStatus().equals("Annulé")) {
-                memberAb.setAbStatus("Expiré");
-            }
-        }
-        memberAbonnementRepo.saveAll(memberAbonnementList);
 
         Member member = memberService.getMemberById(id);
         List<CheckIn> checkIns = checkInRepo.getCheckInByMember(member);
@@ -89,11 +83,11 @@ public class userProfileController {
         model.addAttribute("payments", paiements);
         model.addAttribute("user", member);
         MemberAbonnement membership = new MemberAbonnement();
-        model.addAttribute("membership", membership);
+        model.addAttribute("memberAbonnement", membership);
+
 
         return "userProfile";
     }
-
 
 
     @GetMapping("/coachProfile")
@@ -114,7 +108,7 @@ public class userProfileController {
 
     @PostMapping("/membersList/userProfile/addAbo")
     public String updateMembership(@Validated @ModelAttribute("membership") MemberAbonnement memberAbonnement, @RequestParam(name = "userId") Long userId,
-                                   @RequestParam(name = "abonnementId", required = false) Long abonnementId,Authentication authentication) {
+                                   @RequestParam(name = "abonnementId", required = false) Long abonnementId, Authentication authentication) {
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
@@ -127,42 +121,38 @@ public class userProfileController {
                 member.setMemberAbonnements(new ArrayList<>());
             }
             memberAbonnement.setMember(member);
-            Abonnement abonnement=abonnementService.getAboById(abonnementId);
+            Abonnement abonnement = abonnementService.getAboById(abonnementId);
             memberAbonnement.setAbonnement(abonnement);
+            memberAbonnement.setMontant(abonnement.getPrice());
+            memberAbonnement.setAbStatus("En attente");
+            memberAbonnement.setNbrSessionCarnet(abonnement.getNbrSeance());
+
             member.getMemberAbonnements().add(memberAbonnement);
 
-            member.setNbrSessionCurrentCarnet(abonnement.getNbrSeance());
 
             memberService.updateMember(member);
-            memberAbonnementRepo.save(memberAbonnement);
             //Add new payment
             Paiement paiement = new Paiement();
             paiement.setMember(member);
-            paiement.setStart_date(LocalDate.now());
+            paiement.setStart_date(memberAbonnement.getStartDate());
+            paiement.setEnd_date(memberAbonnement.getEndDate());
             paiement.setAbonnement(abonnement);
             paiement.setMontant(abonnement.getPrice());
             paiement.setStatus("Impayé");
-            String per = paiement.getAbonnement().getPeriod();
-            SetPayEndDate sPD = new SetPayEndDate();
-            sPD.setPayEndDate(per, paiement);
+
+//            String per = paiement.getAbonnement().getPeriod();
+//            SetPayEndDate sPD = new SetPayEndDate();
+//            sPD.setPayEndDate(per, paiement);
             paymentService.addPayement(paiement);
+            memberAbonnement.setPaiement(paiement);
+            memberAbonnementRepo.save(memberAbonnement);
 
-            MemberAbonnement memberMembership = memberAbonnementRepo.findByMemberAndAbonnementAndBookedDate(member, abonnement, paiement.getStart_date());
 
-
-            if (memberMembership != null) {
-
-                // Update MemberAbonnement status
-                memberMembership.setAbStatus("En attente");
-                memberAbonnementRepo.save(memberMembership);
-                System.out.println(memberMembership);
-                System.out.println("Done!!!!!!!!!");
-            }
         } catch (Exception e) {
             System.out.println("Something wrong!!! " + e);
         }
         if (userRole.equals("EMPLOYEE")) {
-            return "redirect:/employee/userProfile?id="+userId;
+            return "redirect:/employee/userProfile?id=" + userId;
         }
 
         return "redirect:/membersList/userProfile?id=" + userId;
@@ -230,4 +220,58 @@ public class userProfileController {
             return null;
         }
     }
+
+    @PostMapping("/editNotes")
+    public String editNotes(@ModelAttribute("user") Member user) {
+
+        Member existingUser = memberService.getMemberById(user.getId());
+
+        if (existingUser != null) {
+            existingUser.setNotes(user.getNotes());
+
+            memberService.updateMember(existingUser);
+        }
+
+        return "redirect:/membersList/userProfile?id=" + user.getId();
+    }
+
+    @GetMapping("/membersList/userProfile/editDate")
+    public String getEditDate(@RequestParam Long id, Model model) {
+        MemberAbonnement memberAbonnement = memberAbonnementRepo.findById(id).orElse(null);
+        model.addAttribute("membership", memberAbonnement);
+
+        return "editDatesModal";
+    }
+
+    @PostMapping("/membersList/userProfile/editDate")
+    public String editDate(@Validated @ModelAttribute("membership") MemberAbonnement membership) {
+        Long userId = membership.getMember().getId();
+        LocalDate currentDate = LocalDate.now();
+        try {
+            LocalDate startDate = membership.getStartDate();
+            LocalDate endDate = membership.getEndDate();
+
+            if (endDate != null && currentDate.isAfter(endDate)) {
+                membership.setAbStatus("Expiré");
+
+            } else if (startDate.isAfter(currentDate) && (!membership.getAbStatus().equals("En attente"))) {
+                membership.setAbStatus("Programmé");
+
+            } else if (!currentDate.isBefore(startDate) && (!membership.getAbStatus().equals("En attente"))) {
+                membership.setAbStatus("Active");
+            }
+            memberAbonnementRepo.save(membership);
+            Paiement paiement = membership.getPaiement();
+            paiement.setStart_date(membership.getStartDate());
+            paiement.setEnd_date(membership.getEndDate());
+            paymentService.updatePayment(paiement);
+
+        } catch (Exception e) {
+            System.out.println("Exception, Saving the membership's new dates is not done: " + e);
+        }
+
+        return "redirect:/membersList/userProfile?id=" + userId;
+    }
+
+
 }

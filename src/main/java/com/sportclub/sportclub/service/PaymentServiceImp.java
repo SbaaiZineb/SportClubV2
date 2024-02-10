@@ -1,8 +1,8 @@
 package com.sportclub.sportclub.service;
 
-import com.sportclub.sportclub.entities.Abonnement;
-import com.sportclub.sportclub.entities.Member;
-import com.sportclub.sportclub.entities.Paiement;
+import com.sportclub.sportclub.entities.*;
+import com.sportclub.sportclub.repository.ChequeRepo;
+import com.sportclub.sportclub.repository.MemberAbonnementRepo;
 import com.sportclub.sportclub.repository.MemberRepository;
 import com.sportclub.sportclub.repository.PaymentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,6 @@ import java.util.Map;
 
 @Service
 public class PaymentServiceImp implements PaymentService{
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Value("${user.home}/Downloads")
-    private String reportLocation;
 
     @Autowired
     PaymentRepo paymentRepo;
@@ -91,7 +86,7 @@ paymentRepo.save(m);
 
     @Override
     public List<Paiement> getMonthlyRevenue(LocalDate startDate, LocalDate endDate) {
-        return null;
+        return paymentRepo.findByPayedAtBetween(startDate,endDate);
     }
 
 

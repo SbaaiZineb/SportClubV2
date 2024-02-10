@@ -74,9 +74,9 @@ public class CoachController {
     @PostMapping("/deleteCoachs")
     @PreAuthorize("hasAuthority('ADMIN') ")
 
-    public String deleteCells(@RequestParam("selectedCells") Long[] selectedCells) {
+    public String deleteCells(@RequestParam(value = "selectedCells",required = false) Long[] selectedCells,RedirectAttributes redirectAttributes) {
         // Perform the delete operation using the selected cell IDs
-
+        if (selectedCells != null && selectedCells.length > 0) {
         for (Long cellId : selectedCells) {
 
 
@@ -89,26 +89,26 @@ public class CoachController {
             coachService.deleteCoach(cellId);
             fileStorageService.deleteFile(coach.getPic());
         }
-
+            redirectAttributes.addFlashAttribute("successMessage", "Entraineurs supprimés avec succès!");
+        } else {
+            // No checkboxes were selected, handle accordingly (e.g., show an error message)
+            redirectAttributes.addFlashAttribute("errorMessage", "Aucune cellule sélectionnée pour suppression.");
+        }
         // Redirect to a success page or return a response as needed
         return "redirect:/coachList";
     }
 
     @GetMapping("/coachList/search")
-    public String search(@RequestParam("searchBy") String searchBy, @RequestParam("keyword") String keyword, Model model) {
+    public String search(@RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("CoachForm", new Coach());
-        List<Coach> searchResults = new ArrayList<>();
+        List<Coach> searchResults;
 
         if (!keyword.isEmpty()) {
-            if ("cin".equals(searchBy)) {
-                searchResults = coachService.getCoachByCin(keyword);
-            } else if ("tele".equals(searchBy)) {
-                searchResults = coachService.getCoachByTele(keyword);
-            }
+            searchResults = coachService.findByKeyword(keyword);
+            model.addAttribute("listCoach", searchResults);
         } else {
             return "redirect:/coachList";
         }
-        model.addAttribute("listCoach", searchResults);
         model.addAttribute("keyword", keyword);
 
         return "coachList";

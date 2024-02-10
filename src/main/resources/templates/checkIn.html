@@ -13,6 +13,12 @@
             <strong th:text="${successMessage}"></strong>
 
         </div>
+        <!-- Success message for successful check in -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong th:text="${errorMessage}"></strong>
+
+        </div>
+
 
         <div class="col-md-6" style="height: 33rem;scrollbar-width: none;">
             <div class="card h-100" style="overflow-y: auto">

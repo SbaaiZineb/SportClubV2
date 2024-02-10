@@ -158,13 +158,13 @@ public class CheckInController {
 
     @PostMapping("/checkin")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String checkin(@Validated Long id, @RequestParam("selectedCells") Long[] selectedCells, Authentication authentication,
+    public String checkin(@Validated Long id, @RequestParam(value = "selectedCells" ,required = false) Long[] selectedCells, Authentication authentication,
                           RedirectAttributes redirectAttributes) {
 
         UserApp user = adminService.loadUserByUsername(authentication.getName());
         String userRole = user.getRoles().getRoleName();
 
-
+      if (selectedCells != null && selectedCells.length > 0){
         for (Long cellId : selectedCells) {
 
             CheckIn checkIn = new CheckIn();
@@ -178,19 +178,20 @@ public class CheckInController {
             checkInService.addCheck(checkIn);
 
             // Decrement the number of sessions in the current "Carnet" by one when check into a session
-            int nbrSessionCurrentCarnet = member.getNbrSessionCurrentCarnet();
+            int nbrSessionCurrentCarnet = member.getCurrentAbonnement().getNbrSessionCarnet();
             if (nbrSessionCurrentCarnet != 0) {
                 nbrSessionCurrentCarnet = nbrSessionCurrentCarnet - 1;
-                member.setNbrSessionCurrentCarnet(nbrSessionCurrentCarnet);
+                member.getCurrentAbonnement().setNbrSessionCarnet(nbrSessionCurrentCarnet);
                 memberService.updateMember(member);
 
             }
 
-            // Add success message to be displayed on the redirected page
             redirectAttributes.addFlashAttribute("successMessage", "L'enregistrement du membre s'est bien déroulé!");
 
 
-        }
+        }}
+        redirectAttributes.addFlashAttribute("errorMessage", "Aucune cellule sélectionnée .");
+
         if (userRole.equals("EMPLOYEE")) {
             return "redirect:/employee/enregistrement";
         }

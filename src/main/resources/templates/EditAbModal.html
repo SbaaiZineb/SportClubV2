@@ -1,43 +1,106 @@
 <!DOCTYPE html >
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head >
     <meta charset="UTF-8">
     <title>Edit d'abonnement</title>
+
 </head>
 <body>
 <div class="card align-content-center">
-  <div class="card-body">
-    <form  th:action="@{/editAbonnement}"
-           method="POST">
-      <div class="mb-3 mt-3">
-        <label for="id" class="form-label">ID:</label>
-        <label th:text="${abonnement.id}"></label>
-        <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${abonnement.id}">
-      </div>
-      <label class="form-label ">Nom d'abonnement:</label>
-      <input class="form-control" id="name" type="text"th:field="*{abonnement.nameAb}" />
-      <span class="text-danger" th:errors="${abonnement.nameAb}" th:value="${abonnement.nameAb}"></span>
-      <label class="form-label mt-3">Prix:</label>
-      <input class="form-control" id="prix" type="text"th:field="*{abonnement.price}" />
-      <span class="text-danger" th:errors="${abonnement.price}" th:value="${abonnement.price}"></span>
-      <label class="form-label mt-3">Périod:</label>
-      <select th:field="*{abonnement.period}"  class="form-control mb-1" id="per">
-        <option value="1">1 mois</option>
-        <option value="2">2 mois</option>
-        <option value="3">3 mois</option>
-        <option value="6">6 mois</option>
-        <option value="12">12 mois</option>
-        <option value="0">Carnet</option>
+    <div class="card-body">
+        <form th:action="@{/editAbonnement}"
+              method="POST">
+            <div class="mb-3 mt-3">
+                <label for="id" class="form-label">ID:</label>
+                <label th:text="${abonnement.id}"></label>
+                <input type="hidden" class="form-control" id="id" placeholder="ID" name="id"
+                       th:value="${abonnement.id}">
+            </div>
+            <label class="form-label ">Nom d'abonnement:</label>
+            <input class="form-control" id="name" type="text" th:field="*{abonnement.nameAb}"/>
+            <span class="text-danger" th:errors="${abonnement.nameAb}" th:value="${abonnement.nameAb}"></span>
+            <label class="form-label mt-3">Prix:</label>
+            <input class="form-control" id="prix" type="text" th:field="*{abonnement.price}"/>
+            <span class="text-danger" th:errors="${abonnement.price}" th:value="${abonnement.price}"></span>
+            <label class="form-label mt-3">Périod:</label>
+                <select th:field="*{abonnement.period}" class="form-control mb-1" id="perDropdown" onchange="changePer(this)">
+                    <option value="1">1 mois</option>
+                    <option value="2">2 mois</option>
+                    <option value="3">3 mois</option>
+                    <option value="6">6 mois</option>
+                    <option value="12">12 mois</option>
+                    <option value="0">Carnet</option>
+                    <option value="per">personnalisé</option>
 
-      </select>
-      <label class="form-label mi-3">Nombres des seances par semaine:</label>
-      <input class="form-control" type="number" id="nbrS" th:field="*{abonnement.nbrSeance}"/>
+                </select>
+                <script>
+
+                  function  changePer(element){
+                      const nbrSeanceLabel = document.getElementById('nbrSessionLabel');
+                      const nbrSeanceDropdown = document.getElementById('nbrSession');
+                      const perDiv = document.getElementById('pDiv');
+                      const startDateInput = document.getElementById('startDateInput');
+                      const endDateInput = document.getElementById('endDateInput');
+                        console.log("Changed : ",element.value);
+
+                      // Check if the selected value is "Carnet"
+                      if (element.value === '0') {
+                          // If selected, display the nbrSeanceLabel and nbrSeanceDropdown
+                          nbrSeanceLabel.style.display = 'block';
+                          nbrSeanceDropdown.style.display = 'block';
+                          perDiv.style.display = 'none';
+
+                      }else if(element.value === 'per'){
+                          nbrSeanceLabel.style.display = 'none';
+                          nbrSeanceDropdown.style.display = 'none';
+                          perDiv.style.display = 'block';
+                          // Add required attribute to startDate and endDate inputs
+                          startDateInput.required = true;
+                          endDateInput.required = true;
+                      } else {
+                          // If another option is selected, hide the nbrSeanceLabel and nbrSeanceDropdown
+                          nbrSeanceLabel.style.display = 'none';
+                          nbrSeanceDropdown.style.display = 'none';
+                          // Remove required attribute from startDate and endDate inputs
+                          startDateInput.required = false;
+                          endDateInput.required = false;
+                      }
+                    }
+                </script>
+            <div id="pDiv" th:class="${abonnement.period != 'per' ? 'd-none' : ''}">
+                <div class="row mt-2">
+                    <div class="col-sm-6">
+                        <label for="startDateInput">La date de debut :</label>
+                        <input style="margin-top: 5px;" type="date" th:value="${abonnement.startDate}" name="startDate" id="startDateInput">
+                    </div>
+                    <div class="col-sm-6" >
+                        <label for="endDateInput">La date de fin :</label>
+                        <input style="margin-top: 5px;" type="date" th:value="${abonnement.endDate}" name="endDate" id="endDateInput">
+                    </div>
+                </div>
+            </div>
 
 
+            <label class="form-label mt-2" id="nbrSessionLabel" th:class="${abonnement.nbrSeance == 0 ? 'd-none' : ''}">Nomber des seances :</label>
+            <select name="nbrSeance" id="nbrSession" th:class="${abonnement.nbrSeance == 0 ? 'd-none' : ''}" required>
+                <option value="0">0</option>
+                <option value="10">10</option>
+                <option value="35">35</option>
+                <option value="70">70</option>
+            </select>
 
-      <button class="btn btn-primary mt-2" type="submit">Sauvegarde</button>
-    </form>
+            <div class="row mt-3">
+            <label class="form-label mi-3">Observations :</label>
+            <input class="form-control" type="text" id="notes" th:field="*{abonnement.notes}"/>
+    </div>
 
-  </div></div>
+            <button class="btn btn-primary mt-2" type="submit">Sauvegarde</button>
+        </form>
+
+    </div>
+
+</div>
+
+
 </body>
 </html>

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -135,119 +136,126 @@ public class SeanceController {
 
     @PostMapping("/addSeance")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String addSeance(@Validated Seance seance, BindingResult bindingResult, Authentication authentication) {
+    public String addSeance(@Validated Seance seance, BindingResult bindingResult, Authentication authentication,RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "seanceList";
         CalendarEvent calendarEvent = new CalendarEvent();
 
 
         String username = authentication.getName();
-        service.addSeance(seance);
-        //Add Session Notification
-        Notification notification = new Notification();
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setMessage(username + " vous a affecté à une nouvelle session consultez votre agenda");
-        List<UserApp> userApps = new ArrayList<>();
-        userApps.add(seance.getCoach());
-        notification.setRecipient(userApps);
-        notification.setTitle("Nouvelle seance");
-        notificationService.addNotification(notification);
-        try {
+        if (seance != null) {
+            service.addSeance(seance);
+            //Add Session Notification
+            Notification notification = new Notification();
+            notification.setTimestamp(LocalDateTime.now());
+            notification.setMessage(username + " vous a affecté à une nouvelle session consultez votre agenda");
+            List<UserApp> userApps = new ArrayList<>();
+            userApps.add(seance.getCoach());
+            notification.setRecipient(userApps);
+            notification.setTitle("Nouvelle seance");
+            notificationService.addNotification(notification);
+            try {
+                //Add new Event based on the added session
 
+                calendarEvent.setId(seance.getId());
+                calendarEvent.setTitle(seance.getClassName());
+                calendarEvent.setStart(seance.getStartDate());
+                calendarEvent.setStartTime(seance.getStartTime());
+                calendarEvent.setEndTime(seance.getEndTime());
+                if (seance.getCoach() != null) {
+                    calendarEvent.setUsername(seance.getCoach().getEmail());
 
-            //Add new Event based on the added session
-
-            calendarEvent.setId(seance.getId());
-            calendarEvent.setTitle(seance.getClassName());
-            calendarEvent.setStart(seance.getStartDate());
-            calendarEvent.setStartTime(seance.getStartTime());
-            calendarEvent.setEndTime(seance.getEndTime());
-            if (seance.getCoach() != null) {
-                calendarEvent.setUsername(seance.getCoach().getEmail());
-
-            } else {
-                calendarEvent.setUsername(null);
-
-            }
-            int nbrToAdd = seance.getNumWeeks();
-
-            if (nbrToAdd == 0) {
-                calendarEvent.setEndRecur(null);
-                calendarEvent.setStartRecur(null);
-            } else {
-                LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
-                calendarEvent.setEndRecur(newEnd);
-                calendarEvent.setStartRecur(seance.getStartDate());
-            }
-
-            List<Integer> dayInt = new ArrayList<>();
-            if (seance.getDays() != null) {
-                for (String day : seance.getDays()
-                ) {
-                    if (day != null) {
-                        try {
-                            System.out.println(day);
-                            DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
-                            Integer di = dayOfWeek.getValue();
-                            dayInt.add(di);
-
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Error " + e);
-                        }
-                    } else if (dayInt.isEmpty()) {
-                        // Add all days of the week to the dayInt list
-                        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-                            dayInt.add(dayOfWeek.getValue());
-                        }
-                    }
-                    calendarEvent.setDaysOfWeek(dayInt);
+                } else {
+                    calendarEvent.setUsername(null);
 
                 }
+                int nbrToAdd = seance.getNumWeeks();
+
+                if (nbrToAdd == 0) {
+                    calendarEvent.setEndRecur(null);
+                    calendarEvent.setStartRecur(null);
+                } else {
+                    LocalDate newEnd = seance.getStartDate().plusWeeks(nbrToAdd);
+                    calendarEvent.setEndRecur(newEnd);
+                    calendarEvent.setStartRecur(seance.getStartDate());
+                }
+
+                List<Integer> dayInt = new ArrayList<>();
+                if (seance.getDays() != null) {
+                    for (String day : seance.getDays()
+                    ) {
+                        if (day != null) {
+                            try {
+                                System.out.println(day);
+                                DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                                Integer di = dayOfWeek.getValue();
+                                dayInt.add(di);
+
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Error " + e);
+                            }
+                        } else if (dayInt.isEmpty()) {
+                            // Add all days of the week to the dayInt list
+                            for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                                dayInt.add(dayOfWeek.getValue());
+                            }
+                        }
+                        calendarEvent.setDaysOfWeek(dayInt);
+
+                    }
+                }
+                eventRepo.save(calendarEvent);
+            } catch (Exception e) {
+                System.out.println("Something Wrong!!!! " + e);
             }
-            eventRepo.save(calendarEvent);
-        } catch (Exception e) {
-            System.out.println("Something Wrong!!!! " + e);
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Seance ajouter avec succès!");
+
         return "redirect:/seanceList";
     }
 
     @PostMapping("/deleteSessions")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")
-    public String deleteCells(@RequestParam("seanceId") Long[] seanceId) {
+    public String deleteCells(@RequestParam(value = "seanceId", required = false) Long[] seanceId, RedirectAttributes redirectAttributes) {
         // Perform the delete operation using the selected cell IDs
         // Seance seance;
+        if (seanceId != null && seanceId.length > 0) {
 
-        for (Long cellId : seanceId) {
+            for (Long cellId : seanceId) {
 
-            Seance seance = service.getSeanceById(cellId);
-            System.out.println(seance);
-            service.deletSeance(cellId);
-            CalendarEvent event = eventRepo.findById(cellId).get();
-            eventRepo.delete(event);
+                Seance seance = service.getSeanceById(cellId);
+                System.out.println(seance);
+                service.deletSeance(cellId);
+                CalendarEvent event = eventRepo.findById(cellId).get();
+                eventRepo.delete(event);
 
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Seance supprimés avec succès!");
+        } else {
+            // No checkboxes were selected, handle accordingly (e.g., show an error message)
+            redirectAttributes.addFlashAttribute("errorMessage", "Aucune cellule sélectionnée pour suppression.");
         }
-
         // Redirect to a success page or return a response as needed
         return "redirect:/seanceList";
     }
 
     // search by coach
     @GetMapping("/sessions/search")
-        public String searchSessionsByCoach(@RequestParam(required = false, name = "coachId") Long coachId, Model model) {
-            Seance seance = new Seance();
-            List<Seance> sessions;
-            if (coachId != null) {
-                model.addAttribute("seance", seance);
-                model.addAttribute("coachId", coachId);
-                sessions = service.getSeanceByCoach(coachId);
-                model.addAttribute("listSeance", sessions);
-                List<Coach> coaches = coachService.getAllCoachs();
-                model.addAttribute("coaches", coaches);
-            } else {
-                return "redirect:/seanceList";
-            }
-
-            return "seanceList";
+    public String searchSessionsByCoach(@RequestParam(required = false, name = "coachId") Long coachId, Model model) {
+        Seance seance = new Seance();
+        List<Seance> sessions;
+        if (coachId != null) {
+            model.addAttribute("seance", seance);
+            model.addAttribute("coachId", coachId);
+            sessions = service.getSeanceByCoach(coachId);
+            model.addAttribute("listSeance", sessions);
+            List<Coach> coaches = coachService.getAllCoachs();
+            model.addAttribute("coaches", coaches);
+        } else {
+            return "redirect:/seanceList";
         }
+
+        return "seanceList";
+    }
 
 
     @GetMapping("/deleteSeance")

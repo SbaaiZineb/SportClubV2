@@ -21,7 +21,7 @@ List<Paiement> findByMemberTeleContainsOrMemberCinContainsIgnoreCase(String kw1,
 Page<Paiement> findByMemberNameContains(String kw,Pageable pageable);
 List<Paiement> getPaiementByMember(Member member);
 List<Paiement> getPaiementByAbonnement(Abonnement abonnement);
-//List<Paiement> findByStart_dateBetween(LocalDate startDate,LocalDate endDate);
+List<Paiement> findByPayedAtBetween(LocalDate startDate,LocalDate endDate);
     @Query("SELECT p FROM Paiement p WHERE YEAR(p.payedAt) = :year")
 List<Paiement> findByPayedAtYear(@Param("year") int year);
 

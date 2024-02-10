@@ -6,12 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
-    void addMember(Member member, Authentication authentication, MultipartFile file,Long abonnementId);
+    void addMember(Member member, Authentication authentication, MultipartFile file, Long abonnementId, LocalDate startDate, LocalDate endDate);
 
     List<Member> getMemberByMembership(Long abid);
 
@@ -40,4 +41,6 @@ public interface MemberService {
     public void updateMemberStatues();
     public boolean isMembershipExpired(MemberAbonnement memberAb);
     public void updateMemberAbonnement(MemberAbonnement memberAbonnement);
+    List<Member> searchMembers(String query);
+    public void updateMembershipStatus();
 }

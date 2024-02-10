@@ -69,7 +69,7 @@ public class MemberPdf {
             table.addCell(String.valueOf(user.getTele()));
             table.addCell(user.getAdress());
           if (user.getCurrentAbonnement()!=null){
-                table.addCell(user.getCurrentAbonnement().getNameAb());
+                table.addCell(user.getCurrentAbonnement().getAbonnement().getNameAb());
 
             }else {
                 table.addCell("");
