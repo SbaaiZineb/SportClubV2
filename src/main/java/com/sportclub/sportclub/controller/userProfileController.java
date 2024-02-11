@@ -244,7 +244,9 @@ public class userProfileController {
     }
 
     @PostMapping("/membersList/userProfile/editDate")
-    public String editDate(@Validated @ModelAttribute("membership") MemberAbonnement membership) {
+    public String editDate(@Validated @ModelAttribute("membership") MemberAbonnement membership,Authentication authentication) {
+        UserApp user = adminService.loadUserByUsername(authentication.getName());
+        String userRole = user.getRoles().getRoleName();
         Long userId = membership.getMember().getId();
         LocalDate currentDate = LocalDate.now();
         try {
@@ -268,6 +270,10 @@ public class userProfileController {
 
         } catch (Exception e) {
             System.out.println("Exception, Saving the membership's new dates is not done: " + e);
+        }
+
+        if (userRole.equals("EMPLOYEE")) {
+            return "redirect:/employee/userProfile?id="+userId;
         }
 
         return "redirect:/membersList/userProfile?id=" + userId;

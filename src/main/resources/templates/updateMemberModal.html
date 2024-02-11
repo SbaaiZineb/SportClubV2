@@ -43,7 +43,9 @@ object-fit: cover;border-radius: 50%"></div>
                 <div class="col-md-4 ">
                     <div class="form-outline">
                         <label class="form-label">Email :</label>
-                        <input class="form-control" type="text" th:field="*{member.email}" required/>
+                        <input class="form-control" type="text" name="email" id="email" th:field="*{member.email}" required/>
+                        <div id="emailExistsMessage" class="error-message"></div>
+
                     </div>
                 </div>
             </div>
@@ -51,7 +53,9 @@ object-fit: cover;border-radius: 50%"></div>
                 <div class="col-md-4 ">
                     <div class="form-outline">
                         <label class="form-label">Cin :</label>
-                        <input class="form-control" type="text" th:field="*{member.cin}" required/>
+                        <input class="form-control" type="text" name="cin" id="cin" th:field="*{member.cin}" required/>
+                        <div id="cinExistsMessage" class="error-message"></div>
+
                     </div>
                 </div>
                 <div class="col-md-4">

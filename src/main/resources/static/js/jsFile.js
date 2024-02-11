@@ -38,6 +38,7 @@ function handleInputValidation(inputId, existsMessageId, urlParameter, formId, s
     inputElement.addEventListener('input', updateValidation);
 }
 
+
 // Function to check form validity
 function checkFormValidity(formId, submitButtonId) {
     var form = document.getElementById(formId);

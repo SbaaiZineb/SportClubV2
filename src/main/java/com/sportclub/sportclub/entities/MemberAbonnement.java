@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Data
@@ -30,6 +31,11 @@ public class MemberAbonnement {
     private Paiement paiement;
     private int nbrSessionCarnet;
 
-
+    public Long daysUntilExpiration(LocalDate startDate, LocalDate endDate) {
+        if (endDate == null || startDate == null) {
+            return null;
+        }
+        return ChronoUnit.DAYS.between(startDate, endDate);
+    }
 
 }

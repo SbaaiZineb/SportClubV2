@@ -85,6 +85,7 @@ public class PaymentController {
 
         if (!keyword.isEmpty()) {
             searchResults = paymentRepo.findByMemberTeleContainsOrMemberCinContainsIgnoreCase(keyword,keyword);
+            System.out.println("Result : " +searchResults);
         } else {
             return "redirect:/payments";
         }

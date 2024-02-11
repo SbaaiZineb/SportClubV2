@@ -163,13 +163,17 @@ public class EmployeeController {
 
         if (!keyword.isEmpty()) {
             searchResults = paymentRepo.findByMemberTeleContainsOrMemberCinContainsIgnoreCase(keyword,keyword);
+            System.out.println("Result : " +searchResults);
+
         } else {
-                return "redirect:/employee/payments";
+            System.out.println("Result : none!!!!!");
+
+            return "redirect:/employee/payments";
 
         }
         model.addAttribute("paymentList", searchResults);
         model.addAttribute("keyword", keyword);
-            return "redirect:/employee/payments";
+            return "employeeInterface/empPayments";
 
     }
 

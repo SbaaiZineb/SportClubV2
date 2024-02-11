@@ -356,21 +356,27 @@ object-fit: cover;"
                         <td style="color: #646fd5;font-weight: bold;"
                             th:utext="${membership.getAbonnement().getNameAb()}"></td>
                         <td style="font-weight: bold" th:utext="${membership.getAbonnement().getPrice()}+' DH'"></td>
-                        <td style="color: #646fd5;font-weight: bold;"
-                            th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></td>
+                        <td>
+                           <span style="color: #646fd5;font-weight: bold;" th:if="${membership.getAbonnement().getPeriod() != 'per'}"
+                                 th:utext="${membership.getAbonnement().getPeriod() == '0' ? membership.getAbonnement().getNbrSeance() : membership.getAbonnement().getPeriod()+' mois' }"></span>
+                            <span style="color: #646fd5;font-weight: bold;" th:if="${membership.getAbonnement().getPeriod() == 'per'}" th:utext="${'De '+membership.getStartDate()+' à '+membership.getEndDate()}"></span>
+                        </td>
                         <td>
                             <span th:style="${membership.startDate.isAfter(today) ? 'color :green ;font-weight: bold;' : 'color: #646fd5; font-weight: bold;'}"
                                   th:utext="${membership.getStartDate()}" id="startDateSpan"></span>
-                            <input type="date" name="startDate" id="startDate" th:value="${membership.getStartDate()}"
-                                   style="display: none">
+
                         </td>
 
 
                         <td>
                             <span style="color: #646fd5;font-weight: bold;"
                                   th:utext="${membership.getEndDate()}" id="endDateSpan"></span>
-                            <input type="date" name="endDate" id="endDate" th:value="${membership.getEndDate()}"
-                                   style="display: none">
+                            <p th:if="${membership.getEndDate() != null && membership.getEndDate().isAfter(today) && membership.getAbStatus()!='Annulé'}" th:text="${'Expire dans '+membership.daysUntilExpiration(membership.getStartDate(),membership.getEndDate())+' jours'}"
+                                  style="color: red; font-weight: lighter;" >
+                            </p>
+                            <p th:if="${membership.getEndDate() == null && membership.getNbrSessionCarnet()>=0 && membership.getAbStatus()!='Annulé'}" th:text="${membership.getNbrSessionCarnet()+' seances restantes'}"
+                               style="color: red; font-weight: lighter;" >
+                            </p>
                         </td>
                         <td>
                             <p class="badge bg-success m-0" th:if="${membership.getAbStatus() == 'Active'}">Active</p>

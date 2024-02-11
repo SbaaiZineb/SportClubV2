@@ -235,7 +235,9 @@ object-fit: cover;"
             </div>
 
         </div>
-        <div th:include="~{userProfile :: cards}" ></div>
+        <div th:include="~{userProfile :: cards}" >
+
+        </div>
     </div>
 
 <script>
@@ -249,8 +251,48 @@ object-fit: cover;"
 
     }
 
+    function abonnementChange() {
+        console.log("clicked");
+        var selectedAbonnementId = document.getElementById("abonnementId").value;
+        var selectedAbonnementPeriod = document.querySelector('#abonnementId option:checked').getAttribute('data-period');
+        var endDateDiv = document.getElementById("endDateDiv");
+        var startDateInput = document.getElementById("startDateId");
+        var endDateInput = document.getElementById("endDateId");
+
+        if (selectedAbonnementPeriod === "0") {
+            endDateDiv.style.display = "none";
+            console.log("Carnet");
+        } else {
+            endDateDiv.style.display = "block";
+            if (selectedAbonnementPeriod === "per") {
+                console.log("Personnalise")
+                // Fetch the selected abonnement option
+                var selectedAbonnementOption = document.querySelector('#abonnementId option:checked');
+
+                // Set endDateInput value to abonnement end date
+                endDateInput.value = selectedAbonnementOption.getAttribute('data-end-date');
+                // Set startDate to abonnement startDate
+                startDateInput.value = selectedAbonnementOption.getAttribute('data-start-date');
+            }
+        }
+    }
 
 </script>
+    <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+    <script>
+        $('#editDate').on('show.bs.modal', function () {
+
+            $(".editButton").click(function () {
+                console.log('Clicked');
+                var id = $(this).attr('id');
+                $.get("/membersList/userProfile/editDate?id=" + id, function (data) {
+                    $('#editDate').find('.modal-body').html(data);
+                })
+            })
+        })
+    </script>
 </div>
 
 

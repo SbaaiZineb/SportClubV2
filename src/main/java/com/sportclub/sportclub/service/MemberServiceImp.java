@@ -324,7 +324,7 @@ public class MemberServiceImp implements MemberService {
 
                 boolean isWithinValidPeriod = (endDate != null) && (
                         (startDate.isBefore(currentDate) || startDate.isEqual(currentDate)) &&
-                                (endDate.isAfter(currentDate) || endDate.isEqual(currentDate)) );
+                                (endDate.isAfter(currentDate) ) );
 
                 boolean isUnlimitedMembership = (endDate == null) &&
                         (!currentDate.isBefore(startDate)) &&

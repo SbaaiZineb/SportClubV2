@@ -49,6 +49,8 @@ public class MemberPdf {
 
         cell.setPhrase(new Phrase("Email", font));
         table.addCell(cell);
+        cell.setPhrase(new Phrase("Cin", font));
+        table.addCell(cell);
 
         cell.setPhrase(new Phrase("Téléphone", font));
         table.addCell(cell);
@@ -66,6 +68,7 @@ public class MemberPdf {
             table.addCell(user.getName());
             table.addCell(user.getLname());
             table.addCell(user.getEmail());
+            table.addCell(user.getCin());
             table.addCell(String.valueOf(user.getTele()));
             table.addCell(user.getAdress());
           if (user.getCurrentAbonnement()!=null){
