@@ -77,7 +77,6 @@ object-fit: cover;border-radius: 50%"></div>
                         <input class="form-control" type="date" th:field="*{userApp.dob}"/>
                     </div>
                 </div>
-                <input class="form-control" type="hidden" th:field="*{userApp.password}"/>
 
             </div>
 
@@ -86,8 +85,58 @@ object-fit: cover;border-radius: 50%"></div>
                 <input type="file" class="form-control "
                        id="image" accept="image/png, image/jpeg" name="file"/>
             </div>
-            <div class="mb-3 mt-3">
-                <!--- TODO update the admin's role -->
+            <span class="text-success"> * </span><span class="text-gray mb-2">Laissez-le vide si vous ne souhaitez pas le modifier.</span>
+            <div class="row mt-2">
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Mot de passe:<span class="text-success"> *</span></label>
+                        <input class="form-control input-border" id="pass1"
+                               onkeyup="validateInput()" type="password" th:field="*{userApp.password}"
+                               />
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                        <label class="form-label">Confirm Mot de passe:<span class="text-success"> *</span></label>
+                        <input class="form-control input-border" id="pass2" type="password"
+                               onkeyup="validateInput()" />
+                    </div>
+                </div>
+            </div>
+            <script th:inline="javascript">
+                function validateInput() {
+                    console.log("IN");
+                    var input1 = document.getElementById('pass1');
+                    var input2 = document.getElementById('pass2');
+
+                    if (input1.value === input2.value) {
+                        input1.classList.remove('mismatched-border');
+                        input2.classList.remove('mismatched-border');
+                        input1.classList.add('matched-border');
+                        input2.classList.add('matched-border');
+                    } else {
+                        input1.classList.remove('matched-border');
+                        input2.classList.remove('matched-border');
+                        input1.classList.add('mismatched-border');
+                        input2.classList.add('mismatched-border');
+                    }
+                }
+            </script>
+            <style>
+                .input-border {
+                    border: 1px solid gray;
+                }
+
+                .matched-border {
+                    border: 1px solid green;
+                }
+
+                .mismatched-border {
+                    border: 1px solid red;
+                }
+            </style>
+         <!--   <div class="mb-3 mt-3">
+                &lt;!&ndash;- TODO update the admin's role &ndash;&gt;
                 <label class="form-label">Role:</label>
                 <div th:each="role : ${roles}">
                     <div class="form-check">
@@ -97,7 +146,7 @@ object-fit: cover;border-radius: 50%"></div>
                     </div>
                 </div>
 
-            </div>
+            </div>-->
 
             <button class="btn btn-primary mt-2" type="submit">Sauvegarder</button>
         </form>

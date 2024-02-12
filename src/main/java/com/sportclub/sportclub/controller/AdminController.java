@@ -121,7 +121,7 @@ public class AdminController {
 
     @PostMapping("/deleteAdmins")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteCells(@RequestParam(value = "selectedCells",required = false) Long[] selectedCells, RedirectAttributes redirectAttributes) {
+    public String deleteCells(@RequestParam(value = "selectedCells", required = false) Long[] selectedCells, RedirectAttributes redirectAttributes) {
         // Perform the delete operation using the selected cell IDs
         if (selectedCells != null && selectedCells.length > 0) {
 
@@ -189,14 +189,18 @@ public class AdminController {
 
     @PostMapping("/editAdmin")
     public String editAdmin(@ModelAttribute(name = "userApp") @Validated UserApp user, BindingResult bindingResult,
-                            @RequestParam("roles") Long roleId,@RequestParam("file") MultipartFile file) {
+                            @RequestParam("file") MultipartFile file) {
         if (bindingResult.hasErrors()) return "error";
-        System.out.println("Selected Role Id : -----> "+roleId);
-
-        Role selectedRole = roleService.getRoleByid(roleId);
-        System.out.println("Selected Role : -----> "+selectedRole);
-
+        String password = user.getPassword();
         UserApp existingAdmin = adminService.getAdminById(user.getId());
+
+        if (password.isEmpty()) {
+            user.setPassword(existingAdmin.getPassword());
+
+        } else {
+            user.setPassword(passwordEncoder.encode(password));
+
+        }
         if (file != null && !file.isEmpty()) {
 
             user.setPic(file.getOriginalFilename());
@@ -207,7 +211,6 @@ public class AdminController {
                 user.setPic(existingAdmin.getPic());
             }
         }
-        user.setRoles(selectedRole);
         adminService.updateAdmin(user);
         return "redirect:/adminList";
     }
