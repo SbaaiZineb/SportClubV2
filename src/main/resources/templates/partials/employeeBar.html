@@ -29,7 +29,7 @@
     <aside>
         <div class="side">
 
-            <a class="active" th:href="@{/employee/}" >
+            <a class="" th:href="@{/employee/}" >
                 <style>
                     .material-icons.material-symbols-sharp {
                         font-variation-settings: 'FILL' 0,
@@ -90,7 +90,18 @@ done_all
 
         </div>
     </main>
-
+    <script>
+        $(document).ready(function() {
+            var pathname = window.location.pathname;
+            $('aside a').each(function() {
+                if ($(this).attr('href') === pathname) {
+                    $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
+            });
+        });
+    </script>
 
 </div>
 </body>
