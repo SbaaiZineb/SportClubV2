@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="header" id="header">
     <meta charset="UTF-8">
     <link rel="preconnect" th:href="@{https://fonts.gstatic.com}">
-    <link rel="stylesheet" th:href="@{/webjars/material-design-icons/4.0.0/material-icons.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/material-design-icons/4.0.0/material-icons.css}"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,288 +11,316 @@
     <!-- jQuery library -->
     <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
 
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js'></script>
     <script th:src="@{/webjars/momentjs/2.29.4/min/moment.min.js}" type="text/javascript"></script>
 
     <!-- Bootstrap JavaScript -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 
     <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet">
     <link th:href="@{/css/app.css}" type="text/css" rel="stylesheet">
-    <script src="/js/jsFile.js" ></script>
+    <script src="/js/jsFile.js"></script>
 
     <script type="module" th:src="@{/js/app.js}"></script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 
 </head>
 <body>
 
-    <nav th:fragment="sideBar" id="sidebar" class="sidebar js-sidebar">
-        <div class="sidebar-content js-simplebar">
-            <a class="sidebar-brand" >
-                <!--                                TODO : Get the name of the gym-->
-                <span class="align-middle">GymGenius</span>
-            </a>
+<nav th:fragment="sideBar" id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+        <a class="sidebar-brand">
+            <!--                                TODO : Get the name of the gym-->
+            <span class="align-middle">GymGenius</span>
+        </a>
 
-            <ul class="sidebar-nav">
+        <ul class="sidebar-nav">
 
 
-                <li class="sidebar-item " th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'') or hasAuthority(''COACH'')')}">
-                    <a class="sidebar-link"  th:href="@{/}">
-                            <i class="bi bi-sliders2"></i> <span class="align-middle">Tableau de bord</span>
-                    </a>
-                </li>
+            <li class="sidebar-item "
+                th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'') or hasAuthority(''COACH'')')}">
+                <a class="sidebar-link" th:href="@{/}">
+                    <i class="bi bi-sliders2"></i> <span class="align-middle">Tableau de bord</span>
+                </a>
+            </li>
+            <style>
+                .sidebar-link.active {
+                    background: linear-gradient(90deg, rgba(59, 125, 221, .1), rgba(59, 125, 221, .088) 50%, transparent);
+                    border-left-color: #3b7ddd;
+                    color: #e9ecef;
+                }
+            </style>
 
-                <li class="sidebar-item" >
-                    <a class="sidebar-link" th:href="@{/profil}" >
-                        <i class="bi bi-person-circle"></i><span class="align-middle">Profil</span>
-                    </a>
-                </li>
-                <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
-                    <a class="sidebar-link" th:href="@{/enregistrement}">
-                        <i class="bi bi-check2-all"></i> <span class="align-middle">Check-in</span>
-                    </a>
-                </li>
-                <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}">
-                    <a class="sidebar-link"  th:href="@{/coach/enregistre}">
-                        <i class="bi bi-check2-all"></i> <span class="align-middle">Enregistrement</span>
-                    </a>
-                </li>
-<!--<ul class="nav-group-show" aria-expanded="false">-->
-                <li class="sidebar-item">
-                    <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}" th:href="@{/membersList}">
-                        <i class="bi bi-people"></i> <span class="align-middle">Users</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''EMPLOYEE'') ')}" th:href="@{/membersList}">
-                        <i class="bi bi-people"></i> <span class="align-middle">Users</span>
-                    </a>
-                </li>
-                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="sidebar-item">
-                    <a class="sidebar-link nav-group-toggle" data-toggle="collapse" href="#usersCollapse">
-                        <i class="bi bi-people"></i><span class="align-middle">Users</span>
-                    </a>
+            <li class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/profil}">
+                    <i class="bi bi-person-circle"></i><span class="align-middle">Profil</span>
+                </a>
+            </li>
+            <li class="sidebar-item"
+                th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}">
+                <a class="sidebar-link" th:href="@{/enregistrement}">
+                    <i class="bi bi-check2-all"></i> <span class="align-middle">Check-in</span>
+                </a>
+            </li>
+            <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}">
+                <a class="sidebar-link" th:href="@{/coach/enregistre}">
+                    <i class="bi bi-check2-all"></i> <span class="align-middle">Enregistrement</span>
+                </a>
+            </li>
+            <!--<ul class="nav-group-show" aria-expanded="false">-->
+            <li class="sidebar-item">
+                <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''COACH'') ')}"
+                   th:href="@{/membersList}">
+                    <i class="bi bi-people"></i> <span class="align-middle">Users</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''EMPLOYEE'') ')}"
+                   th:href="@{/membersList}">
+                    <i class="bi bi-people"></i> <span class="align-middle">Users</span>
+                </a>
+            </li>
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="sidebar-item">
+                <a class="sidebar-link nav-group-toggle" data-toggle="collapse" href="#usersCollapse">
+                    <i class="bi bi-people"></i><span class="align-middle">Users</span>
+                </a>
 
-                    <ul id="usersCollapse" class="nav-group-items collapse show">
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-                            <a class="sidebar-link" th:href="@{/adminList}">Employees</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" th:href="@{/coachList}">Entraineurs</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" th:href="@{/membersList}">Adherents</a>
-                        </li>
-                    </ul>
-                </li>
+                <ul id="usersCollapse" class="nav-group-items collapse show">
+                    <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                        <a class="sidebar-link" th:href="@{/adminList}">Employees</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link"
+                           th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"
+                           th:href="@{/coachList}">Entraineurs</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" th:href="@{/membersList}">Adherents</a>
+                    </li>
+                </ul>
+            </li>
 
-                <style>
-                    .collapse {
+            <style>
+                .collapse {
                     display: none;
                 }
 
                 .show {
                     display: block;
                 }</style>
-<!--                </ul>-->
-                <!--<li class="sidebar-item dropdown">
-                    <a class="sidebar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-people"></i> <span class="align-middle" >Users</span>
-                    </a>
-                    <div class="dropdown-menu " aria-labelledby="navbarDropdown">
-                        <a class=" sidebar-link dropdown-item" href="#">Admin</a>
-                        <a class=" sidebar-link dropdown-item" href="#">Entraineur</a>
-                        <a class=" sidebar-link dropdown-item" href="#">Adherent</a>
-                    </div>
-                </li>-->
-                <li  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/abonnementList}">
-                        <i class="bi bi-gem"></i><span class="align-middle">Abonnement</span>
-                    </a>
-                </li>
+            <!--                </ul>-->
+            <!--<li class="sidebar-item dropdown">
+                <a class="sidebar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="bi bi-people"></i> <span class="align-middle" >Users</span>
+                </a>
+                <div class="dropdown-menu " aria-labelledby="navbarDropdown">
+                    <a class=" sidebar-link dropdown-item" href="#">Admin</a>
+                    <a class=" sidebar-link dropdown-item" href="#">Entraineur</a>
+                    <a class=" sidebar-link dropdown-item" href="#">Adherent</a>
+                </div>
+            </li>-->
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"
+                class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/abonnementList}">
+                    <i class="bi bi-gem"></i><span class="align-middle">Abonnement</span>
+                </a>
+            </li>
 
-                <li  th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}" class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/payments}">
-                        <i class="bi bi-credit-card-2-back"></i><span class="align-middle">Paiement</span>
-                    </a>
-                </li>
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') or hasAuthority(''EMPLOYEE'')')}"
+                class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/payments}">
+                    <i class="bi bi-credit-card-2-back"></i><span class="align-middle">Paiement</span>
+                </a>
+            </li>
 
-                <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-                    <a class="sidebar-link" th:href="@{/seanceList}">
-                        <i class="bi bi-calendar-check"></i><span class="align-middle">Séance</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/calendar}">
-                        <i class="bi bi-calendar-event"></i><span class="align-middle">Calendrier</span>
-                    </a>
-                </li>
+            <li class="sidebar-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                <a class="sidebar-link" th:href="@{/seanceList}">
+                    <i class="bi bi-calendar-check"></i><span class="align-middle">Séance</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/calendar}">
+                    <i class="bi bi-calendar-event"></i><span class="align-middle">Calendrier</span>
+                </a>
+            </li>
 
 
-                <li class="sidebar-item">
-                    <a class="sidebar-link"  th:href="@{/sportList}" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-                        <i class="fas fa-dumbbell"></i><span class="align-middle">Sport</span>
-                    </a>
-                </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/sportList}"
+                   th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                    <i class="fas fa-dumbbell"></i><span class="align-middle">Sport</span>
+                </a>
+            </li>
 
-                <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') ')}"  class="sidebar-item">
-                    <a class="sidebar-link" th:href="@{/parametre}">
-                        <i class="bi bi-gear-fill"></i> <span class="align-middle">Parametre</span>
-                    </a>
-                </li>
+            <li th:if="${#authorization.expression('hasAuthority(''ADMIN'') ')}" class="sidebar-item">
+                <a class="sidebar-link" th:href="@{/parametre}">
+                    <i class="bi bi-gear-fill"></i> <span class="align-middle">Parametre</span>
+                </a>
+            </li>
 
-            </ul>
-        </div>
-    </nav>
+        </ul>
+    </div>
+</nav>
 
-    <div  th:fragment="navBar">
-        <nav class="navbar navbar-expand navbar-light navbar-bg">
+<div th:fragment="navBar">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
 
-            <a class="sidebar-toggle js-sidebar-toggle">
-                <i class="hamburger align-self-center"></i>
-            </a>
-            <div class="navbar-collapse collapse">
-                <ul class="navbar-nav navbar-align">
-                    <!--<li class="nav-item dropdown">
-                        <a class="nav-icon dropdown-toggle" id="alertsDropdown" data-bs-toggle="dropdown" >
-                            <div class="position-relative" onclick="functionC()" >
-                                <i class="bi bi-bell"></i>
-                                <span class="indicator"></span>
-                            </div>
-                            &lt;!&ndash; jQuery library &ndash;&gt;
-                            <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
+        <a class="sidebar-toggle js-sidebar-toggle">
+            <i class="hamburger align-self-center"></i>
+        </a>
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav navbar-align">
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-icon dropdown-toggle" id="alertsDropdown" data-bs-toggle="dropdown" >
+                        <div class="position-relative" onclick="functionC()" >
+                            <i class="bi bi-bell"></i>
+                            <span class="indicator"></span>
+                        </div>
+                        &lt;!&ndash; jQuery library &ndash;&gt;
+                        <script th:src="@{/webjars/jquery/3.6.2/jquery.min.js}"></script>
 
-                            <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
-                            <script>
-                                $(document).ready(function (){
-                                  functionC();
-                                })
-                                function functionC() {
-                                    $.get("/notifications" , function (data) {
-                                        $('#notification').html(data);
-                                    });
-                                }
-                            </script>
-                            <script>
-                                $(document).ready(function() {
-                                    $('.sidebar-link.nav-group-toggle').click(function(e) {
-                                        e.preventDefault();
-                                        $(this).toggleClass('active');
-                                        var target = $($(this).attr('href'));
-                                        if (target.hasClass('show')) {
-                                            target.collapse('hide');
-                                        } else {
-                                            target.collapse('show');
-                                        }
-                                    });
+                        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+                        <script>
+                            $(document).ready(function (){
+                              functionC();
+                            })
+                            function functionC() {
+                                $.get("/notifications" , function (data) {
+                                    $('#notification').html(data);
                                 });
-
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    var currentURL = window.location.href;
-                                    var sidebarLinks = document.querySelectorAll(".sidebar-link");
-
-                                    sidebarLinks.forEach(function(link) {
-                                        if (link.href === currentURL) {
-                                            link.parentElement.classList.add("active");
-                                        }
-                                    });
+                            }
+                        </script>
+                        <script>
+                            $(document).ready(function() {
+                                $('.sidebar-link.nav-group-toggle').click(function(e) {
+                                    e.preventDefault();
+                                    $(this).toggleClass('active');
+                                    var target = $($(this).attr('href'));
+                                    if (target.hasClass('show')) {
+                                        target.collapse('hide');
+                                    } else {
+                                        target.collapse('show');
+                                    }
                                 });
+                            });
 
-                            </script>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
-                            <div class="dropdown-menu-header">
-                               Notifications
-                            </div>
-                           <div id="notification" class="list-group" style="overflow: auto;
+                            document.addEventListener("DOMContentLoaded", function() {
+                                var currentURL = window.location.href;
+                                var sidebarLinks = document.querySelectorAll(".sidebar-link");
+
+                                sidebarLinks.forEach(function(link) {
+                                    if (link.href === currentURL) {
+                                        link.parentElement.classList.add("active");
+                                    }
+                                });
+                            });
+
+                        </script>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
+                        <div class="dropdown-menu-header">
+                           Notifications
+                        </div>
+                       <div id="notification" class="list-group" style="overflow: auto;
 position: relative;
 height: 15rem;
 scrollbar-width: none;">
 
-                           </div>
-                        </div>
-                    </li>-->
+                       </div>
+                    </div>
+                </li>-->
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img th:src="@{'/images/'+${#authentication.getPrincipal().pic}}" class="avatar img-fluid rounded me-1" th:text="${#authentication.name}" /> <span class="text-dark"></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" th:href="@{/profil}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+                        <img th:src="@{'/images/'+${#authentication.getPrincipal().pic}}"
+                             class="avatar img-fluid rounded me-1" th:text="${#authentication.name}"/> <span
+                            class="text-dark"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" th:href="@{/profil}"><i class="align-middle me-1"
+                                                                             data-feather="user"></i> Profile</a>
 
-                            </li>
-                            <li>
+                        </li>
+                        <li>
                             <form th:action="@{/logout}" type="submit" method="post">
-                                <button class="dropdown-item"  th:href="@{/logout}"><i class="align-middle me-1" data-feather="log-out"></i>Log out</button>
+                                <button class="dropdown-item" th:href="@{/logout}"><i class="align-middle me-1"
+                                                                                      data-feather="log-out"></i>Log out
+                                </button>
                             </form>
                         </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav></div>
-    <!--
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!--
 
-    Footer
+Footer
 
-    !-->
+!-->
 
-    <footer th:fragment="footer"  class="footer" >
-        <div class="container-fluid">
-            <div class="row text-muted">
-                <div class="col-6 text-start">
-                    <p class="mb-0">
-                        <!--                                TODO : Get the name of the gym--->
-                        <a class="text-muted" href="#" target="_blank"><strong>SbaaiSoft</strong></a> 								&copy;
-                    </p>
-                </div>
-
+<footer th:fragment="footer" class="footer">
+    <div class="container-fluid">
+        <div class="row text-muted">
+            <div class="col-6 text-start">
+                <p class="mb-0">
+                    <!--                                TODO : Get the name of the gym--->
+                    <a class="text-muted" href="#" target="_blank"><strong>SbaaiSoft</strong></a> &copy;
+                </p>
             </div>
 
         </div>
+
+    </div>
 
 
     <script>
 
 
+        /* $(document).ready(function() {
+             $('.sidebar-item').click(function (event){
+                 /!*event.preventDefault();
+                 var url = $(this).find('a').attr('href');*!/
+                 $('.sidebar-item').removeClass('active');
+                 $(this).addClass('active');*/
 
-       /* $(document).ready(function() {
-            $('.sidebar-item').click(function (event){
-                /!*event.preventDefault();
-                var url = $(this).find('a').attr('href');*!/
-                $('.sidebar-item').removeClass('active');
-                $(this).addClass('active');*/
 
-
-                // // Navigate to the URL
-                // window.location.href = url;
+        // // Navigate to the URL
+        // window.location.href = url;
         //     });
         // });
 
-       /* document.querySelectorAll('.sidebar-link').forEach(link => {
+        /* document.querySelectorAll('.sidebar-link').forEach(link => {
 
-            console.log(link.href)
+             console.log(link.href)
 
-            if(link.href === window.location.href){
-                link.setAttribute('aria-current','page')
-            }
-        })*/
-        /* $(document).ready(function (){
-             $('li').on('click',function (){
-                 $(this).siblings().removeClass('active');
-                 $(this).addClass('active');
-             })
+             if(link.href === window.location.href){
+                 link.setAttribute('aria-current','page')
+             }
          })*/
-
+        $(document).ready(function () {
+            var pathname = window.location.pathname;
+            $('ul a').each(function () {
+                if ($(this).attr('href') === pathname) {
+                    $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
+            });
+        });
     </script>
 
-    </footer>
+</footer>
 </body>
 </html>
