@@ -103,9 +103,9 @@ public class MemberPdf {
         Paragraph title = new Paragraph("Liste des adhérents", font);
         title.setAlignment(Element.ALIGN_CENTER);
 
-        PdfPTable table = new PdfPTable(7);
+        PdfPTable table = new PdfPTable(8);
         table.setWidthPercentage(100);
-        table.setWidths(new float[] { 1.0f, 2.5f, 2.5f, 3.0f, 2.0f, 2.5f, 3.5f });
+        table.setWidths(new float[] { 1.0f, 2.5f, 2.5f, 3.0f, 2.0f, 2.5f, 3.5f,2.5f });
         table.setSpacingBefore(20);
 
         writeTableHeader(table);

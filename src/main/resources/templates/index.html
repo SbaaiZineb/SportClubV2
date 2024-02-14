@@ -165,7 +165,7 @@
     </div>
     <div class="row">
         <div class="col-md-7 " style="overflow-x: auto; max-height: 402px;scrollbar-width: none;">
-            <input type="text" id="tele" onkeyup="searchMember()" placeholder="Telephone">
+            <input type="text" id="tele" onkeyup="searchMember()" placeholder="Chercher par tele ou nom ou prénom ou cin">
             <style>
                 #tele {
                     padding: 10px;
@@ -190,9 +190,8 @@
 
                     <th>Id</th>
                     <th>Adhérent</th>
-
-                    <!--                    <th>Cin</th>-->
                     <th>Tele</th>
+                    <th>Cin</th>
                     <th>Inscrie le</th>
                     <th>Abonnement</th>
                     <th>Status</th>
@@ -224,9 +223,9 @@
                     <td th:utext="${m.getLname()}"></td>
                     <td th:utext="${m.getEmail()}"></td>-->
 
-
-                    <!--                    <td th:utext="${m.getCin()}"></td>-->
                     <td th:utext="${m.getTele()}"></td>
+
+                    <td th:utext="${m.getCin()}"></td>
                     <td th:utext="${m.createdAt}"></td>
                     <td th:utext="${m.getCurrentAbonnement()!= null ? m.getCurrentAbonnement().getAbonnement().getNameAb() : ''}"></td>
                     <td>
@@ -559,26 +558,38 @@
         }
 
         function searchMember() {
-            var input, filter, table, tr, td, i, nameColumn;
+            var input, filter, table, tr, td, i, nameColumn, lnameColumn, teleColumn, cinColumn;
             input = document.getElementById("tele");
             filter = input.value.toUpperCase();
             table = document.getElementById("IndexTable");
             tr = table.getElementsByTagName("tr");
-            nameColumn = 2; // Index of the column where tele are
+            nameColumn = 1; // Index of the column where the name is
+            lnameColumn = 1; // Index of the column where the last name is
+            teleColumn = 2; // Index of the column where the telephone number is
+            cinColumn = 3; // Index of the column where the cin is
 
             for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[nameColumn];
-                if (td) {
-                    var name = td.textContent || td.innerText;
-                    if (name.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
+                tdName = tr[i].getElementsByTagName("td")[nameColumn];
+                tdLname = tr[i].getElementsByTagName("td")[lnameColumn];
+                tdTele = tr[i].getElementsByTagName("td")[teleColumn];
+                tdCin = tr[i].getElementsByTagName("td")[cinColumn];
+                if (tdName || tdLname || tdTele || tdCin) {
+                    var name = tdName.textContent || tdName.innerText;
+                    var lname = tdLname.textContent || tdLname.innerText;
+                    var tele = tdTele.textContent || tdTele.innerText;
+                    var cin = tdCin.textContent || tdCin.innerText;
+                    if (name.toUpperCase().indexOf(filter) > -1 ||
+                        lname.toUpperCase().indexOf(filter) > -1 ||
+                        tele.toUpperCase().indexOf(filter) > -1 ||
+                        (cin && cin.toUpperCase().indexOf(filter) > -1)) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
                     }
-
                 }
             }
         }
+
 
         $(document).ready(function () {
             const selectedDateInput = document.getElementById("theDate");
