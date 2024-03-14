@@ -192,11 +192,12 @@ public class MemberController {
         List<MemberAbonnement> memberAbonnements = memberAbonnementRepo.findByMember(member);
 
 
-        memberService.deletMember(id);
         for (MemberAbonnement m : memberAbonnements) {
             m.setMember(null);
             memberAbonnementRepo.save(m);
         }
+        memberService.deletMember(id);
+
         if (member.getPic() != null && !member.getPic().equals("default-user.png")) {
             fileStorageService.deleteFile(member.getPic());
 
@@ -283,11 +284,12 @@ public class MemberController {
 
 
                 try {
-                    memberService.deletMember(cellId);
+
                     for (MemberAbonnement m : memberAbonnements) {
                         m.setMember(null);
                         memberAbonnementRepo.save(m);
                     }
+                    memberService.deletMember(cellId);
                     if (memberById.getPic() != null) {
                         fileStorageService.deleteFile(memberById.getPic());
 

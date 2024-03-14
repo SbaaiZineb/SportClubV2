@@ -390,7 +390,8 @@ object-fit: cover;"
                         </td>
 
                         <td>
-                            <a data-th-id="${membership.id}" data-bs-toggle="modal"
+                            <a th:if="${membership.getAbStatus() != 'Expiré' and membership.getAbStatus() != 'Annulé'}"
+                               data-th-id="${membership.id}" data-bs-toggle="modal"
                                data-bs-target="#editDate" title="Changer les dates de debut et de fin" id="editButton" class="editButton" style="border: none; background: transparent;">
                                 <span class="material-icons material-symbols-sharp">
 border_color

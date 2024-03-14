@@ -49,8 +49,8 @@
     <tbody>
     <tr th:each="payment :${payments}">
         <td th:utext="${payment.abonnement}"></td>
-        <td th:utext="${payment.getMember()}"></td>
-        <td th:utext="${payment.getMember().getCin()}"></td>
+        <td th:utext="${payment.getMember() != null ? payment.getMember() : 'Ancien membre'}"></td>
+        <td th:utext="${payment.getMember() != null ? payment.getMember().getCin() : ''}"></td>
         <td th:utext="${payment.getStart_date()}"></td>
         <td th:utext="${payment.getEnd_date()}"></td>
         <td th:utext="${payment.getMontant()}+' DH'"></td>
